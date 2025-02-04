@@ -1,0 +1,41 @@
+@let fragment = fragment$ | async;
+
+<mat-nav-list 
+  [class.expanded]="expanded()"
+  [class.collapsed]="!expanded()"
+>
+  <!-- All notes / home -->
+  <mat-list-item
+    [activated]="fragment === null"
+    (click)="navigate()"
+  >
+    <mat-icon matListItemIcon>folder</mat-icon>
+    @if(expanded()){
+      <p>Notes</p>
+    }
+  </mat-list-item>
+  
+  <!-- Labels -->
+  @for(label of labels; track label.id) {
+    <mat-list-item
+      [activated]="fragment === label.name"
+      (click)="navigate(label.name)"
+    >
+      <mat-icon class="material-icons-outlined" matListItemIcon>label</mat-icon>
+      @if(expanded()){
+        <p>{{label.name}}</p>
+      }
+    </mat-list-item>
+  }
+
+  <!-- Trash -->
+  <mat-list-item
+    [activated]="fragment === 'trash'"
+    (click)="navigate(undefined, true)"
+  >
+    <mat-icon class="material-symbols-outlined" matListItemIcon>delete</mat-icon>
+    @if(expanded()){
+      <p>Trash</p>
+    }
+  </mat-list-item>
+</mat-nav-list>

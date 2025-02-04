@@ -1,0 +1,38 @@
+.collapsed {
+  width: 48px;
+  padding-right: 0 !important;
+  padding-left: 8px;
+}
+
+.expanded {
+  width: 200px;
+
+  mat-list-item {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+  }
+
+  mat-icon {
+    padding-left: 8px;
+  }
+}
+
+mat-list-item {
+  transition-duration: 200ms;
+  transition-property: border-radius;
+}
+mat-nav-list {
+  transition-duration: 200ms;
+  transition-property: width, border-radius;
+}
+
+:host.closed-or-mobile {
+  background-color: white;
+  position: absolute;
+  bottom: 0;
+  top: 0;
+}
+
+:host.closed-or-mobile-expanded {
+  box-shadow: 0px 10px 10px rgb(197, 197, 197);
+}

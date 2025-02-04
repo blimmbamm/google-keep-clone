@@ -1,0 +1,22 @@
+header {
+  // position: sticky;
+  background-color: aquamarine;
+}
+
+:host {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  
+}
+
+#container {
+  position: relative;
+  flex: 1;
+  display: flex;
+}
+
+.left-offset {
+  margin-left: 64px;
+}

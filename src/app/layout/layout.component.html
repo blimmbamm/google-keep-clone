@@ -1,0 +1,16 @@
+@let mobile = mobile$ | async;
+
+<header>
+  <button mat-icon-button (click)="toggleSideNav()">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span> Keep Clone </span>
+</header>
+<div id="container">
+  <app-sidenav 
+    [expanded]="sideNavExpanded" 
+    [open]="sideNavOpen" 
+    [mobile]="mobile"
+  ></app-sidenav>
+  <main [class.left-offset]="!sideNavOpen">Notes go here</main>
+</div>
