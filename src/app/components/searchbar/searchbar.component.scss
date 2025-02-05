@@ -1,0 +1,27 @@
+:host {
+  position: relative;
+  border-radius: 8px;
+  background-color: #f1f3f4;
+  padding: 0.25rem;
+  display: flex;
+}
+
+:host.focussed {
+  width: 100%;
+  background-color: transparent;
+  box-shadow: 0 1px 3px 0px rgb(160, 163, 167);
+}
+
+:host > input {
+  width: 100%;
+  background-color: transparent;
+  appearance: none;
+  border: none;
+  outline: none;
+  font-size: 1rem;  
+}
+
+.hidden {
+  visibility: hidden;
+}
+

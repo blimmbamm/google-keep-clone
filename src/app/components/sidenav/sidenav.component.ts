@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
+import { NavigationService } from '../../services/navigation.service';
 
 @Component({
   selector: 'app-sidenav',
@@ -25,6 +26,7 @@ export class SidenavComponent {
   expanded = input.required<boolean>();
   mobile = input.required<boolean | undefined | null>();
 
+  navigation = inject(NavigationService)
 
   labels = [
     { id: 1, name: 'Dingens' },
@@ -32,21 +34,26 @@ export class SidenavComponent {
     { id: 3, name: 'Banane' },
   ];
 
-  route = inject(ActivatedRoute);
+  // route = inject(ActivatedRoute);
 
-  fragment$ = this.route.fragment.pipe(
-    map((fragment) => {
-      const label = fragment && fragment.match(/^label\/(\w+)$/)?.[1];
-      return label || fragment;
-    })
-  );
+  // fragment$ = this.route.fragment.pipe(
+  //   map((fragment) => {
+  //     const label = fragment && fragment.match(/^label\/(\w+)$/)?.[1];
+  //     return label || fragment;
+  //   })
+  // );
 
-  router = inject(Router);
+  // router = inject(Router);
 
-  navigate(label?: string, trash?: boolean) {
-    const fragment =
-      (trash || label) && ((trash && 'trash') || (label && `label/${label}`));
+  // navigate(label?: string, trash?: boolean) {
+  //   const fragment =
+  //     (trash || label) && ((trash && 'trash') || (label && `label/${label}`));
 
-    this.router.navigate([], { fragment });
-  }
+  //   this.router.navigate([], { fragment });
+  // }
+
+  // navigate = this.navigation.navigate;
+  // navigate(){
+  //   this.navigation.navigate()
+  // }
 }

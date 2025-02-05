@@ -1,0 +1,14 @@
+<button 
+  mat-icon-button 
+  (mousedown)="focusInput($event)"
+>
+  <mat-icon>search</mat-icon>
+</button>
+<input #searchInput placeholder="Search" />
+<button 
+  [class.hidden]="!inputFocussed" 
+  mat-icon-button 
+  (mousedown)="clearInput($event)"
+>
+  <mat-icon>close</mat-icon>
+</button>

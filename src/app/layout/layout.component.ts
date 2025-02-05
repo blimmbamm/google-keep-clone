@@ -14,6 +14,8 @@ import { delay, fromEvent, map, repeat, takeUntil, tap } from 'rxjs';
 import { getNavMenuOpenState, setNavMenuOpenState } from '../db';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AsyncPipe } from '@angular/common';
+import { NavigationService } from '../services/navigation.service';
+import { SearchbarComponent } from '../components/searchbar/searchbar.component';
 
 @Component({
   selector: 'app-layout',
@@ -23,11 +25,15 @@ import { AsyncPipe } from '@angular/common';
     MatIconModule,
     SidenavComponent,
     AsyncPipe,
+    SearchbarComponent,
   ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss',
 })
 export class LayoutComponent implements AfterContentInit {
+
+  readonly navigation = inject(NavigationService);
+
   /**
    * #### EXPLANATION: SideNav state ####
    *

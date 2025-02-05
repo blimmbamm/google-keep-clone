@@ -1,4 +1,4 @@
-@let fragment = fragment$ | async;
+@let fragment = navigation.fragment$| async;
 
 <mat-nav-list 
   [class.expanded]="expanded()"
@@ -7,7 +7,7 @@
   <!-- All notes / home -->
   <mat-list-item
     [activated]="fragment === null"
-    (click)="navigate()"
+    (click)="navigation.navigate()"
   >
     <mat-icon matListItemIcon>folder</mat-icon>
     @if(expanded()){
@@ -19,7 +19,7 @@
   @for(label of labels; track label.id) {
     <mat-list-item
       [activated]="fragment === label.name"
-      (click)="navigate(label.name)"
+      (click)="navigation.navigate(label.name)"
     >
       <mat-icon class="material-icons-outlined" matListItemIcon>label</mat-icon>
       @if(expanded()){
@@ -31,7 +31,7 @@
   <!-- Trash -->
   <mat-list-item
     [activated]="fragment === 'trash'"
-    (click)="navigate(undefined, true)"
+    (click)="navigation.navigate(undefined, true)"
   >
     <mat-icon class="material-symbols-outlined" matListItemIcon>delete</mat-icon>
     @if(expanded()){

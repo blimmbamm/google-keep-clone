@@ -1,10 +1,18 @@
 @let mobile = mobile$ | async;
+@let title = navigation.title$ | async;
 
 <header>
-  <button mat-icon-button (click)="toggleSideNav()">
+  <button class="menu" mat-icon-button (click)="toggleSideNav()">
     <mat-icon>menu</mat-icon>
   </button>
-  <span> Keep Clone </span>
+  <img class="logo" src="sticky-notes.png">
+  <span class="title">{{ title || "Notes" }}</span>
+  <span class="spacer"></span>
+  <app-searchbar></app-searchbar>
+  <span class="spacer"></span>
+  <button mat-icon-button>
+    <mat-icon>question_mark</mat-icon>
+  </button>
 </header>
 <div id="container">
   <app-sidenav 

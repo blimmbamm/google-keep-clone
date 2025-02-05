@@ -1,14 +1,40 @@
-header {
-  // position: sticky;
-  background-color: aquamarine;
-}
-
 :host {
   position: relative;
   display: flex;
   flex-direction: column;
-  height: 100dvh;
-  
+  height: 100dvh;  
+}
+
+header {
+  height: 64px;
+  box-shadow: inset 0 -1px 0 0 rgb(218, 220, 224);
+  display: flex;
+  align-items: center;
+  padding-inline: 1rem;
+  gap: 1rem;
+  color: var(--header-font-color);
+  --mat-sys-on-surface-variant: var(--header-font-color);
+  user-select: none;
+}
+
+.menu {
+  transform: scale(1.2)
+}
+
+// button.mdc-icon-button {
+//   transform: scale(1.2);
+// }
+
+.logo {
+  height: 55%;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.title {
+  font-size: 1.5em;
 }
 
 #container {
