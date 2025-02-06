@@ -20,5 +20,7 @@
     [open]="sideNavOpen" 
     [mobile]="mobile"
   ></app-sidenav>
-  <main [class.left-offset]="!sideNavOpen">Notes go here</main>
+  <main [class.left-offset]="!sideNavOpen">
+    <app-notes></app-notes>
+  </main>
 </div>

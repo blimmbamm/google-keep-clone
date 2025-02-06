@@ -11,11 +11,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { SidenavComponent } from '../components/sidenav/sidenav.component';
 import { delay, fromEvent, map, repeat, takeUntil, tap } from 'rxjs';
-import { getNavMenuOpenState, setNavMenuOpenState } from '../db';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AsyncPipe } from '@angular/common';
 import { NavigationService } from '../services/navigation.service';
 import { SearchbarComponent } from '../components/searchbar/searchbar.component';
+import { NotesComponent } from '../components/notes/notes.component';
+import {
+  getNavMenuOpenState,
+  setNavMenuOpenState,
+} from '../../data/side-nav-state';
 
 @Component({
   selector: 'app-layout',
@@ -26,12 +30,12 @@ import { SearchbarComponent } from '../components/searchbar/searchbar.component'
     SidenavComponent,
     AsyncPipe,
     SearchbarComponent,
+    NotesComponent,
   ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss',
 })
 export class LayoutComponent implements AfterContentInit {
-
   readonly navigation = inject(NavigationService);
 
   /**
@@ -42,9 +46,9 @@ export class LayoutComponent implements AfterContentInit {
    * This occurs when the the non-opened drawer gets hovered.
    */
 
-  /** 
-   * Whether the drawer is opened by burger menu icon. 
-   * 
+  /**
+   * Whether the drawer is opened by burger menu icon.
+   *
    * When construction component: get that information from localStorage (if exists)
    */
   sideNavOpen = getNavMenuOpenState();
@@ -74,9 +78,9 @@ export class LayoutComponent implements AfterContentInit {
     );
 
   /**
-   * Toggle sidenav from closed to opened or vice versa. 
+   * Toggle sidenav from closed to opened or vice versa.
    * This requires two state information, as explained above.
-   * 
+   *
    * When toggling, also store the current open state in localStorage
    */
   toggleSideNav() {

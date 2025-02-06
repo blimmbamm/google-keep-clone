@@ -9,6 +9,10 @@ export class NavigationService {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
+  /**
+   * Emits the fragment. If the fragment is #label/<SomeLabel>, 
+   * only the label name is returned
+   */
   readonly fragment$ = this.route.fragment.pipe(
     map((fragment) => {
       const label = fragment && fragment.match(/^label\/(\w+)$/)?.[1];
