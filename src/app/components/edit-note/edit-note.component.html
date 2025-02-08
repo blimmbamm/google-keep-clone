@@ -1,14 +1,14 @@
 <div class="note-form" [formGroup]="noteForm">
   <div>
     @if(!noteForm.controls.title.value){
-      <div class="placeholder">Title</div>
+      <div class="placeholder input-title">Title</div>
     }
     <div
       (keydown)="checkKey($event)"
       #titleInput
       aria-multiline="false"
       formControlName="title"
-      class="textarea"
+      class="textarea input-title"
       id="input-title"
       role="textbox"
       spellcheck="false"
@@ -17,13 +17,13 @@
   </div>
   <div>
     @if(!noteForm.controls.content.value){
-      <div class="placeholder">Note</div>
+      <div class="placeholder input-content">Note</div>
     }
     <div
       #noteContent
       aria-multiline="true"
       formControlName="content"
-      class="textarea"
+      class="textarea input-content"
       id="input-content"
       role="textbox"
       spellcheck="false"

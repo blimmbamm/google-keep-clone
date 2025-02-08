@@ -17,14 +17,14 @@
   outline: none;
 }
 
-#input-title {
+.input-title {
   font-size: 1.2rem;
   font-weight: 500;
   padding-top: 1rem;
   padding-inline: 1rem;
 }
 
-#input-content {
+.input-content {
   padding: 1rem;
 }
 
@@ -53,6 +53,5 @@
 
 
 .placeholder {
-  padding: 5px;
   position: absolute;
 }
