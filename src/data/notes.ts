@@ -45,12 +45,26 @@ export function seedNotes() {
       content: 'World',
       lastModified: new Date(),
       trash: false,
-      labels: [],
+      labels: [{ id: 1, name: 'Dingens' }],
     },
     {
       id: 2,
       title: 'Another note',
-      content: 'With some dummy content',
+      content: `With some dummy content that spreads across multiple lines. This doesn't work yet.`,
+      lastModified: new Date(),
+      trash: false,
+      labels: [{ id: 2, name: 'Dongens' }],
+    },
+    {
+      id: 3,
+      title: 'Another note',
+      content: `That should only appear in trash.`,
+      lastModified: new Date(),
+      trash: true,
+      labels: [{ id: 2, name: 'Dongens' }],
+    },
+    {
+      id: 4,
       lastModified: new Date(),
       trash: false,
       labels: [],
@@ -106,16 +120,15 @@ function editNoteSync(id: number, noteInput: NoteInput) {
   const note = notes.find((note) => note.id === id);
 
   if (note) {
-    const updatedNotes = [
-      ...notes.filter((note) => note.id !== id),
-      {
-        ...note,
-        ...noteInput,
-        lastModified: new Date(),
-      },
-    ];
+    const noteIndex = notes.indexOf(note);
 
-    saveNotes(updatedNotes);
+    notes[noteIndex] = {
+      ...note,
+      ...noteInput,
+      lastModified: new Date(),
+    };
+
+    saveNotes(notes);
   } else {
     throw Error('Note not found.');
   }

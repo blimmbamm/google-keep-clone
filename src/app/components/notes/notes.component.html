@@ -1,13 +1,7 @@
 @let notes = notesQuery.data$ | async;
-@let error = notesQuery.error$ | async;
 
 @if(notes) {
   @for(note of notes; track note.id) {
-    <p>{{note.title}}</p>
-    <p>{{note.content}}</p>
+    <app-note (click)="openEditNoteDialog(note)" [note]="note"></app-note>
   }
-}
-
-@if(error) {
-  <p>Error! {{error.error.message}}</p>
 }

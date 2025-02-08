@@ -10,7 +10,7 @@ export class NavigationService {
   private router = inject(Router);
 
   /**
-   * Emits the fragment. If the fragment is #label/<SomeLabel>, 
+   * Emits the fragment. If the fragment is #label/<SomeLabel>,
    * only the label name is returned
    */
   readonly fragment$ = this.route.fragment.pipe(
@@ -25,6 +25,17 @@ export class NavigationService {
       return fragment && fragment[0].toUpperCase() + fragment.slice(1);
     })
   );
+
+  /**
+   * Returns snapshot of current fragment transformed to label/trash params 
+   * that are used for fetching notes.
+   */
+  notesParamsSnapshot() {
+    let fragment = this.route.snapshot.fragment;
+    const label = (fragment && fragment.match(/^label\/(\w+)$/)?.[1]) || undefined;
+    const trash = fragment === 'trash' || undefined;
+    return { label, trash };
+  }
 
   navigate(label?: string, trash?: boolean) {
     const fragment =

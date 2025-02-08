@@ -1,0 +1,58 @@
+:host {
+  display: block;
+
+  // Set mat-button color identical to mat-icon-button color:
+  --mat-sys-primary: var(--mat-sys-on-surface-variant);
+}
+
+.note-form {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.textarea {
+  white-space: pre-wrap;
+  outline: none;
+}
+
+#input-title {
+  font-size: 1.2rem;
+  font-weight: 500;
+  padding-top: 1rem;
+  padding-inline: 1rem;
+}
+
+#input-content {
+  padding: 1rem;
+}
+
+.labels-and-date-edited {
+  display: flex;
+  padding-inline: 1rem;
+  padding-block: 0.25rem;
+}
+
+.edited-date {
+  font-size: 0.75rem;
+}
+
+.edit-note-actions {
+  display: flex;
+  gap: 0.25rem;
+  padding-inline: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.spacer {
+  flex: 1;
+}
+
+
+
+
+.placeholder {
+  padding: 5px;
+  position: absolute;
+}
