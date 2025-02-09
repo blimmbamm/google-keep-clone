@@ -1,5 +1,7 @@
 @let notes = notesQuery.data$ | async;
 
+<app-add-note></app-add-note>
+
 @if(notes) {
   @for(note of notes; track note.id) {
     <app-note (click)="openEditNoteDialog(note)" [note]="note"></app-note>

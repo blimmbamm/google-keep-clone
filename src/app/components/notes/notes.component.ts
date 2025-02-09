@@ -7,10 +7,11 @@ import { AsyncPipe } from '@angular/common';
 import { NoteComponent } from '../note/note.component';
 import { MatDialog } from '@angular/material/dialog';
 import { EditNoteComponent } from '../edit-note/edit-note.component';
+import { AddNoteComponent } from "../add-note/add-note.component";
 
 @Component({
   selector: 'app-notes',
-  imports: [NoteComponent, AsyncPipe],
+  imports: [NoteComponent, AsyncPipe, AddNoteComponent],
   templateUrl: './notes.component.html',
   styleUrl: './notes.component.scss',
 })

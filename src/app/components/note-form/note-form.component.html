@@ -1,0 +1,31 @@
+<div class="note-form" [formGroup]="noteForm">
+  <div>
+    @if(!noteForm.controls.title.value){
+      <div class="placeholder input-title">Title</div>
+    }
+    <div
+      (keydown)="handleEnterKey($event)"
+      #titleInput
+      aria-multiline="false"
+      formControlName="title"
+      class="textarea input-title"
+      role="textbox"
+      spellcheck="false"
+      contenteditable
+    ></div>
+  </div>
+  <div>
+    @if(!noteForm.controls.content.value){
+      <div class="placeholder input-content">Note</div>
+    }
+    <div
+      #noteContent
+      aria-multiline="true"
+      formControlName="content"
+      class="textarea input-content"
+      role="textbox"
+      spellcheck="false"
+      contenteditable
+    ></div>
+  </div>
+</div>

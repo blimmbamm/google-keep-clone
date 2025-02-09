@@ -1,36 +1,4 @@
-<div class="note-form" [formGroup]="noteForm">
-  <div>
-    @if(!noteForm.controls.title.value){
-      <div class="placeholder input-title">Title</div>
-    }
-    <div
-      (keydown)="checkKey($event)"
-      #titleInput
-      aria-multiline="false"
-      formControlName="title"
-      class="textarea input-title"
-      id="input-title"
-      role="textbox"
-      spellcheck="false"
-      contenteditable
-    ></div>
-  </div>
-  <div>
-    @if(!noteForm.controls.content.value){
-      <div class="placeholder input-content">Note</div>
-    }
-    <div
-      #noteContent
-      aria-multiline="true"
-      formControlName="content"
-      class="textarea input-content"
-      id="input-content"
-      role="textbox"
-      spellcheck="false"
-      contenteditable
-    ></div>
-  </div>
-</div>
+<app-note-form [note]="data.note" (onNoteInputChange)="handleEditNote($event)"></app-note-form>
 <div class="labels-and-date-edited">
   <div>Labels...</div>
   <span class="spacer"></span>
