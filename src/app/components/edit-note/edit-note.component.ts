@@ -8,6 +8,7 @@ import { QueryService } from '../../services/query.service';
 import { NavigationService } from '../../services/navigation.service';
 import { MatIconModule } from '@angular/material/icon';
 import { NoteFormComponent } from '../note-form/note-form.component';
+import { NoteActionsComponent } from '../note-actions/note-actions.component';
 
 @Component({
   selector: 'app-edit-note',
@@ -17,6 +18,7 @@ import { NoteFormComponent } from '../note-form/note-form.component';
     ContenteditableValueAccessorModule,
     MatIconModule,
     NoteFormComponent,
+    NoteActionsComponent,
   ],
   templateUrl: './edit-note.component.html',
   styleUrl: './edit-note.component.scss',

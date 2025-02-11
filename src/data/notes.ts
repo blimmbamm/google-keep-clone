@@ -99,14 +99,18 @@ function getNotesSync(labelName?: string, trash?: boolean) {
 function addNoteSync(noteInput: NoteInput) {
   const notes = readNotes();
 
+  const noteId = Date.now();
+
   const note: Note = {
     ...noteInput,
-    id: Date.now(),
+    id: noteId,
     lastModified: new Date(),
     trash: false,
   };
 
   saveNotes([...notes, note]);
+
+  return noteId
 }
 
 /**

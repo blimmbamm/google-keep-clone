@@ -1,1 +1,23 @@
-<p>add-note works!</p>
+
+<app-note-form
+  [withTitleInput]="open()"
+  placeholderContent="Take a note..."
+  (onNoteInputChange)="handleNoteInputChange($event)">
+</app-note-form>
+@if(open()) {
+  <app-note-actions>
+    <button mat-icon-button>
+      <mat-icon class="material-symbols-outlined">delete</mat-icon>
+    </button>
+    <button mat-icon-button>
+      <mat-icon class="material-symbols-outlined">palette</mat-icon>
+    </button>
+    <button mat-icon-button>
+      <mat-icon class="material-symbols-outlined">new_label</mat-icon>
+    </button>
+    <button mat-icon-button>
+      <mat-icon class="material-symbols-outlined">content_copy</mat-icon>
+    </button>
+    <button align-end mat-button>Done</button>
+  </app-note-actions>
+}

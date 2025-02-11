@@ -7,7 +7,8 @@ import { AsyncPipe } from '@angular/common';
 import { NoteComponent } from '../note/note.component';
 import { MatDialog } from '@angular/material/dialog';
 import { EditNoteComponent } from '../edit-note/edit-note.component';
-import { AddNoteComponent } from "../add-note/add-note.component";
+import { AddNoteComponent } from '../add-note/add-note.component';
+import { LocalStorageKeys } from '../../../data/shared';
 
 @Component({
   selector: 'app-notes',
@@ -36,17 +37,23 @@ export class NotesComponent {
   });
 
   constructor() {
-    seedNotes();
+    if(!localStorage.getItem(LocalStorageKeys.NOTES)) {
+      seedNotes();
+    }
   }
 
   readonly dialog = inject(MatDialog);
 
-  openEditNoteDialog(note: Note){
-    const dialogRef = this.dialog.open<EditNoteComponent, {note: Note}>(EditNoteComponent, { 
-      data: {note}, panelClass: 'edit-note-dialog-panel',
-      autoFocus: false,
-      width: "100%",
-      maxWidth: "600px",
-    });    
+  openEditNoteDialog(note: Note) {
+    const dialogRef = this.dialog.open<EditNoteComponent, { note: Note }>(
+      EditNoteComponent,
+      {
+        data: { note },
+        panelClass: 'edit-note-dialog-panel',
+        autoFocus: false,
+        width: '100%',
+        maxWidth: '600px',
+      }
+    );
   }
 }

@@ -34,12 +34,8 @@
 }
 
 .note-actions {
-  margin-inline: 0.25rem;
-  margin-bottom: 0.25rem;
-  display: flex;
-  gap: 0.25rem;
   opacity: 0;
   transition-property: opacity;
-  transition-duration: 100ms;
+  transition-duration: 200ms;
 }
 

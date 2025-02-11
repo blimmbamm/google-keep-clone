@@ -41,6 +41,7 @@ header {
   position: relative;
   flex: 1;
   display: flex;
+  overflow-y: auto;
 }
 
 .left-offset {
@@ -49,4 +50,5 @@ header {
 
 main {
   flex: 1;
+  overflow-y: auto;
 }

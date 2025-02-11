@@ -1,0 +1,13 @@
+:host {
+  display: flex;
+  gap: 0.25rem;
+  padding-inline: 0.25rem;
+  padding-bottom: 0.25rem;
+
+  --mat-sys-primary: var(--mat-sys-on-surface-variant);
+}
+
+.spacer {
+  flex: 1;
+}
+

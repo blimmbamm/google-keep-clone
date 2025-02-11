@@ -10,7 +10,7 @@ import {
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Note, NoteInput } from '../../../data/notes';
 import { ContenteditableValueAccessorModule } from '@tinkoff/angular-contenteditable-accessor';
-import { debounceTime, skip } from 'rxjs';
+import { debounceTime } from 'rxjs';
 
 @Component({
   selector: 'app-note-form',
@@ -21,20 +21,26 @@ import { debounceTime, skip } from 'rxjs';
 export class NoteFormComponent {
   readonly destroyRef = inject(DestroyRef);
 
-  // Form controls cannot be initialized with input data because
-  // it is not available yet when constructing the component
-  readonly note = input.required<Note>();
-  // readonly data: { note: Note } = inject(MAT_DIALOG_DATA);
-  // note = this.data.note
+  readonly note = input<Note>();
+  readonly placeholderTitle = input<string>('Title');
+  readonly placeholderContent = input<string>('Note');
+  readonly withTitleInput = input(true);
+
+  readonly focusNoteContentInput = input<boolean>();
 
   noteForm = new FormGroup({
-    title: new FormControl<string | undefined>('', { nonNullable: true }),
-    content: new FormControl<string | undefined>('', { nonNullable: true }),
+    title: new FormControl<string>('', { nonNullable: true }),
+    content: new FormControl<string>('', { nonNullable: true }),
   });
 
   ngOnInit() {
-    this.noteForm.controls.title.setValue(this.note().title);
-    this.noteForm.controls.content.setValue(this.note().content);
+    this.noteForm.setValue(
+      {
+        title: this.note()?.title || '',
+        content: this.note()?.content || '',
+      },
+      { emitEvent: false } // this prevents these "changes" to be emitted in valueChanges
+    );
   }
 
   // contenteditable element for note content:
@@ -47,14 +53,15 @@ export class NoteFormComponent {
 
   onNoteInputChange = output<NoteInput>();
 
-  readonly editNoteSubscription = this.noteForm.valueChanges
-    .pipe(debounceTime(500), skip(1))
+  readonly noteInputChangeSubscription = this.noteForm.valueChanges
+    .pipe(debounceTime(500))
     .subscribe((value) => {
-      console.log('emitting');
       this.onNoteInputChange.emit(value);
     });
 
-  _ = this.destroyRef.onDestroy(() => this.editNoteSubscription.unsubscribe());
+  _ = this.destroyRef.onDestroy(() =>
+    this.noteInputChangeSubscription.unsubscribe()
+  );
 
   handleEnterKey(e: KeyboardEvent) {
     if (e.key === 'Enter') {
@@ -63,6 +70,10 @@ export class NoteFormComponent {
   }
 
   ngAfterViewInit(): void {
+    if (!this.focusNoteContentInput()) {
+      return;
+    }
+
     // Maybe go to title if there is none, else to end of content
     // For the beginning, always go to end of content
     const contentElement = this.noteContentElement().nativeElement;
