@@ -27,11 +27,14 @@ export class AddLabelComponent
   /** Implementation of abstract label input is needed though it won't change. */
   override label = input<'new-label'>('new-label');
 
-  /** On deactivating the control, clear the input. */
-  override deactivate() {
-    super.deactivate();
+  /** 
+   * When add label input component gets deactivated, clear input. 
+   * It gets deactivated by closing it manually or by activating 
+   * another label input component. 
+   */
+  _clearInputSubscription = this.deactivate$.subscribe(() => {
     this.inputElement().nativeElement.value = '';
-  }
+  });
 
   /**
    * Mutation to add a new label. Errors (already existing or empty label name) 

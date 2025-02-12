@@ -16,11 +16,12 @@ import {
 import { LabelInputComponent } from '../label-input/label-input.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { fromEvent, map, merge, Observable } from 'rxjs';
+import { filter, fromEvent, map, merge, Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { QueryService } from '../../../services/query.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MutateLabelDirective } from '../mutate-label.directive';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 
 /**
  * Component to edit a label. This component shares some functionality
@@ -41,10 +42,10 @@ export class EditLabelComponent
   private hostElement = inject(ElementRef);
   private dialog = inject(MatDialog);
 
-  /** 
-   * Emits boolean hover status on host element. 
-   * Observable is set in ngAfterContentInit, below. 
-   * 
+  /**
+   * Emits boolean hover status on host element.
+   * Observable is set in ngAfterContentInit, below.
+   *
    * Based on hover state, either trash or label icon is rendered.
    */
   public isHovered$?: Observable<boolean>;
@@ -52,7 +53,7 @@ export class EditLabelComponent
   /** Ref to delete dialog. */
   public deleteDialogRef?: MatDialogRef<any>;
 
-  /** Template for the delete dialog. Because the dialog is so simple, 
+  /** Template for the delete dialog. Because the dialog is so simple,
    * a template is used here instead of a component.
    */
   private deleteDialogTemplate = viewChild.required('deleteDialog', {
@@ -63,9 +64,17 @@ export class EditLabelComponent
   override label = input.required<Label>();
 
   /** 
+   * When edit label input component gets deactivated, reset input. 
+   * It gets deactivated by activating another label input component. 
+   */
+  _ = this.deactivate$.subscribe(() => {
+    this.inputElement().nativeElement.value = this.label().name;
+  });
+
+  /**
    * Mutation to edit the label. The error stream is used in the template
    * to notify if new name is not allowed (either one with same name already
-   * exists or name is empty). In addition, input value gets reset to the label's 
+   * exists or name is empty). In addition, input value gets reset to the label's
    * old value.
    */
   readonly editLabelMutation = this.queryService.useMutation({
@@ -80,7 +89,7 @@ export class EditLabelComponent
   });
 
   /**
-   * Mutation to delete a label. The deletion has to be confirmed in an 
+   * Mutation to delete a label. The deletion has to be confirmed in an
    * extra dialog.
    */
   readonly deleteLabelMutation = this.queryService.useMutation({
@@ -113,9 +122,9 @@ export class EditLabelComponent
     this.deleteDialogRef?.close();
   }
 
-  /** 
-   * Add the host element hover status stream to the 
-   * `ngAfterContentInit` lifecycle method 
+  /**
+   * Add the host element hover status stream to the
+   * `ngAfterContentInit` lifecycle method
    */
   override ngAfterContentInit(): void {
     super.ngAfterContentInit();
