@@ -3,9 +3,13 @@ import { Component, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { ActivatedRoute, Router } from '@angular/router';
-import { map } from 'rxjs';
+import { of } from 'rxjs';
 import { NavigationService } from '../../services/navigation.service';
+import { LocalStorageKeys } from '../../../data/shared';
+import { getLabels, seedLabels } from '../../../data/label';
+import { QueryService } from '../../services/query.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ManageLabelsDialogComponent, ManageLabelsDialogData } from '../labels/manage-labels-dialog/manage-labels-dialog.component';
 
 @Component({
   selector: 'app-sidenav',
@@ -14,11 +18,11 @@ import { NavigationService } from '../../services/navigation.service';
   styleUrl: './sidenav.component.scss',
   host: {
     // Sidenav is closed or app is in mobile view:
-    '[class.closed-or-mobile]': '!open() || mobile()', 
-    
-    // Sidenav is closed or app is in mobile view 
+    '[class.closed-or-mobile]': '!open() || mobile()',
+
+    // Sidenav is closed or app is in mobile view
     // AND nav is temporarily expanded (hovered):
-    '[class.closed-or-mobile-expanded]': 'expanded() && (mobile() || !open())' 
+    '[class.closed-or-mobile-expanded]': 'expanded() && (mobile() || !open())',
   },
 })
 export class SidenavComponent {
@@ -26,34 +30,34 @@ export class SidenavComponent {
   expanded = input.required<boolean>();
   mobile = input.required<boolean | undefined | null>();
 
-  navigation = inject(NavigationService)
+  readonly navigation = inject(NavigationService);
+  private queryService = inject(QueryService);
+  private dialog = inject(MatDialog);
 
-  labels = [
-    { id: 1, name: 'Dingens' },
-    { id: 2, name: 'Dongens' },
-    { id: 3, name: 'Banane' },
-  ];
+  // readonly labelsQuery = this.queryService.useStandardQuery({
+  //   httpObs: getLabels(),
+  //   queryKey: ['labels'],
+  // });
+  readonly labelsQuery = this.queryService.useParametrizedQuery({
+    paramsObs: of(null),
+    httpObsFn: () => getLabels(),
+    queryKey: () => ['labels'],
+  });
 
-  // route = inject(ActivatedRoute);
+  startEditLabels() {
+    this.dialog.open<
+      ManageLabelsDialogComponent,
+      ManageLabelsDialogData
+    >(ManageLabelsDialogComponent, {
+      data: { labels$: this.labelsQuery.data$ }, // maybe use shareReplay to only call getLabels once
+      panelClass: 'manage-labels-dialog-panel',
+      autoFocus: false
+    });
+  }
 
-  // fragment$ = this.route.fragment.pipe(
-  //   map((fragment) => {
-  //     const label = fragment && fragment.match(/^label\/(\w+)$/)?.[1];
-  //     return label || fragment;
-  //   })
-  // );
-
-  // router = inject(Router);
-
-  // navigate(label?: string, trash?: boolean) {
-  //   const fragment =
-  //     (trash || label) && ((trash && 'trash') || (label && `label/${label}`));
-
-  //   this.router.navigate([], { fragment });
-  // }
-
-  // navigate = this.navigation.navigate;
-  // navigate(){
-  //   this.navigation.navigate()
-  // }
+  constructor() {
+    if (!localStorage.getItem(LocalStorageKeys.LABELS)) {
+      seedLabels();
+    }
+  }
 }

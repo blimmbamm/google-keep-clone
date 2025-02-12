@@ -1,0 +1,26 @@
+@let error = addLabelMutation.error$ | async;
+
+<app-label-input>
+  @if(active()) {
+    <button mat-icon-button (click)="deactivate()">
+      <mat-icon>close</mat-icon>
+    </button>
+  } @else {
+    <button mat-icon-button (click)="activate()">
+      <mat-icon>add</mat-icon>
+    </button>
+  }
+  <input
+    #input 
+    placeholder="Create new label"
+  />
+  @if(active()) {
+    <button mat-icon-button (click)="handleAddLabel(input.value)">
+      <mat-icon>check</mat-icon>
+    </button>
+  } 
+</app-label-input>
+
+@if(error) {
+  <span class="data-error">{{error.error.message}}</span>
+}

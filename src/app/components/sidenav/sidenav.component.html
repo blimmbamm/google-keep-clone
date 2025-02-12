@@ -1,4 +1,5 @@
-@let fragment = navigation.fragment$| async;
+@let fragment = navigation.fragment$ | async;
+@let labels = labelsQuery.data$ | async;
 
 <mat-nav-list 
   [class.expanded]="expanded()"
@@ -15,7 +16,8 @@
     }
   </mat-list-item>
   
-  <!-- Labels -->
+  <!-- Labels --> 
+  <!-- maybe it would be cleaner to make if-check on labels first -->
   @for(label of labels; track label.id) {
     <mat-list-item
       [activated]="fragment === label.name"
@@ -27,6 +29,14 @@
       }
     </mat-list-item>
   }
+
+  <!-- Edit labels -->
+  <mat-list-item (click)="startEditLabels()">
+    <mat-icon class="material-icons-outlined" matListItemIcon>edit</mat-icon>
+    @if(expanded()) {
+      <span>Edit labels</span>
+    }
+  </mat-list-item>
 
   <!-- Trash -->
   <mat-list-item

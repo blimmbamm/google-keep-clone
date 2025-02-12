@@ -1,0 +1,35 @@
+@let error = editLabelMutation.error$ | async;
+
+<app-label-input>
+  <button mat-icon-button (click)="handleStartDeleteLabel()">
+    @if(active() || (isHovered$ | async)) {
+    <mat-icon>delete</mat-icon>
+    } @else {
+    <mat-icon>label</mat-icon>
+    }
+  </button>
+  <input #input [value]="label().name" placeholder="Enter label name" />
+  @if(active()) {
+  <button mat-icon-button (click)="handleEditLabel(input.value)">
+    <mat-icon>check</mat-icon>
+  </button>
+  } @else {
+  <button mat-icon-button (click)="activate()">
+    <mat-icon>edit</mat-icon>
+  </button>
+  }
+</app-label-input>
+
+@if(error) {
+<span class="data-error">{{ error.error.message }}</span>
+}
+
+<ng-template #deleteDialog>
+  <div class="delete-dialog">
+    <p>Delete this label? Your notes won't be deleted.</p>
+    <div class="delete-dialog-actions">
+      <button mat-button (click)="deleteDialogRef?.close()">Cancel</button>
+      <button mat-flat-button (click)="handleDeleteLabel()">Yes</button>
+    </div>
+  </div>
+</ng-template>
