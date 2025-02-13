@@ -1,4 +1,15 @@
 :host {
   display: block;
   padding: 1rem;
+
+  --mat-sys-primary: var(--mat-sys-on-surface-variant);
+}
+
+.title {
+  margin-block: 0.5rem;
+}
+
+.close {
+  margin-top: 0.5rem;
+  text-align: end;
 }

@@ -1,5 +1,6 @@
 @let labels = data.labels$ | async;
 
+<div class="title">Edit labels</div>
 <app-add-label [(currentLabel)]="currentLabel"></app-add-label>
 
 @if(labels) {
@@ -10,3 +11,7 @@
     ></app-edit-label>
   }
 }
+
+<div class="close">
+  <button mat-button mat-dialog-close>Done</button>
+</div>

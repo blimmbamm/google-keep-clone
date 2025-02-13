@@ -1,3 +1,24 @@
-:host {
-  display: block;
+app-label-input {
+  .label-input {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+
+    input {
+      border: none;
+      outline: none;
+      background-color: transparent;
+      padding-block: 0.25rem;
+
+      &:focus {
+        border-bottom: 1px solid var(--border-gray);
+      }
+    }
+  }
+
+  .label-input-error {
+    color: var(--error-color);
+    margin-inline: 1rem;
+    font-size: 0.75rem;
+  }
 }

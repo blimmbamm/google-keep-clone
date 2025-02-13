@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Label } from '../../../../data/label';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogClose } from '@angular/material/dialog';
 import { AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -25,6 +25,7 @@ export interface ManageLabelsDialogData {
     MatIconModule,
     AddLabelComponent,
     EditLabelComponent,
+    MatDialogClose,
   ],
   templateUrl: './manage-labels-dialog.component.html',
   styleUrl: './manage-labels-dialog.component.scss',
