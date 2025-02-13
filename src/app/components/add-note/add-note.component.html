@@ -5,6 +5,9 @@
   (onNoteInputChange)="handleNoteInputChange($event)">
 </app-note-form>
 @if(open()) {
+  @if(noteState().note?.labels; as labels) {
+    <app-labels-stack [labels]="labels"></app-labels-stack>
+  }
   <app-note-actions>
     <button mat-icon-button>
       <mat-icon class="material-symbols-outlined">delete</mat-icon>
@@ -12,9 +15,10 @@
     <button mat-icon-button>
       <mat-icon class="material-symbols-outlined">palette</mat-icon>
     </button>
-    <button mat-icon-button>
-      <mat-icon class="material-symbols-outlined">new_label</mat-icon>
-    </button>
+    <app-note-manage-labels-action
+      [note]="noteState().note"
+      (onNoteLabelsInputChange)="handleNoteInputChange($event)"
+    ></app-note-manage-labels-action>
     <button mat-icon-button>
       <mat-icon class="material-symbols-outlined">content_copy</mat-icon>
     </button>

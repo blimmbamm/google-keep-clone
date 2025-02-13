@@ -110,7 +110,7 @@ function addNoteSync(noteInput: NoteInput) {
 
   saveNotes([...notes, note]);
 
-  return noteId
+  return note
 }
 
 /**
@@ -133,6 +133,8 @@ function editNoteSync(id: number, noteInput: NoteInput) {
     };
 
     saveNotes(notes);
+
+    return notes[noteIndex];
   } else {
     throw Error('Note not found.');
   }

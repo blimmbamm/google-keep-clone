@@ -39,6 +39,7 @@ function saveLabels(labels: Label[]) {
  * Returns all labels stored in localStorage.
  */
 function getLabelsSync() {
+  console.log('getting labels')
   return readLabels();
 }
 
@@ -57,8 +58,9 @@ function addLabelSync(labelInput: LabelInput) {
   if (labels.find((label) => label.name === labelInput.name)) {
     throw Error('A label with that name already exists.');
   } else {
-    const newLabel = { id: Date.now(), ...labelInput };
+    const newLabel: Label = { id: Date.now(), ...labelInput };
     saveLabels([...labels, newLabel]);
+    return newLabel;
   }
 }
 
