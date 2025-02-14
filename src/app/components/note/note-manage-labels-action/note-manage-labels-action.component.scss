@@ -39,6 +39,19 @@ $inline-space-around: 0.5rem;
   padding-inline: $inline-space-around;
   padding-block: 0.125rem;
   font-weight: 400;
+  
+  mat-icon {
+    flex-shrink: 0;
+    
+  }
+
+  .label-name  {
+    overflow: hidden;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+  }
+
+
 
   &:hover {
     background-color: rgba(0, 0, 0, 0.08);

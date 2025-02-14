@@ -24,7 +24,7 @@
           } @else {
             <mat-icon class="material-symbols-outlined">check_box_outline_blank</mat-icon>
           }
-          <span>{{label.name}}</span>
+          <span class="label-name">{{label.name}}</span>
         </div>
       } @empty {
         <div matRipple class="labels-list-item" role="button" (click)="handleAddLabel()">
