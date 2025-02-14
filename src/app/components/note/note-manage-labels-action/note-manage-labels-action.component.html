@@ -4,30 +4,38 @@
 </button>
 <!-- put menu in ng-content to make it lazily loaded -->
 <mat-menu #menu (close)="handleClose()">
-  <div (click)="doNotPropagate($event)">
-    <div>Add labels</div>
-    <div>
-      <input [formControl]="labelsFilter"/>
-      <mat-icon>search</mat-icon>
+  <div class="menu-container" (click)="doNotPropagate($event)">
+    <div class="title">Note labels</div>
+    <div class="labels-filter-container">
+      <input 
+        class="labels-filter-input" 
+        [formControl]="labelsFilter"
+        placeholder="Enter label name"
+        spellcheck="false"
+      />
+      <mat-icon class="search-icon">search</mat-icon>
     </div>
     @if(visibleLabels$ | async; as labels) {
       @for(label of labels; track label.id) {
-        <div (click)="toggleSelection(label)">
+        <div matRipple class="labels-list-item" (click)="toggleSelection(label)">
           @if(labelsSelection?.isSelected(label)) {
             <mat-icon class="material-symbols-outlined">check_box</mat-icon>
           } @else {
             <mat-icon class="material-symbols-outlined">check_box_outline_blank</mat-icon>
           }
-          {{label.name}}
+          <span>{{label.name}}</span>
         </div>
       } @empty {
-        <div class="add-label" role="button" (click)="handleAddLabel()">
+        <div matRipple class="labels-list-item" role="button" (click)="handleAddLabel()">
           <mat-icon>add</mat-icon>
           <span>Create </span>
           <span class="bold">"{{labelsFilter.value}}"</span>
         </div>
       }
     }
-    <button mat-button>Done</button>
+    <div>
+
+    </div>
+    <button class="close" (click)="menuTrigger().closeMenu()" mat-button>Done</button>
   </div>
 </mat-menu>

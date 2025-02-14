@@ -5,10 +5,11 @@ import {
   input,
   OnInit,
   output,
+  viewChild,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { Note, NoteInput } from '../../../../data/notes';
 import { QueryService } from '../../../services/query.service';
 import { map, of, shareReplay, startWith, switchMap } from 'rxjs';
@@ -16,6 +17,7 @@ import { addLabel, getLabels, Label, LabelInput } from '../../../../data/label';
 import { AsyncPipe } from '@angular/common';
 import { SelectionModel } from '@angular/cdk/collections';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatRipple } from '@angular/material/core';
 
 @Component({
   selector: 'app-note-manage-labels-action',
@@ -25,6 +27,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
     MatMenuModule,
     AsyncPipe,
     ReactiveFormsModule,
+    MatRipple,
   ],
   templateUrl: './note-manage-labels-action.component.html',
   styleUrl: './note-manage-labels-action.component.scss',
@@ -32,6 +35,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 export class NoteManageLabelsActionComponent implements OnInit {
   private queryService = inject(QueryService);
   private destroyRef = inject(DestroyRef);
+  readonly menuTrigger = viewChild.required(MatMenuTrigger);
 
   /**
    * Output that emits changes in selection to parent component.

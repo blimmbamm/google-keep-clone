@@ -1,0 +1,58 @@
+$inline-space-around: 0.5rem;
+
+.menu-container {
+  user-select: none;
+}
+
+.title {
+  padding-inline: $inline-space-around;
+  padding-bottom: $inline-space-around;
+  font-size: 1rem;
+}
+
+.labels-filter-container {
+  margin-inline: $inline-space-around;
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: $inline-space-around;
+}
+
+.labels-filter-input {
+  background-color: inherit;
+  border: none;
+  outline: none;
+  padding: 0.25rem;
+}
+
+.search-icon {
+  position: absolute;
+  right: 0;
+  opacity: 0.5;
+  scale: 0.7;
+}
+
+.labels-list-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-inline: $inline-space-around;
+  padding-block: 0.125rem;
+  font-weight: 400;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+  }
+}
+
+.bold {
+  font-weight: 500;
+}
+
+.close {
+  display: block;
+  margin-left: auto;
+  margin-right: $inline-space-around;
+  --mat-sys-primary: var(--mat-sys-on-surface-variant);
+}
