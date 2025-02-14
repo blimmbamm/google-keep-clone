@@ -3,10 +3,11 @@ import { Note } from '../../../data/notes';
 import { MatIcon } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { NoteActionsComponent } from "../note-actions/note-actions.component";
+import { LabelsStackComponent } from "../labels/labels-stack/labels-stack.component";
 
 @Component({
   selector: 'app-note',
-  imports: [MatButtonModule, MatIcon, NoteActionsComponent],
+  imports: [MatButtonModule, MatIcon, NoteActionsComponent, LabelsStackComponent],
   templateUrl: './note.component.html',
   styleUrl: './note.component.scss',
 })
@@ -24,4 +25,6 @@ export class NoteComponent {
   openPaletteMenu(event: MouseEvent) {
     event.stopPropagation();
   }
+
+  handleRemoveLabel(event: any){}
 }

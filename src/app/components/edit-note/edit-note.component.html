@@ -3,6 +3,12 @@
   (onNoteInputChange)="handleEditNote($event)"
   [focusNoteContentInput]="true"
 ></app-note-form>
+@if(data.note.labels; as labels) {
+  <app-labels-stack 
+    (onRemoveLabel)="handleEditNote($event)" 
+    [labels]="labels"
+  ></app-labels-stack>
+}
 <div class="labels-and-date-edited">
   <div>Labels...</div>
   <span class="spacer"></span>
@@ -15,9 +21,10 @@
   <button mat-icon-button>
     <mat-icon class="material-symbols-outlined">palette</mat-icon>
   </button>
-  <button mat-icon-button>
-    <mat-icon class="material-symbols-outlined">new_label</mat-icon>
-  </button>
+  <app-note-manage-labels-action 
+    [note]="data.note"
+    (onNoteLabelsInputChange)="handleEditNote($event)"
+  ></app-note-manage-labels-action>
   <button mat-icon-button>
     <mat-icon class="material-symbols-outlined">content_copy</mat-icon>
   </button>

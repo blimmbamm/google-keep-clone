@@ -10,9 +10,12 @@
 <div class="empty-note">Empty note</div>
 }
 
-<!-- @if(note().labels; as labels) {
-  <app-labels-stack [labels]="labels"></app-labels-stack>
-} -->
+@if(note().labels; as labels) {
+  <app-labels-stack 
+    (onRemoveLabel)="handleRemoveLabel($event)" 
+    [labels]="labels"
+  ></app-labels-stack>
+}
 <app-note-actions class="note-actions">
   <button mat-icon-button>
     <mat-icon class="material-symbols-outlined">delete</mat-icon>
