@@ -41,12 +41,6 @@ import { NoteManageLabelsActionComponent } from '../note/note-manage-labels-acti
   },
 })
 export class AddNoteComponent {
-  // dummyNote: Note = {
-  //   id: 73,
-  //   labels: [{ id: 1, name: 'Dingense' }],
-  //   lastModified: new Date(),
-  //   trash: false,
-  // };
   private appRef = inject(ApplicationRef);
 
   private noteFormComponent = viewChild.required(NoteFormComponent);

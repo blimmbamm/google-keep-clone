@@ -58,11 +58,11 @@ export class NoteManageLabelsActionComponent implements OnInit {
     queryKey: () => ['labels'],
   });
 
-  /** 
+  /**
    * Since list of labels must be updated when the filter value changes,
-   * labels would be queried on every keystroke. To avoid this, here is a 
+   * labels would be queried on every keystroke. To avoid this, here is a
    * replayed variant of the labels$ data stream.
-   * 
+   *
    * Maybe this behavior could even be configurable by the query construction
    * method in queryService...
    */
@@ -70,8 +70,8 @@ export class NoteManageLabelsActionComponent implements OnInit {
 
   /**
    * Data stream that emits the filtered labels according to filter value.
-   * 
-   * Initial `startWith('')` is needed because `valueChanges` only emits 
+   *
+   * Initial `startWith('')` is needed because `valueChanges` only emits
    * on changes and thus no initial labels would be emitted otherwise.
    */
   readonly visibleLabels$ = this.labelsFilter.valueChanges.pipe(
@@ -87,9 +87,9 @@ export class NoteManageLabelsActionComponent implements OnInit {
     )
   );
 
-  /** 
-   * Mutation to add a new label on the fly. 
-   * 
+  /**
+   * Mutation to add a new label on the fly.
+   *
    * Errors can't happen here (at the moment), because the button to add a label
    * is only displayed in case no existing label matches the search string,
    * what also ensures that no label with empty name can be submitted.
@@ -122,9 +122,18 @@ export class NoteManageLabelsActionComponent implements OnInit {
     this.addLabelMutation.mutate({ name: this.labelsFilter.value });
   }
 
-  /** 
-   * Initialize labelsSelection here because it depends on a data input. 
-   * 
+  /**
+   * When menu is re-opened, the list of selected labels should reflect the
+   * current state that could have been adjusted by removing labels via the
+   * labels stack.
+   */
+  resetSelection() {
+    this.labelsSelection?.setSelection(...(this.note()?.labels || []));
+  }
+
+  /**
+   * Initialize labelsSelection here because it depends on a data input.
+   *
    * Subsequently, subscribe to changes in selection and emit the current
    * selection to the output.
    */
@@ -139,7 +148,9 @@ export class NoteManageLabelsActionComponent implements OnInit {
     // This can probably be simplified by use of outputFromObservable
     const selectionChangeSubscription = this.labelsSelection.changed.subscribe(
       () => {
-        this.onNoteLabelsInputChange.emit({ labels: this.labelsSelection?.selected });
+        this.onNoteLabelsInputChange.emit({
+          labels: this.labelsSelection?.selected,
+        });
       }
     );
 

@@ -1,0 +1,36 @@
+:host {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background-color: var(--mat-sys-surface-container);
+  border-radius: 9999px;
+  padding: 0.25rem;
+  padding-left: 0.75rem;
+  font-size: 0.8rem;
+  user-select: none;
+  max-width: 100px;
+
+  mat-icon {
+    scale: 0.7;
+  }
+}
+
+.label-name {
+  display: inline-block;
+  overflow: hidden;
+  text-wrap: nowrap;
+  flex-shrink: 1;
+  text-overflow: ellipsis;
+}
+
+.remove {
+  flex-shrink: 0;
+  width: max-content;
+  display: flex;
+  border-radius: inherit;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(black, 0.08);
+  }
+}

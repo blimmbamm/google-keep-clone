@@ -1,5 +1,5 @@
-<div>
-  @for(label of labels(); track label.id) {
-    <span>{{label.name}}</span>
-  }
-</div>
+@for(label of labels(); track label.id) {
+  <app-label-chip (onRemoveChip)="handleRemoveLabelFromNote(label)">
+    {{label.name}}
+  </app-label-chip>
+}

@@ -1,4 +1,3 @@
-
 <app-note-form
   [withTitleInput]="open()"
   placeholderContent="Take a note..."
@@ -6,7 +5,10 @@
 </app-note-form>
 @if(open()) {
   @if(noteState().note?.labels; as labels) {
-    <app-labels-stack [labels]="labels"></app-labels-stack>
+    <app-labels-stack 
+      (onRemoveLabel)="handleNoteInputChange($event)" 
+      [labels]="labels"
+    ></app-labels-stack>
   }
   <app-note-actions>
     <button mat-icon-button>

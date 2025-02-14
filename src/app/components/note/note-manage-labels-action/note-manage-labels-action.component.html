@@ -1,7 +1,8 @@
 
-<button mat-icon-button [matMenuTriggerFor]="menu">
+<button mat-icon-button (menuOpened)="resetSelection()" [matMenuTriggerFor]="menu">
   <mat-icon class="material-symbols-outlined">new_label</mat-icon>
 </button>
+
 <!-- put menu in ng-content to make it lazily loaded -->
 <mat-menu #menu (close)="handleClose()">
   <div class="menu-container" (click)="doNotPropagate($event)">
