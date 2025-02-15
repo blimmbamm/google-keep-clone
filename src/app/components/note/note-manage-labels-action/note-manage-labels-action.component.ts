@@ -43,8 +43,7 @@ export class NoteManageLabelsActionComponent implements OnInit {
    */
   readonly onNoteLabelsInputChange = output<NoteInput>();
 
-  /**  */
-  readonly menuOpen = model.required<boolean>();
+  readonly menuOpen = model<boolean>();
 
   /** The underlying note that is being worked on. */
   readonly note = input.required<Note | null>();
