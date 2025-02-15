@@ -1,5 +1,10 @@
 
-<button mat-icon-button (menuOpened)="resetSelection()" [matMenuTriggerFor]="menu">
+<button 
+  mat-icon-button 
+  (menuOpened)="resetSelection()" 
+  [matMenuTriggerFor]="menu"
+  (click)="handleOpenMenu($event)"
+>
   <mat-icon class="material-symbols-outlined">new_label</mat-icon>
 </button>
 

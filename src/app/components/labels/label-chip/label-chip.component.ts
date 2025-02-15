@@ -10,4 +10,9 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class LabelChipComponent {
   readonly onRemoveChip = output();
+
+  handleRemoveChip(event: MouseEvent){
+    event.stopPropagation();
+    this.onRemoveChip.emit();
+  }
 }

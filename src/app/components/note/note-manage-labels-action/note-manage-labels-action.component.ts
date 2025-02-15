@@ -3,6 +3,7 @@ import {
   DestroyRef,
   inject,
   input,
+  model,
   OnInit,
   output,
   viewChild,
@@ -41,6 +42,9 @@ export class NoteManageLabelsActionComponent implements OnInit {
    * Output that emits changes in selection to parent component.
    */
   readonly onNoteLabelsInputChange = output<NoteInput>();
+
+  /**  */
+  readonly menuOpen = model.required<boolean>();
 
   /** The underlying note that is being worked on. */
   readonly note = input.required<Note | null>();
@@ -114,7 +118,13 @@ export class NoteManageLabelsActionComponent implements OnInit {
     event.stopPropagation();
   }
 
+  handleOpenMenu(event: MouseEvent){
+    event.stopPropagation();
+    this.menuOpen.set(true);
+  }
+
   handleClose() {
+    this.menuOpen.set(false);
     this.labelsFilter.reset();
   }
 

@@ -1,31 +1,33 @@
 @if(note().title; as title) {
-<div class="title">{{ title }}</div>
+  <div class="title">{{ title }}</div>
 } 
 
 @if(note().content; as content) {
-<div class="content" [innerHTML]="content"></div>
+  <div class="content" [innerHTML]="content"></div>
 } 
 
 @if(emptyNote()) {
-<div class="empty-note">Empty note</div>
+  <div class="empty-note">Empty note</div>
 }
 
 @if(note().labels; as labels) {
   <app-labels-stack 
-    (onRemoveLabel)="handleRemoveLabel($event)" 
+    (onRemoveLabel)="handleEditNote($event)" 
     [labels]="labels"
   ></app-labels-stack>
 }
-<app-note-actions class="note-actions">
+<app-note-actions class="note-actions" [class.visible]="actionsVisible()">
   <button mat-icon-button>
     <mat-icon class="material-symbols-outlined">delete</mat-icon>
   </button>
   <button mat-icon-button (click)="openPaletteMenu($event)">
     <mat-icon class="material-symbols-outlined">palette</mat-icon>
   </button>
-  <button mat-icon-button>
-    <mat-icon class="material-symbols-outlined">new_label</mat-icon>
-  </button>
+  <app-note-manage-labels-action 
+    [note]="note()"
+    [(menuOpen)]="actionsVisible"
+    (onNoteLabelsInputChange)="handleEditNote($event)"
+  ></app-note-manage-labels-action>
   <button mat-icon-button>
     <mat-icon class="material-symbols-outlined">content_copy</mat-icon>
   </button>
