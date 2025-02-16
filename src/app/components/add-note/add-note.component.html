@@ -11,9 +11,17 @@
     ></app-labels-stack>
   }
   <app-note-actions>
-    <button mat-icon-button>
+    <app-delete-note-action 
+      [note]="noteState().note"
+      [requireConfirmation]="deletionRequiresConfirmation()"
+      tooltip="Discard note"
+      (onDeleteNote)="resetComponent()"
+      deleteDialogMessage="Discard note?"
+    >
+    </app-delete-note-action>
+    <!-- <button mat-icon-button>
       <mat-icon class="material-symbols-outlined">delete</mat-icon>
-    </button>
+    </button> -->
     <button mat-icon-button>
       <mat-icon class="material-symbols-outlined">palette</mat-icon>
     </button>

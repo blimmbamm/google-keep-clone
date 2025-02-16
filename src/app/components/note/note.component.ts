@@ -7,6 +7,7 @@ import { LabelsStackComponent } from '../labels/labels-stack/labels-stack.compon
 import { NoteManageLabelsActionComponent } from './note-manage-labels-action/note-manage-labels-action.component';
 import { QueryService } from '../../services/query.service';
 import { NavigationService } from '../../services/navigation.service';
+import { DeleteNoteActionComponent } from "../delete-note-action/delete-note-action.component";
 
 @Component({
   selector: 'app-note',
@@ -16,7 +17,8 @@ import { NavigationService } from '../../services/navigation.service';
     NoteActionsComponent,
     LabelsStackComponent,
     NoteManageLabelsActionComponent,
-  ],
+    DeleteNoteActionComponent
+],
   templateUrl: './note.component.html',
   styleUrl: './note.component.scss',
 })

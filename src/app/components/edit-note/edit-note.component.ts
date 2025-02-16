@@ -11,6 +11,7 @@ import { NoteFormComponent } from '../note-form/note-form.component';
 import { NoteActionsComponent } from '../note-actions/note-actions.component';
 import { NoteManageLabelsActionComponent } from '../note/note-manage-labels-action/note-manage-labels-action.component';
 import { LabelsStackComponent } from '../labels/labels-stack/labels-stack.component';
+import { DeleteNoteActionComponent } from "../delete-note-action/delete-note-action.component";
 
 @Component({
   selector: 'app-edit-note',
@@ -23,7 +24,8 @@ import { LabelsStackComponent } from '../labels/labels-stack/labels-stack.compon
     NoteActionsComponent,
     NoteManageLabelsActionComponent,
     LabelsStackComponent,
-  ],
+    DeleteNoteActionComponent
+],
   templateUrl: './edit-note.component.html',
   styleUrl: './edit-note.component.scss',
 })

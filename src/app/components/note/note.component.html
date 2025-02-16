@@ -17,17 +17,25 @@
   ></app-labels-stack>
 }
 <app-note-actions class="note-actions" [class.visible]="actionsVisible()">
-  <button mat-icon-button>
-    <mat-icon class="material-symbols-outlined">delete</mat-icon>
-  </button>
+  <!-- Delete note -->
+  <app-delete-note-action 
+    [note]="note()"
+    deleteDialogMessage="Move to trash?"
+  ></app-delete-note-action>
+
+  <!-- Set background color -->
   <button mat-icon-button (click)="openPaletteMenu($event)">
     <mat-icon class="material-symbols-outlined">palette</mat-icon>
   </button>
+
+  <!-- Manage note labels -->
   <app-note-manage-labels-action 
     [note]="note()"
     [(menuOpen)]="actionsVisible"
     (onNoteLabelsInputChange)="handleEditNote($event)"
   ></app-note-manage-labels-action>
+
+  <!-- Create copy of note -->
   <button mat-icon-button>
     <mat-icon class="material-symbols-outlined">content_copy</mat-icon>
   </button>

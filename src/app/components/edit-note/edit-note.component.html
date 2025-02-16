@@ -15,9 +15,11 @@
   <span class="edited-date">Edited</span>
 </div>
 <app-note-actions>
-  <button mat-icon-button>
-    <mat-icon class="material-symbols-outlined">delete</mat-icon>
-  </button>
+  <app-delete-note-action 
+    [note]="data.note"
+    deleteDialogMessage="Move to trash?"
+    (onDeleteNote)="handleDoneEditing()"
+  ></app-delete-note-action>
   <button mat-icon-button>
     <mat-icon class="material-symbols-outlined">palette</mat-icon>
   </button>

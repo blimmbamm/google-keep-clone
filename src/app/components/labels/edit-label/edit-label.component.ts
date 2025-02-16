@@ -16,12 +16,11 @@ import {
 import { LabelInputComponent } from '../label-input/label-input.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { filter, fromEvent, map, merge, Observable } from 'rxjs';
+import { fromEvent, map, merge, Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { QueryService } from '../../../services/query.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MutateLabelDirective } from '../mutate-label.directive';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 
 /**
  * Component to edit a label. This component shares some functionality

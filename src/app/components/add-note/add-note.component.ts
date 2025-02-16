@@ -1,6 +1,7 @@
 import {
   ApplicationRef,
   Component,
+  computed,
   inject,
   signal,
   viewChild,
@@ -22,6 +23,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { LabelsStackComponent } from '../labels/labels-stack/labels-stack.component';
 import { NoteManageLabelsActionComponent } from '../note/note-manage-labels-action/note-manage-labels-action.component';
+import { DeleteNoteActionComponent } from '../delete-note-action/delete-note-action.component';
 
 @Component({
   selector: 'app-add-note',
@@ -32,6 +34,7 @@ import { NoteManageLabelsActionComponent } from '../note/note-manage-labels-acti
     MatIconModule,
     LabelsStackComponent,
     NoteManageLabelsActionComponent,
+    DeleteNoteActionComponent,
   ],
   templateUrl: './add-note.component.html',
   styleUrl: './add-note.component.scss',
@@ -52,6 +55,10 @@ export class AddNoteComponent {
     initial: boolean;
     empty: boolean;
   }>(this.INITIAL_NOTE_STATE);
+
+  readonly deletionRequiresConfirmation = computed(
+    () => !this.noteState().initial && !this.noteState().empty
+  );
 
   refetchNotes() {
     const { label, trash } = this.navigationService.notesParamsSnapshot();
@@ -80,21 +87,29 @@ export class AddNoteComponent {
           this.refetchNotes();
         }
 
-        // Reset noteState:
-        this.noteState.set(this.INITIAL_NOTE_STATE);
-
-        // Reset form:
-        this.noteFormComponent().noteForm.reset(
-          { title: '', content: '' },
-          { emitEvent: false }
-        );
-
-        // Close add note:
-        this.open.set(false);
+        this.resetComponent();
       }
     });
 
+  resetComponent() {
+    // Reset noteState:
+    this.noteState.set(this.INITIAL_NOTE_STATE);
+
+    // Reset form:
+    this.noteFormComponent().noteForm.reset(
+      { title: '', content: '' },
+      { emitEvent: false }
+    );
+
+    // Close add note:
+    this.open.set(false);
+  }
+
   readonly open = signal(false);
+
+  // handleClose(){
+  //   this.resetComponent()
+  // }
 
   openAddNote(event: MouseEvent) {
     // event.stopPropagation();

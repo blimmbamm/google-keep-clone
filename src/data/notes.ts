@@ -57,7 +57,7 @@ export function seedNotes() {
     },
     {
       id: 3,
-      title: 'Another note',
+      title: 'Yet another note',
       content: `That should only appear in trash.`,
       lastModified: new Date(),
       trash: true,
