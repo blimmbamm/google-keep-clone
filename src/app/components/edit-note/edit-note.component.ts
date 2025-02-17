@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { editNote, Note, NoteInput } from '../../../data/notes';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,7 +11,9 @@ import { NoteFormComponent } from '../note-form/note-form.component';
 import { NoteActionsComponent } from '../note-actions/note-actions.component';
 import { NoteManageLabelsActionComponent } from '../note/note-manage-labels-action/note-manage-labels-action.component';
 import { LabelsStackComponent } from '../labels/labels-stack/labels-stack.component';
-import { DeleteNoteActionComponent } from "../delete-note-action/delete-note-action.component";
+import { DeleteNoteActionComponent } from '../delete-note-action/delete-note-action.component';
+import { ChangeBackgroundColorActionComponent } from '../note/change-background-color-action/change-background-color-action.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-edit-note',
@@ -24,13 +26,20 @@ import { DeleteNoteActionComponent } from "../delete-note-action/delete-note-act
     NoteActionsComponent,
     NoteManageLabelsActionComponent,
     LabelsStackComponent,
-    DeleteNoteActionComponent
-],
+    DeleteNoteActionComponent,
+    ChangeBackgroundColorActionComponent,
+    DatePipe,
+  ],
   templateUrl: './edit-note.component.html',
   styleUrl: './edit-note.component.scss',
+  host: {
+    '[style.background-color]': 'data.note.backgroundColor',
+  },
 })
 export class EditNoteComponent {
   public data: { note: Note } = inject(MAT_DIALOG_DATA);
+
+  readonly lastModifiedDate = computed(() => {})
 
   readonly queryService = inject(QueryService);
   readonly navigationService = inject(NavigationService);
@@ -49,7 +58,7 @@ export class EditNoteComponent {
 
       /**
        * Update the dialog data that was injected into the dialog.
-       * 
+       *
        * The Problem is that data in dialog isn't refreshed/kept up to date,
        * even if data comes from stateful properties in parent component.
        */
@@ -57,6 +66,7 @@ export class EditNoteComponent {
         note: {
           ...this.data.note,
           ...noteInput,
+          lastModified: new Date(), // Ok, this is really ugly :D
         },
       };
     },

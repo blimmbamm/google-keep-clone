@@ -1,0 +1,40 @@
+<button 
+  mat-icon-button 
+  [matMenuTriggerFor]="menu"
+  (menuOpened)="onToggleMenu.emit()"
+  (menuClosed)="onToggleMenu.emit()"
+  (click)="doNotPropagate($event)"
+>
+  <mat-icon class="material-symbols-outlined">palette</mat-icon>
+</button>
+<mat-menu #menu>
+  <div class="menu-container" (click)="doNotPropagate($event)">
+    <div class="header">
+      <span>Choose color</span>
+      <div class="close-button" matRipple (click)="handleCloseMenu()">
+        <mat-icon class="material-symbols-outlined">close</mat-icon>
+      </div>
+    </div>
+    <div class="color-grid">
+      <div 
+        class="color-icon" 
+        [class.selected]="!note()?.backgroundColor" 
+        (click)="handleChangeBackgroundColor()"
+        matBadge="check"
+        [matBadgeHidden]="!!note()?.backgroundColor"        
+      >
+        <mat-icon class="material-symbols-outlined">format_color_reset</mat-icon>
+      </div>
+      @for(color of COLORS; track color) {
+        <div 
+          class="color-icon" 
+          [class.selected]="note()?.backgroundColor === color"
+          matBadge="check"
+          [matBadgeHidden]="note()?.backgroundColor !== color"
+          [style]="{backgroundColor: color}" 
+          (click)="handleChangeBackgroundColor(color)"
+        ></div>
+      }
+    </div>
+  </div>
+</mat-menu>

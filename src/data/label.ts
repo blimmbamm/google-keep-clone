@@ -39,7 +39,6 @@ function saveLabels(labels: Label[]) {
  * Returns all labels stored in localStorage.
  */
 function getLabelsSync() {
-  console.log('getting labels')
   return readLabels();
 }
 

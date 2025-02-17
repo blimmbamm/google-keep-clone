@@ -7,7 +7,8 @@ import { LabelsStackComponent } from '../labels/labels-stack/labels-stack.compon
 import { NoteManageLabelsActionComponent } from './note-manage-labels-action/note-manage-labels-action.component';
 import { QueryService } from '../../services/query.service';
 import { NavigationService } from '../../services/navigation.service';
-import { DeleteNoteActionComponent } from "../delete-note-action/delete-note-action.component";
+import { DeleteNoteActionComponent } from '../delete-note-action/delete-note-action.component';
+import { ChangeBackgroundColorActionComponent } from './change-background-color-action/change-background-color-action.component';
 
 @Component({
   selector: 'app-note',
@@ -17,10 +18,14 @@ import { DeleteNoteActionComponent } from "../delete-note-action/delete-note-act
     NoteActionsComponent,
     LabelsStackComponent,
     NoteManageLabelsActionComponent,
-    DeleteNoteActionComponent
-],
+    DeleteNoteActionComponent,
+    ChangeBackgroundColorActionComponent,
+  ],
   templateUrl: './note.component.html',
   styleUrl: './note.component.scss',
+  host: {
+    '[style.background-color]': 'note().backgroundColor',
+  },
 })
 export class NoteComponent {
   readonly queryService = inject(QueryService);
@@ -54,5 +59,9 @@ export class NoteComponent {
 
   handleEditNote(noteInput: NoteInput) {
     this.editNoteMutation.mutate({ id: this.note().id, noteInput });
+  }
+
+  toggleActionsVisibility() {
+    this.actionsVisible.update((visible) => !visible);
   }
 }

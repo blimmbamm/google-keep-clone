@@ -16,14 +16,23 @@ import {
   NoteInput,
 } from '../../../data/notes';
 import { NavigationService } from '../../services/navigation.service';
-import { fromEvent } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  debounceTime,
+  filter,
+  fromEvent,
+  merge,
+  skip,
+  Subscription,
+  tap,
+} from 'rxjs';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { NoteActionsComponent } from '../note-actions/note-actions.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { LabelsStackComponent } from '../labels/labels-stack/labels-stack.component';
 import { NoteManageLabelsActionComponent } from '../note/note-manage-labels-action/note-manage-labels-action.component';
 import { DeleteNoteActionComponent } from '../delete-note-action/delete-note-action.component';
+import { ChangeBackgroundColorActionComponent } from '../note/change-background-color-action/change-background-color-action.component';
 
 @Component({
   selector: 'app-add-note',
@@ -35,16 +44,24 @@ import { DeleteNoteActionComponent } from '../delete-note-action/delete-note-act
     LabelsStackComponent,
     NoteManageLabelsActionComponent,
     DeleteNoteActionComponent,
+    ChangeBackgroundColorActionComponent,
   ],
   templateUrl: './add-note.component.html',
   styleUrl: './add-note.component.scss',
   host: {
-    '(click)': 'openAddNote($event)',
+    '(click)': 'openAddNote()',
     '(mousedown)': 'doNotPropagate($event)',
+    '[style.background-color]': 'noteColor()',
   },
 })
 export class AddNoteComponent {
   private appRef = inject(ApplicationRef);
+
+  /**
+   * Whether the component is open/in extended mode, i.e. if it received a click
+   */
+  readonly open = signal(false);
+  readonly open$ = toObservable(this.open);
 
   private noteFormComponent = viewChild.required(NoteFormComponent);
 
@@ -56,6 +73,10 @@ export class AddNoteComponent {
     empty: boolean;
   }>(this.INITIAL_NOTE_STATE);
 
+  readonly noteColor = computed(
+    () => this.noteState().note?.backgroundColor || 'inherit'
+  );
+
   readonly deletionRequiresConfirmation = computed(
     () => !this.noteState().initial && !this.noteState().empty
   );
@@ -66,30 +87,47 @@ export class AddNoteComponent {
   }
 
   /**
-   * Listen to clicks on root component in order to close the add note component,
-   * and either delete the note that was temporarily saved or refetch notes
-   * to display the new one.
+   * Listen to clicks on root component in order to close the add note component.
    *
    * Listening to the document would fail because of overlays from dialogs etc.
    */
-  _closeAddNoteSubscription = fromEvent(
+  outsideClick$ = fromEvent(
     this.appRef.components[0].location.nativeElement,
     'mousedown'
-  )
-    .pipe(takeUntilDestroyed())
-    .subscribe(() => {
-      if (this.open()) {
-        if (this.noteState().empty && !this.noteState().initial) {
-          // If note is empty, delete it
-          this.deleteNoteMutation.mutate(this.noteState().note!.id);
-        } else {
-          // If note is not empty, invalidate queries to display note
-          this.refetchNotes();
-        }
+  ).pipe(tap(() => this.open.set(false)));
 
-        this.resetComponent();
+  /** 
+   * Outside click stream gets subscribed when component is opened and unsubscribed 
+   * when closed.
+   */
+  private outsideClickSubscription?: Subscription;
+
+  /**
+   * Open signal state transformed to observable stream. 
+   * 
+   * When switching to opened, add listener for outside click.
+   * 
+   * When switching to closed, clear added note if necessary.
+   */
+  _ = this.open$.pipe(takeUntilDestroyed()).subscribe((open) => {
+    // if opens, add listener for outside click
+    if (open) {
+      this.outsideClickSubscription = this.outsideClick$.subscribe();
+    } else {
+      this.outsideClickSubscription?.unsubscribe();
+
+      // If open changed to false, check if note has to be deleted or notes should be refetched
+      if (this.noteState().empty && !this.noteState().initial) {
+        // If note is empty, delete it
+        this.deleteNoteMutation.mutate(this.noteState().note!.id);
+      } else {
+        // If note is not empty, invalidate queries to display note
+        this.refetchNotes();
       }
-    });
+
+      this.resetComponent();
+    }
+  });
 
   resetComponent() {
     // Reset noteState:
@@ -100,19 +138,15 @@ export class AddNoteComponent {
       { title: '', content: '' },
       { emitEvent: false }
     );
+  }
 
-    // Close add note:
+  handleClose(event?: MouseEvent) {
+    event?.stopPropagation();
+
     this.open.set(false);
   }
 
-  readonly open = signal(false);
-
-  // handleClose(){
-  //   this.resetComponent()
-  // }
-
-  openAddNote(event: MouseEvent) {
-    // event.stopPropagation();
+  openAddNote() {
     this.open.set(true);
   }
 

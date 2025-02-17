@@ -1,0 +1,70 @@
+.menu-container {
+  padding-inline: 0.5rem;
+  user-select: none;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.close-button {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background-color: rgba(black, 0.08);
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(black, 0.12);
+  }
+
+  mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+  }
+}
+
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.color-icon {
+  box-sizing: border-box;
+  width: 32px;
+  height: 32px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  &.selected {
+    border: 2px solid black;
+  }
+
+  &:hover {
+    border: 2px solid black;
+  }
+
+  mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+  }
+
+  --mat-badge-background-color: black;
+
+  .mat-badge-content {
+    font-family: "Material Symbols Outlined" !important;
+    padding: 0 !important;
+  }
+}

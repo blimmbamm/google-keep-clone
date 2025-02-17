@@ -28,14 +28,10 @@
   padding: 1rem;
 }
 
-.labels-and-date-edited {
-  display: flex;
-  padding-inline: 1rem;
-  padding-block: 0.25rem;
-}
-
 .edited-date {
   font-size: 0.75rem;
+  text-align: end;
+  margin-right: 1rem;
 }
 
 .placeholder {

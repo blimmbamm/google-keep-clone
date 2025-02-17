@@ -3,26 +3,30 @@
   (onNoteInputChange)="handleEditNote($event)"
   [focusNoteContentInput]="true"
 ></app-note-form>
+
 @if(data.note.labels; as labels) {
   <app-labels-stack 
     (onRemoveLabel)="handleEditNote($event)" 
     [labels]="labels"
   ></app-labels-stack>
 }
-<div class="labels-and-date-edited">
-  <div>Labels...</div>
-  <span class="spacer"></span>
-  <span class="edited-date">Edited</span>
-</div>
+<div class="edited-date">Edited: {{data.note.lastModified | date:'medium'}}</div>
+
 <app-note-actions>
+  <!-- Move note to trash -->
   <app-delete-note-action 
     [note]="data.note"
     deleteDialogMessage="Move to trash?"
     (onDeleteNote)="handleDoneEditing()"
   ></app-delete-note-action>
-  <button mat-icon-button>
-    <mat-icon class="material-symbols-outlined">palette</mat-icon>
-  </button>
+
+  <!-- Background color -->
+  <app-change-background-color-action
+    (onChangeNoteBackgroundColor)="handleEditNote($event)"
+    [note]="data.note"
+  ></app-change-background-color-action>
+
+  <!-- Manage labels -->
   <app-note-manage-labels-action 
     [note]="data.note"
     (onNoteLabelsInputChange)="handleEditNote($event)"
@@ -30,5 +34,7 @@
   <button mat-icon-button>
     <mat-icon class="material-symbols-outlined">content_copy</mat-icon>
   </button>
+
+  <!-- Close edit dialog -->
   <button align-end mat-button (click)="handleDoneEditing()">Done</button>
 </app-note-actions>
