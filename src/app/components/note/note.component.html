@@ -38,7 +38,7 @@
   ></app-note-manage-labels-action>
 
   <!-- Create copy of note -->
-  <button mat-icon-button>
+  <button mat-icon-button appCreateCopyAction [note]="note()">
     <mat-icon class="material-symbols-outlined">content_copy</mat-icon>
   </button>
 </app-note-actions>

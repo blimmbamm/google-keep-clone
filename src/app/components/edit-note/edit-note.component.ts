@@ -14,6 +14,7 @@ import { LabelsStackComponent } from '../labels/labels-stack/labels-stack.compon
 import { DeleteNoteActionComponent } from '../delete-note-action/delete-note-action.component';
 import { ChangeBackgroundColorActionComponent } from '../note/change-background-color-action/change-background-color-action.component';
 import { DatePipe } from '@angular/common';
+import { CreateCopyActionDirective } from '../note/create-copy-action.directive';
 
 @Component({
   selector: 'app-edit-note',
@@ -29,6 +30,7 @@ import { DatePipe } from '@angular/common';
     DeleteNoteActionComponent,
     ChangeBackgroundColorActionComponent,
     DatePipe,
+    CreateCopyActionDirective,
   ],
   templateUrl: './edit-note.component.html',
   styleUrl: './edit-note.component.scss',

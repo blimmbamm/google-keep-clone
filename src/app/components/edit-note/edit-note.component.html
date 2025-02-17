@@ -31,7 +31,13 @@
     [note]="data.note"
     (onNoteLabelsInputChange)="handleEditNote($event)"
   ></app-note-manage-labels-action>
-  <button mat-icon-button>
+
+  <!-- Create copy of note -->
+  <button 
+    mat-icon-button 
+    appCreateCopyAction 
+    [note]="data.note"
+  >
     <mat-icon class="material-symbols-outlined">content_copy</mat-icon>
   </button>
 

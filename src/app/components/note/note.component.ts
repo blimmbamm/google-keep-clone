@@ -9,6 +9,7 @@ import { QueryService } from '../../services/query.service';
 import { NavigationService } from '../../services/navigation.service';
 import { DeleteNoteActionComponent } from '../delete-note-action/delete-note-action.component';
 import { ChangeBackgroundColorActionComponent } from './change-background-color-action/change-background-color-action.component';
+import { CreateCopyActionDirective } from './create-copy-action.directive';
 
 @Component({
   selector: 'app-note',
@@ -20,6 +21,7 @@ import { ChangeBackgroundColorActionComponent } from './change-background-color-
     NoteManageLabelsActionComponent,
     DeleteNoteActionComponent,
     ChangeBackgroundColorActionComponent,
+    CreateCopyActionDirective
   ],
   templateUrl: './note.component.html',
   styleUrl: './note.component.scss',
