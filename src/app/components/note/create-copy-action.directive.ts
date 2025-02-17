@@ -15,7 +15,6 @@ export class CreateCopyActionDirective {
 
   readonly note = input.required<Note>();
 
-
   readonly createCopyMutation = this.queryService.useMutation({
     httpObsFn: (noteInput: NoteInput) => addNote(noteInput),
     onError: () => {},
@@ -30,7 +29,7 @@ export class CreateCopyActionDirective {
 
     const noteCopy = { ...note };
     noteCopy.title += '(Copy)';
-    
+
     this.createCopyMutation.mutate(noteCopy);
   }
 }
