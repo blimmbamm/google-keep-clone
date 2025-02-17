@@ -45,12 +45,12 @@ export class NavigationService {
    * Returns snapshot of current fragment transformed to label/trash params
    * that are used for fetching notes.
    */
-  notesParamsSnapshot() {
+  notesParamsSnapshot(): NotesQueryParams {
     let fragment = this.route.snapshot.fragment;
-    const label =
-      (fragment && fragment.match(/^label\/(\w+)$/)?.[1]) || undefined;
-    const trash = fragment === 'trash' || undefined;
-    return { label, trash };
+    const labelName =
+      (fragment && fragment.match(/^label\/(\w+)$/)?.[1]) || null;
+    const trash = fragment === 'trash';
+    return { labelName, trash };
   }
 
   navigate(label?: string, trash?: boolean) {

@@ -19,8 +19,8 @@ export class CreateCopyActionDirective {
     httpObsFn: (noteInput: NoteInput) => addNote(noteInput),
     onError: () => {},
     onSuccess: () => {
-      const { label, trash } = this.navigationService.notesParamsSnapshot();
-      this.queryService.invalidateQuery(['notes', label, trash]);
+      const { labelName, trash } = this.navigationService.notesParamsSnapshot();
+      this.queryService.invalidateQuery(['notes', labelName, trash]);
     },
   });
 

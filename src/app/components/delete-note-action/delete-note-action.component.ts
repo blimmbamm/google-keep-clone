@@ -9,7 +9,7 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { QueryService } from '../../services/query.service';
-import { deleteNote, Note } from '../../../data/notes';
+import { deleteNote, moveNoteToTrash, Note } from '../../../data/notes';
 import { NavigationService } from '../../services/navigation.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
@@ -29,6 +29,7 @@ export class DeleteNoteActionComponent {
   readonly tooltip = input<string>();
   readonly onDeleteNote = output<number | void>();
   readonly note = input.required<Note | null>();
+  readonly moveToTrash = input(true);
 
   /** Ref to delete dialog. */
   public deleteDialogRef?: MatDialogRef<any>;
@@ -38,14 +39,24 @@ export class DeleteNoteActionComponent {
   });
 
   readonly deleteNoteMutation = this.queryService.useMutation({
-    httpObsFn: (id: number) => deleteNote(id),
+    httpObsFn: (id: number) => this.moveToTrash() ? moveNoteToTrash(id) : deleteNote(id),
     onError: () => {},
     onSuccess: (_, id) => {
-      const { label, trash } = this.navigationService.notesParamsSnapshot();
-      this.queryService.invalidateQuery(['notes', label, trash]);
+      const { labelName, trash } = this.navigationService.notesParamsSnapshot();
+      this.queryService.invalidateQuery(['notes', labelName, trash]);
       this.onDeleteNote.emit(id);
     },
   });
+  
+  // readonly moveNoteToTrashMutation = this.queryService.useMutation({
+  //   httpObsFn: (id: number) => moveNoteToTrash(id),
+  //   onError: () => {},
+  //   onSuccess: (_, id) => {
+  //     const { labelName, trash } = this.navigationService.notesParamsSnapshot();
+  //     this.queryService.invalidateQuery(['notes', labelName, trash]);
+  //     this.onDeleteNote.emit(id);
+  //   },
+  // });
 
   handleDeleteNote(event: MouseEvent) {
     event.stopPropagation();
