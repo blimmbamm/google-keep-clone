@@ -77,19 +77,19 @@ export function seedNotes() {
 /**
  * Get all notes from localStorage. Optionally filter by label name or trash flag.
  */
-function getNotesSync(labelName?: string, trash?: boolean) {
+function getNotesSync(filter: { labelName: string | null; trash: boolean }) {
   const notes = readNotes();
+
+  const { labelName, trash } = filter;
 
   if (labelName) {
     return notes.filter(
       (note) =>
         note.labels?.map((label) => label.name).includes(labelName) &&
-        !note.trash
+        note.trash === trash
     );
-  } else if (trash) {
-    return notes.filter((note) => note.trash);
   } else {
-    return notes;
+    return notes.filter((note) => note.trash === trash);
   }
 }
 
@@ -110,7 +110,7 @@ function addNoteSync(noteInput: NoteInput) {
 
   saveNotes([...notes, note]);
 
-  return note
+  return note;
 }
 
 /**

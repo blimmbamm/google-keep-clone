@@ -1,6 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map } from 'rxjs';
+import { map, Observable } from 'rxjs';
+
+interface NotesQueryParams {
+  labelName: string | null;
+  trash: boolean;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -26,13 +31,24 @@ export class NavigationService {
     })
   );
 
+  // Depending on fragment, construct label/trash parameters for fetching data
+  readonly notesParamsObs$: Observable<NotesQueryParams> = this.fragment$.pipe(
+    map((fragment) => {
+      const labelName = fragment && fragment !== 'trash' ? fragment : null;
+      const trash = fragment === 'trash';
+
+      return { labelName, trash };
+    })
+  );
+
   /**
-   * Returns snapshot of current fragment transformed to label/trash params 
+   * Returns snapshot of current fragment transformed to label/trash params
    * that are used for fetching notes.
    */
   notesParamsSnapshot() {
     let fragment = this.route.snapshot.fragment;
-    const label = (fragment && fragment.match(/^label\/(\w+)$/)?.[1]) || undefined;
+    const label =
+      (fragment && fragment.match(/^label\/(\w+)$/)?.[1]) || undefined;
     const trash = fragment === 'trash' || undefined;
     return { label, trash };
   }
