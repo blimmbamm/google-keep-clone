@@ -14,31 +14,58 @@
   <app-labels-stack 
     (onRemoveLabel)="handleEditNote($event)" 
     [labels]="labels"
+    [disabled]="note().trash"
   ></app-labels-stack>
 }
+
 <app-note-actions class="note-actions" [class.visible]="actionsVisible()">
-  <!-- Delete note -->
-  <app-delete-note-action 
-    [note]="note()"
-    deleteDialogMessage="Move to trash?"
-  ></app-delete-note-action>
+  @if(!note().trash)  {
+    <!-- Delete note -->
+    <app-delete-note-action 
+      [note]="note()"
+      deleteDialogMessage="Move to trash?"
+    ></app-delete-note-action>
+  
+    <!-- Set background color -->
+    <app-change-background-color-action
+      (onChangeNoteBackgroundColor)="handleEditNote($event)"
+      (onToggleMenu)="toggleActionsVisibility()"
+      [note]="note()"
+    ></app-change-background-color-action>
+  
+    <!-- Manage note labels -->
+    <app-note-manage-labels-action 
+      [note]="note()"
+      [(menuOpen)]="actionsVisible"
+      (onNoteLabelsInputChange)="handleEditNote($event)"
+    ></app-note-manage-labels-action>
+  
+    <!-- Create copy of note -->
+    <button mat-icon-button appCreateCopyAction [note]="note()">
+      <mat-icon class="material-symbols-outlined">content_copy</mat-icon>
+    </button>
+  
+  } @else {
+    <!-- Delete permanently -->
+    <app-delete-permanently-action [note]="note()">
+    </app-delete-permanently-action>
+    
 
-  <!-- Set background color -->
-  <app-change-background-color-action
-    (onChangeNoteBackgroundColor)="handleEditNote($event)"
-    (onToggleMenu)="toggleActionsVisibility()"
-    [note]="note()"
-  ></app-change-background-color-action>
-
-  <!-- Manage note labels -->
-  <app-note-manage-labels-action 
-    [note]="note()"
-    [(menuOpen)]="actionsVisible"
-    (onNoteLabelsInputChange)="handleEditNote($event)"
-  ></app-note-manage-labels-action>
-
-  <!-- Create copy of note -->
-  <button mat-icon-button appCreateCopyAction [note]="note()">
-    <mat-icon class="material-symbols-outlined">content_copy</mat-icon>
-  </button>
+    <!-- Restore from trash -->
+    <button mat-icon-button (click)="handleRestoreFromTrash($event)">
+      <mat-icon class="material-symbols-outlined">restore_from_trash</mat-icon>
+    </button>
+    
+  }
 </app-note-actions>
+
+
+<ng-template #dialog>
+  <div class="dialog">
+    <p>Cannot edit trashed note. Restore it?</p>
+    <div class="dialog-actions">
+      <button mat-button (click)="dialogRef?.close()">Cancel</button>
+      <button mat-flat-button (click)="handleRestoreFromTrashConfirmation()">Yes</button>
+    </div>
+  </div>
+</ng-template>

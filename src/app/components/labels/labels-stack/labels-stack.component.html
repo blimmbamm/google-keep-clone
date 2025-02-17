@@ -1,5 +1,5 @@
 @for(label of labels(); track label.id) {
-  <app-label-chip (onRemoveChip)="handleRemoveLabelFromNote(label)">
+  <app-label-chip (onRemoveChip)="handleRemoveLabelFromNote(label)" [disabled]="disabled()">
     {{label.name}}
   </app-label-chip>
 }

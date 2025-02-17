@@ -48,16 +48,6 @@ export class DeleteNoteActionComponent {
     },
   });
   
-  // readonly moveNoteToTrashMutation = this.queryService.useMutation({
-  //   httpObsFn: (id: number) => moveNoteToTrash(id),
-  //   onError: () => {},
-  //   onSuccess: (_, id) => {
-  //     const { labelName, trash } = this.navigationService.notesParamsSnapshot();
-  //     this.queryService.invalidateQuery(['notes', labelName, trash]);
-  //     this.onDeleteNote.emit(id);
-  //   },
-  // });
-
   handleDeleteNote(event: MouseEvent) {
     event.stopPropagation();
 

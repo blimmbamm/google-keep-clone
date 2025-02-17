@@ -25,6 +25,8 @@ export class NavigationService {
     })
   );
 
+  readonly trash$ = this.fragment$.pipe(map(fragment => fragment === 'trash'));
+
   readonly title$ = this.fragment$.pipe(
     map((fragment) => {
       return fragment && fragment[0].toUpperCase() + fragment.slice(1);

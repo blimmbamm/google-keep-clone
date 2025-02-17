@@ -43,3 +43,13 @@
   opacity: 1;
 }
 
+.dialog {
+  display: block;
+  padding: 1rem;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: end;
+  gap: 1rem;
+}

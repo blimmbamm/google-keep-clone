@@ -1,4 +1,12 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  signal,
+  TemplateRef,
+  viewChild,
+} from '@angular/core';
 import { editNote, Note, NoteInput } from '../../../data/notes';
 import { MatIcon } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,6 +18,9 @@ import { NavigationService } from '../../services/navigation.service';
 import { DeleteNoteActionComponent } from '../delete-note-action/delete-note-action.component';
 import { ChangeBackgroundColorActionComponent } from './change-background-color-action/change-background-color-action.component';
 import { CreateCopyActionDirective } from './create-copy-action.directive';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { EditNoteComponent } from '../edit-note/edit-note.component';
+import { DeletePermanentlyActionComponent } from './delete-permanently-action/delete-permanently-action.component';
 
 @Component({
   selector: 'app-note',
@@ -21,12 +32,14 @@ import { CreateCopyActionDirective } from './create-copy-action.directive';
     NoteManageLabelsActionComponent,
     DeleteNoteActionComponent,
     ChangeBackgroundColorActionComponent,
-    CreateCopyActionDirective
+    CreateCopyActionDirective,
+    DeletePermanentlyActionComponent,
   ],
   templateUrl: './note.component.html',
   styleUrl: './note.component.scss',
   host: {
     '[style.background-color]': 'note().backgroundColor',
+    '(click)': 'handleHostClick()',
   },
 })
 export class NoteComponent {
@@ -55,8 +68,41 @@ export class NoteComponent {
     },
   });
 
-  openPaletteMenu(event: MouseEvent) {
-    event.stopPropagation();
+  readonly dialog = inject(MatDialog);
+
+  openEditNoteDialog() {
+    this.dialog.open<EditNoteComponent, { note: Note }>(EditNoteComponent, {
+      data: { note: this.note() },
+      panelClass: 'edit-note-dialog-panel',
+      autoFocus: false,
+      width: '100%',
+      maxWidth: '600px',
+    });
+  }
+
+  // If confirmation dialog goes to extra component, this gets easier
+  public dialogRef?: MatDialogRef<any>;
+  private dialogTemplate = viewChild.required('dialog', {
+    read: TemplateRef,
+  });
+
+  openRestoreDialog() {
+    this.dialogRef = this.dialog.open(this.dialogTemplate(), {
+      panelClass: 'dialog-panel',
+      autoFocus: false,
+    });
+  }
+
+  handleRestoreFromTrashConfirmation() {
+    this.editNoteMutation.mutate({
+      id: this.note().id,
+      noteInput: { trash: false },
+    });
+    this.dialogRef?.close();
+  }
+
+  handleHostClick() {
+    this.note().trash ? this.openRestoreDialog() : this.openEditNoteDialog();
   }
 
   handleEditNote(noteInput: NoteInput) {
@@ -65,5 +111,14 @@ export class NoteComponent {
 
   toggleActionsVisibility() {
     this.actionsVisible.update((visible) => !visible);
+  }
+
+  handleRestoreFromTrash(event: MouseEvent) {
+    event.stopPropagation();
+
+    this.editNoteMutation.mutate({
+      id: this.note().id,
+      noteInput: { trash: false },
+    });
   }
 }

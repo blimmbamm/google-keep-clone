@@ -17,7 +17,7 @@ import { LocalStorageKeys } from '../../../data/shared';
 })
 export class NotesComponent {
   private queryService = inject(QueryService);
-  private navigationService = inject(NavigationService);
+  readonly navigationService = inject(NavigationService);
 
   readonly notesQuery = this.queryService.useParametrizedQuery({
     paramsObs: this.navigationService.notesParamsObs$,
@@ -31,15 +31,5 @@ export class NotesComponent {
     }
   }
 
-  readonly dialog = inject(MatDialog);
-
-  openEditNoteDialog(note: Note) {
-    this.dialog.open<EditNoteComponent, { note: Note }>(EditNoteComponent, {
-      data: { note },
-      panelClass: 'edit-note-dialog-panel',
-      autoFocus: false,
-      width: '100%',
-      maxWidth: '600px',
-    });
-  }
+  
 }

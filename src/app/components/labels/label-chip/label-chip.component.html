@@ -1,6 +1,8 @@
 <div class="label-name">
   <ng-content></ng-content>
 </div>
-<div matRipple class="remove" (click)="handleRemoveChip($event)">
-  <mat-icon>close</mat-icon>
-</div>
+@if (!disabled()) {
+  <div matRipple class="remove" (click)="handleRemoveChip($event)">
+    <mat-icon>close</mat-icon>
+  </div>
+}

@@ -11,6 +11,7 @@ import { NoteInput } from '../../../../data/notes';
 })
 export class LabelsStackComponent {
   readonly labels = input.required<Label[]>();
+  readonly disabled = input(false);
 
   readonly onRemoveLabel = output<NoteInput>();
 

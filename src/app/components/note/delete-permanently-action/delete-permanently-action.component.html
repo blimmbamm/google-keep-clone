@@ -1,0 +1,13 @@
+<button mat-icon-button (click)="handleStartPermanentDeletion($event)">
+  <mat-icon class="material-symbols-outlined">delete_forever</mat-icon>
+</button>
+
+<ng-template #dialog>
+  <div class="dialog">
+    <p>Delete this note permanently?</p>
+    <div class="dialog-actions">
+      <button mat-button (click)="dialogRef?.close()">Cancel</button>
+      <button mat-flat-button (click)="handleConfirmation()">Yes</button>
+    </div>
+  </div>
+</ng-template>
