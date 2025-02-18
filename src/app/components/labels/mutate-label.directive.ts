@@ -9,9 +9,10 @@ import {
   model,
   viewChild,
 } from '@angular/core';
-import { filter, fromEvent } from 'rxjs';
+import { BehaviorSubject, filter, fromEvent, tap } from 'rxjs';
 import { Label } from '../../../data/label';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { FormControl } from '@angular/forms';
 
 export type LabelOrNewLabel = Label | 'new-label';
 
@@ -30,11 +31,30 @@ export abstract class MutateLabelDirective<T extends LabelOrNewLabel>
    */
   abstract label: InputSignal<T>;
 
+  /**
+   * This can be set via the implementing class and will be the error stream
+   * of the mutations. If the input gets deactivated, errors will be reset.
+   *
+   * Errors are also reset if input value changes.
+   */
+  readonly error$?: BehaviorSubject<any>;
+
   private destroyRef = inject(DestroyRef);
 
   /** Reference to the html input element */
   readonly inputElement =
     viewChild.required<ElementRef<HTMLInputElement>>('input');
+
+  readonly labelNameInput = new FormControl('', { nonNullable: true });
+
+  _clearErrorOnInputChangeSubscription = this.labelNameInput.valueChanges
+    .pipe(takeUntilDestroyed())
+    .subscribe(() => {
+      if (this.error$?.value) {
+        console.log('Resetting due to input update');
+      }
+      this.error$?.value && this.error$.next(null);
+    });
 
   /**
    * The currently 'activated/selected' label input component, i.e.
@@ -49,10 +69,15 @@ export abstract class MutateLabelDirective<T extends LabelOrNewLabel>
    */
   readonly active = computed(() => this.currentLabel() === this.label());
 
-  /** Observable that emits if label input component gets deactivated. */
+  /**
+   * Observable that emits if label input component gets deactivated.
+   *
+   * If error$ is overridden by implementing, the error is reset to `null`.
+   */
   readonly deactivate$ = toObservable(this.active).pipe(
     takeUntilDestroyed(),
-    filter((value) => !value)
+    filter((value) => !value),
+    tap(() => this.error$?.value && this.error$.next(null))
   );
 
   /**

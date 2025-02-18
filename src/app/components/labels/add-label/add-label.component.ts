@@ -6,6 +6,7 @@ import { QueryService } from '../../../services/query.service';
 import { addLabel, LabelInput } from '../../../../data/label';
 import { AsyncPipe } from '@angular/common';
 import { MutateLabelDirective } from '../mutate-label.directive';
+import { ReactiveFormsModule } from '@angular/forms';
 
 /**
  * Component to add a label. This component shares some functionality
@@ -14,7 +15,13 @@ import { MutateLabelDirective } from '../mutate-label.directive';
  */
 @Component({
   selector: 'app-add-label',
-  imports: [LabelInputComponent, MatButtonModule, MatIconModule, AsyncPipe],
+  imports: [
+    LabelInputComponent,
+    MatButtonModule,
+    MatIconModule,
+    AsyncPipe,
+    ReactiveFormsModule,
+  ],
   templateUrl: './add-label.component.html',
   styleUrl: './add-label.component.scss',
 })
@@ -23,21 +30,23 @@ export class AddLabelComponent
   implements AfterContentInit
 {
   private queryService = inject(QueryService);
- 
+
   /** Implementation of abstract label input is needed though it won't change. */
   override label = input<'new-label'>('new-label');
 
-  /** 
-   * When add label input component gets deactivated, clear input. 
-   * It gets deactivated by closing it manually or by activating 
-   * another label input component. 
+  /**
+   * When add label input component gets deactivated, clear input.
+   * It gets deactivated by closing it manually or by activating
+   * another label input component.
+   *
+   * Also reset error to null in that case.
    */
   _clearInputSubscription = this.deactivate$.subscribe(() => {
-    this.inputElement().nativeElement.value = '';
+    this.labelNameInput.reset();
   });
 
   /**
-   * Mutation to add a new label. Errors (already existing or empty label name) 
+   * Mutation to add a new label. Errors (already existing or empty label name)
    * are displayed in the template. Labels are refetched when the new label was
    * added successfully.
    */
@@ -45,10 +54,12 @@ export class AddLabelComponent
     httpObsFn: (labelInput: LabelInput) => addLabel(labelInput),
     onError: () => {},
     onSuccess: () => {
-      this.inputElement().nativeElement.value = '';
+      this.labelNameInput.reset();
       this.queryService.invalidateQuery(['labels']);
     },
   });
+
+  override readonly error$ = this.addLabelMutation.error$;
 
   /** Triggers the mutation to add the new label. */
   handleAddLabel(labelName: string) {

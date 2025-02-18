@@ -24,6 +24,7 @@ import {
   ConfirmDialogData,
 } from '../../confirm-dialog/confirm-dialog.component';
 import { NavigationService } from '../../../services/navigation.service';
+import { ReactiveFormsModule } from '@angular/forms';
 
 /**
  * Component to edit a label. This component shares some functionality
@@ -32,7 +33,13 @@ import { NavigationService } from '../../../services/navigation.service';
  */
 @Component({
   selector: 'app-edit-label',
-  imports: [LabelInputComponent, MatButtonModule, MatIconModule, AsyncPipe],
+  imports: [
+    LabelInputComponent,
+    MatButtonModule,
+    MatIconModule,
+    AsyncPipe,
+    ReactiveFormsModule,
+  ],
   templateUrl: './edit-label.component.html',
   styleUrl: './edit-label.component.scss',
 })
@@ -61,7 +68,7 @@ export class EditLabelComponent
    * It gets deactivated by activating another label input component.
    */
   _ = this.deactivate$.subscribe(() => {
-    this.inputElement().nativeElement.value = this.label().name;
+    this.labelNameInput.setValue(this.label().name);
   });
 
   /**
@@ -74,14 +81,16 @@ export class EditLabelComponent
     httpObsFn: (args: { id: number; labelInput: LabelInput }) =>
       editLabel(args.id, args.labelInput),
     onError: () => {
-      this.inputElement().nativeElement.value = this.label().name;
+      // this.labelNameInput.setValue(this.label().name);
     },
     onSuccess: () => {
+      const { labelName, trash } = this.navigationService.notesParamsSnapshot();
       this.queryService.invalidateQuery(['labels']);
-      const {labelName, trash} = this.navigationService.notesParamsSnapshot();
       this.queryService.invalidateQuery(['notes', labelName, trash]);
     },
   });
+
+  override readonly error$ = this.editLabelMutation.error$;
 
   /**
    * Mutation to delete a label. The deletion has to be confirmed in an
@@ -92,7 +101,7 @@ export class EditLabelComponent
     onError: () => {},
     onSuccess: () => {
       this.queryService.invalidateQuery(['labels']);
-      const {labelName, trash} = this.navigationService.notesParamsSnapshot();
+      const { labelName, trash } = this.navigationService.notesParamsSnapshot();
       this.queryService.invalidateQuery(['notes', labelName, trash]);
     },
   });

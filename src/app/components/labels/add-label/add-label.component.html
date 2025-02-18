@@ -12,6 +12,7 @@
   }
     <input
       #input 
+      [formControl]="labelNameInput"
       placeholder="Create new label"
       spellcheck="false"
     />
@@ -21,7 +22,3 @@
     </button>
   } 
 </app-label-input>
-
-<!-- @if(error) {
-  <span class="data-error">{{error.error.message}}</span>
-} -->

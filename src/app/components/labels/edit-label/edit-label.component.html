@@ -8,7 +8,12 @@
     <mat-icon>label</mat-icon>
     }
   </button>
-  <input #input [value]="label().name" placeholder="Enter label name" />
+  <input 
+    #input 
+    [formControl]="labelNameInput"    
+    [value]="label().name"
+    placeholder="Enter label name" 
+  />
   @if(active()) {
   <button mat-icon-button (click)="handleEditLabel(input.value)">
     <mat-icon>check</mat-icon>
