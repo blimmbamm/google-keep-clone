@@ -32,7 +32,12 @@ function readLabels() {
  * Persist labels in localStorage.
  */
 function saveLabels(labels: Label[]) {
-  localStorage.setItem(LocalStorageKeys.LABELS, JSON.stringify(labels));
+  localStorage.setItem(
+    LocalStorageKeys.LABELS,
+    JSON.stringify(
+      labels.sort((label1, label2) => (label1.name < label2.name ? -1 : 1))
+    )
+  );
 }
 
 /**
@@ -44,7 +49,7 @@ function getLabelsSync() {
 
 /**
  * Adds new label if none with exists with same name, else throw error.
- * 
+ *
  * Also throw error if provided name is empty.
  */
 function addLabelSync(labelInput: LabelInput) {
@@ -97,24 +102,21 @@ function editLabelSync(id: number, labelInput: LabelInput) {
     // Update notes
     const notes = readNotes();
 
-    notes.forEach(note => {
+    notes.forEach((note) => {
+      const label = note.labels?.find((label) => label.id === id);
 
-      const label = note.labels?.find(label => label.id === id)
-      
-      if(label && note.labels) {
+      if (label && note.labels) {
         const labelIndex = label && note.labels.indexOf(label);
-        
+
         note.labels[labelIndex] = {
           ...label,
-          ...labelInput
-        }
+          ...labelInput,
+        };
       }
     });
 
     saveNotes(notes);
   }
-
-
 }
 
 /**

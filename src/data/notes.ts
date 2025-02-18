@@ -108,7 +108,7 @@ function addNoteSync(noteInput: NoteInput) {
     trash: false,
   };
 
-  saveNotes([...notes, note]);
+  saveNotes([note, ...notes]);
 
   return note;
 }

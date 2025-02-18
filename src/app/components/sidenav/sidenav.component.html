@@ -17,17 +17,18 @@
   </mat-list-item>
   
   <!-- Labels --> 
-  <!-- maybe it would be cleaner to make if-check on labels first -->
-  @for(label of labels; track label.id) {
-    <mat-list-item
-      [activated]="fragment === label.name"
-      (click)="navigation.navigate(label.name)"
-    >
-      <mat-icon class="material-icons-outlined" matListItemIcon>label</mat-icon>
-      @if(expanded()){
-        <p>{{label.name}}</p>
-      }
-    </mat-list-item>
+  @if(labels) {
+    @for(label of labels; track label.id) {
+      <mat-list-item
+        [activated]="fragment === label.name"
+        (click)="navigation.navigate(label.name)"
+      >
+        <mat-icon class="material-icons-outlined" matListItemIcon>label</mat-icon>
+        @if(expanded()){
+          <p>{{label.name}}</p>
+        }
+      </mat-list-item>
+    }
   }
 
   <!-- Edit labels -->

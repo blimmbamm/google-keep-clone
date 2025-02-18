@@ -3,7 +3,7 @@ import { Component, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { of } from 'rxjs';
+import { map, of } from 'rxjs';
 import { NavigationService } from '../../services/navigation.service';
 import { LocalStorageKeys } from '../../../data/shared';
 import { getLabels, seedLabels } from '../../../data/label';
@@ -34,10 +34,6 @@ export class SidenavComponent {
   private queryService = inject(QueryService);
   private dialog = inject(MatDialog);
 
-  // readonly labelsQuery = this.queryService.useStandardQuery({
-  //   httpObs: getLabels(),
-  //   queryKey: ['labels'],
-  // });
   readonly labelsQuery = this.queryService.useParametrizedQuery({
     paramsObs: of(null),
     httpObsFn: () => getLabels(),
