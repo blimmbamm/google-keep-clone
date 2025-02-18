@@ -103,6 +103,10 @@ export class EditLabelComponent
       this.queryService.invalidateQuery(['labels']);
       const { labelName, trash } = this.navigationService.notesParamsSnapshot();
       this.queryService.invalidateQuery(['notes', labelName, trash]);
+      // check if navigation is required
+      if(this.label().name === labelName) {
+        this.navigationService.navigate(undefined, false)
+      }
     },
   });
 
