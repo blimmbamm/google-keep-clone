@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map, Observable } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
+import { labelExists } from '../../data/label';
 
 interface NotesQueryParams {
   labelName: string | null;
@@ -25,7 +26,9 @@ export class NavigationService {
     })
   );
 
-  readonly trash$ = this.fragment$.pipe(map(fragment => fragment === 'trash'));
+  readonly trash$ = this.fragment$.pipe(
+    map((fragment) => fragment === 'trash')
+  );
 
   readonly title$ = this.fragment$.pipe(
     map((fragment) => {
@@ -40,6 +43,10 @@ export class NavigationService {
       const trash = fragment === 'trash';
 
       return { labelName, trash };
+    }),
+    tap(({ labelName }) => {
+      // If label doesn't exist, navigate home:
+      labelName && !labelExists(labelName) && this.navigate(undefined, false);
     })
   );
 

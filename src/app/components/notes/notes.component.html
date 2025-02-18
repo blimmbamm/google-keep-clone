@@ -1,4 +1,5 @@
 @let notes = notesQuery.data$ | async;
+@let notesParams = this.navigationService.notesParamsObs$ | async;
 
 @if (!(navigationService.trash$ | async)) {
   <app-add-note></app-add-note>
@@ -7,5 +8,17 @@
 @if(notes) {
   @for(note of notes; track note.id) {
     <app-note [note]="note"></app-note>
+  } @empty {
+    @if (notesParams?.labelName) {
+      <div class="fallback">
+        <mat-icon class="material-symbols-outlined">label</mat-icon>
+        <p>No notes with this label yet</p>
+      </div>
+    } @else {
+      <div class="fallback">
+        <mat-icon class="material-symbols-outlined">lightbulb_2</mat-icon>
+        <p>No notes yet</p>
+      </div>
+    }
   }
 }

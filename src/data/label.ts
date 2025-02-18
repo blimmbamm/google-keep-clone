@@ -40,6 +40,11 @@ function saveLabels(labels: Label[]) {
   );
 }
 
+export function labelExists(labelName: string) {
+  const labels = readLabels();
+  return labels.some(label => label.name === labelName)
+}
+
 /**
  * Returns all labels stored in localStorage.
  */
