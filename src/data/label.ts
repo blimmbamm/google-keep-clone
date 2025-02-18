@@ -93,7 +93,28 @@ function editLabelSync(id: number, labelInput: LabelInput) {
     };
 
     saveLabels(labels);
+
+    // Update notes
+    const notes = readNotes();
+
+    notes.forEach(note => {
+
+      const label = note.labels?.find(label => label.id === id)
+      
+      if(label && note.labels) {
+        const labelIndex = label && note.labels.indexOf(label);
+        
+        note.labels[labelIndex] = {
+          ...label,
+          ...labelInput
+        }
+      }
+    });
+
+    saveNotes(notes);
   }
+
+
 }
 
 /**

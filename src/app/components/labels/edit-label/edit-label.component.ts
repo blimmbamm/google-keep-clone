@@ -23,6 +23,7 @@ import {
   ConfirmDialogComponent,
   ConfirmDialogData,
 } from '../../confirm-dialog/confirm-dialog.component';
+import { NavigationService } from '../../../services/navigation.service';
 
 /**
  * Component to edit a label. This component shares some functionality
@@ -40,6 +41,7 @@ export class EditLabelComponent
   implements AfterContentInit
 {
   private queryService = inject(QueryService);
+  private navigationService = inject(NavigationService);
   private hostElement = inject(ElementRef);
   private dialog = inject(MatDialog);
 
@@ -76,6 +78,8 @@ export class EditLabelComponent
     },
     onSuccess: () => {
       this.queryService.invalidateQuery(['labels']);
+      const {labelName, trash} = this.navigationService.notesParamsSnapshot();
+      this.queryService.invalidateQuery(['notes', labelName, trash]);
     },
   });
 
@@ -88,6 +92,8 @@ export class EditLabelComponent
     onError: () => {},
     onSuccess: () => {
       this.queryService.invalidateQuery(['labels']);
+      const {labelName, trash} = this.navigationService.notesParamsSnapshot();
+      this.queryService.invalidateQuery(['notes', labelName, trash]);
     },
   });
 
