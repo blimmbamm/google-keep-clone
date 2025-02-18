@@ -49,7 +49,7 @@ export class SidenavComponent {
       ManageLabelsDialogComponent,
       ManageLabelsDialogData
     >(ManageLabelsDialogComponent, {
-      data: { labels$: this.labelsQuery.data$ }, // maybe use shareReplay to only call getLabels once
+      data: { labels$: this.labelsQuery.data$ }, 
       panelClass: 'manage-labels-dialog-panel',
       autoFocus: false
     });

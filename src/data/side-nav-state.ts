@@ -1,10 +1,16 @@
 import { LocalStorageKeys } from './shared';
 
 export function getNavMenuOpenState() {
-  const navMenuOpen = localStorage.getItem(
-    LocalStorageKeys.NAV_MENU_OPEN_STATE
-  );
-  return Boolean(navMenuOpen && JSON.parse(navMenuOpen));
+  let navMenuOpen = localStorage.getItem(LocalStorageKeys.NAV_MENU_OPEN_STATE);
+
+  if (navMenuOpen) {
+    try {
+      navMenuOpen = JSON.parse(navMenuOpen);
+    } catch {
+      return false;
+    }
+  }
+  return Boolean(navMenuOpen);
 }
 
 export function setNavMenuOpenState(value: boolean) {
