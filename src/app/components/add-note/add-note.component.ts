@@ -16,23 +16,15 @@ import {
   NoteInput,
 } from '../../../data/notes';
 import { NavigationService } from '../../services/navigation.service';
-import {
-  debounceTime,
-  filter,
-  fromEvent,
-  merge,
-  skip,
-  Subscription,
-  tap,
-} from 'rxjs';
+import { fromEvent, Subscription, tap } from 'rxjs';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { NoteActionsComponent } from '../note-actions/note-actions.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { LabelsStackComponent } from '../labels/labels-stack/labels-stack.component';
-import { NoteManageLabelsActionComponent } from '../note/note-manage-labels-action/note-manage-labels-action.component';
-import { DeleteNoteActionComponent } from '../delete-note-action/delete-note-action.component';
-import { ChangeBackgroundColorActionComponent } from '../note/change-background-color-action/change-background-color-action.component';
+import { NoteManageLabelsActionComponent } from '../note-actions/note-manage-labels-action/note-manage-labels-action.component';
+import { ChangeBackgroundColorActionComponent } from '../note-actions/change-background-color-action/change-background-color-action.component';
+import { DeleteNoteActionDirective } from '../note-actions/delete-note-action/delete-note-action.directive';
 
 @Component({
   selector: 'app-add-note',
@@ -43,8 +35,8 @@ import { ChangeBackgroundColorActionComponent } from '../note/change-background-
     MatIconModule,
     LabelsStackComponent,
     NoteManageLabelsActionComponent,
-    DeleteNoteActionComponent,
     ChangeBackgroundColorActionComponent,
+    DeleteNoteActionDirective,
   ],
   templateUrl: './add-note.component.html',
   styleUrl: './add-note.component.scss',
@@ -96,17 +88,17 @@ export class AddNoteComponent {
     'mousedown'
   ).pipe(tap(() => this.open.set(false)));
 
-  /** 
-   * Outside click stream gets subscribed when component is opened and unsubscribed 
+  /**
+   * Outside click stream gets subscribed when component is opened and unsubscribed
    * when closed.
    */
   private outsideClickSubscription?: Subscription;
 
   /**
-   * Open signal state transformed to observable stream. 
-   * 
+   * Open signal state transformed to observable stream.
+   *
    * When switching to opened, add listener for outside click.
-   * 
+   *
    * When switching to closed, clear added note if necessary.
    */
   _ = this.open$.pipe(takeUntilDestroyed()).subscribe((open) => {

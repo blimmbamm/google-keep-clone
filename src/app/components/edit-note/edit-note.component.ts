@@ -9,12 +9,12 @@ import { NavigationService } from '../../services/navigation.service';
 import { MatIconModule } from '@angular/material/icon';
 import { NoteFormComponent } from '../note-form/note-form.component';
 import { NoteActionsComponent } from '../note-actions/note-actions.component';
-import { NoteManageLabelsActionComponent } from '../note/note-manage-labels-action/note-manage-labels-action.component';
+import { NoteManageLabelsActionComponent } from '../note-actions/note-manage-labels-action/note-manage-labels-action.component';
 import { LabelsStackComponent } from '../labels/labels-stack/labels-stack.component';
-import { DeleteNoteActionComponent } from '../delete-note-action/delete-note-action.component';
-import { ChangeBackgroundColorActionComponent } from '../note/change-background-color-action/change-background-color-action.component';
+import { ChangeBackgroundColorActionComponent } from '../note-actions/change-background-color-action/change-background-color-action.component';
 import { DatePipe } from '@angular/common';
-import { CreateCopyActionDirective } from '../note/create-copy-action.directive';
+import { CreateCopyActionDirective } from '../note-actions/create-copy-action/create-copy-action.directive';
+import { DeleteNoteActionDirective } from '../note-actions/delete-note-action/delete-note-action.directive';
 
 @Component({
   selector: 'app-edit-note',
@@ -27,7 +27,7 @@ import { CreateCopyActionDirective } from '../note/create-copy-action.directive'
     NoteActionsComponent,
     NoteManageLabelsActionComponent,
     LabelsStackComponent,
-    DeleteNoteActionComponent,
+    DeleteNoteActionDirective,
     ChangeBackgroundColorActionComponent,
     DatePipe,
     CreateCopyActionDirective,

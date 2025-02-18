@@ -21,10 +21,14 @@
 <app-note-actions class="note-actions" [class.visible]="actionsVisible()">
   @if(!note().trash)  {
     <!-- Delete note -->
-    <app-delete-note-action 
+    <button 
+      mat-icon-button 
+      appDeleteNoteAction 
       [note]="note()"
       deleteDialogMessage="Move to trash?"
-    ></app-delete-note-action>
+    >
+      <mat-icon class="material-symbols-outlined">delete</mat-icon>
+    </button>
   
     <!-- Set background color -->
     <app-change-background-color-action
@@ -47,9 +51,13 @@
   
   } @else {
     <!-- Delete permanently -->
-    <app-delete-permanently-action [note]="note()">
-    </app-delete-permanently-action>
-    
+    <button 
+      mat-icon-button
+      appDeletePermanentlyAction
+      [note]="note()"
+    >
+      <mat-icon class="material-symbols-outlined">delete_forever</mat-icon>
+    </button>    
 
     <!-- Restore from trash -->
     <button mat-icon-button (click)="handleRestoreFromTrash($event)">
@@ -58,14 +66,3 @@
     
   }
 </app-note-actions>
-
-
-<ng-template #dialog>
-  <div class="dialog">
-    <p>Cannot edit trashed note. Restore it?</p>
-    <div class="dialog-actions">
-      <button mat-button (click)="dialogRef?.close()">Cancel</button>
-      <button mat-flat-button (click)="handleRestoreFromTrashConfirmation()">Yes</button>
-    </div>
-  </div>
-</ng-template>

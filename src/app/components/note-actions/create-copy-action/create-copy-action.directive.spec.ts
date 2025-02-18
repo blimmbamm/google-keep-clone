@@ -1,4 +1,4 @@
-import { CreateCopyActionDirective } from './create-copy-action.directive';
+import { CreateCopyActionDirective } from "./create-copy-action.directive";
 
 describe('CreateCopyActionDirective', () => {
   it('should create an instance', () => {

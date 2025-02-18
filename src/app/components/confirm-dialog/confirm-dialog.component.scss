@@ -1,9 +1,11 @@
-.dialog {
+:host {
   display: block;
   padding: 1rem;
+
+  --mat-sys-primary: var(--mat-sys-on-surface-variant);
 }
 
-.dialog-actions {
+.delete-dialog-actions {
   display: flex;
   justify-content: end;
   gap: 1rem;

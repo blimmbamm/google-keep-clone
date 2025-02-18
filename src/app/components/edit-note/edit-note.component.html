@@ -14,11 +14,15 @@
 
 <app-note-actions>
   <!-- Move note to trash -->
-  <app-delete-note-action 
+  <button 
+    mat-icon-button 
+    appDeleteNoteAction 
     [note]="data.note"
     deleteDialogMessage="Move to trash?"
     (onDeleteNote)="handleDoneEditing()"
-  ></app-delete-note-action>
+  >
+    <mat-icon class="material-symbols-outlined">delete</mat-icon>
+  </button>
 
   <!-- Background color -->
   <app-change-background-color-action

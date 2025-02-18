@@ -4,8 +4,6 @@ import {
   ElementRef,
   inject,
   input,
-  TemplateRef,
-  viewChild,
 } from '@angular/core';
 import {
   deleteLabel,
@@ -19,8 +17,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { fromEvent, map, merge, Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { QueryService } from '../../../services/query.service';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { MutateLabelDirective } from '../mutate-label.directive';
+import {
+  ConfirmDialogComponent,
+  ConfirmDialogData,
+} from '../../confirm-dialog/confirm-dialog.component';
 
 /**
  * Component to edit a label. This component shares some functionality
@@ -49,22 +51,12 @@ export class EditLabelComponent
    */
   public isHovered$?: Observable<boolean>;
 
-  /** Ref to delete dialog. */
-  public deleteDialogRef?: MatDialogRef<any>;
-
-  /** Template for the delete dialog. Because the dialog is so simple,
-   * a template is used here instead of a component.
-   */
-  private deleteDialogTemplate = viewChild.required('deleteDialog', {
-    read: TemplateRef,
-  });
-
   /** The label corresponding to the input. */
   override label = input.required<Label>();
 
-  /** 
-   * When edit label input component gets deactivated, reset input. 
-   * It gets deactivated by activating another label input component. 
+  /**
+   * When edit label input component gets deactivated, reset input.
+   * It gets deactivated by activating another label input component.
    */
   _ = this.deactivate$.subscribe(() => {
     this.inputElement().nativeElement.value = this.label().name;
@@ -107,18 +99,25 @@ export class EditLabelComponent
     });
   }
 
-  /** This opens the deletion confirmation dialog. */
-  handleStartDeleteLabel() {
-    this.deleteDialogRef = this.dialog.open(this.deleteDialogTemplate(), {
-      panelClass: 'dialog-panel',
-      autoFocus: false,
-    });
-  }
-
-  /** This finally deletes a label and closes the confirmation dialog. */
+  /** This opens a dialog to confirm the deletion of the label. */
   handleDeleteLabel() {
-    this.deleteLabelMutation.mutate(this.label().id);
-    this.deleteDialogRef?.close();
+    this.dialog
+      .open<ConfirmDialogComponent, ConfirmDialogData, boolean>(
+        ConfirmDialogComponent,
+        {
+          data: {
+            dialogMessage: "Delete this label? Your notes won't be deleted.",
+          },
+          panelClass: 'dialog-panel',
+          autoFocus: false,
+        }
+      )
+      .afterClosed()
+      .subscribe((confirmed) => {
+        if (confirmed) {
+          this.deleteLabelMutation.mutate(this.label().id);
+        }
+      });
   }
 
   /**

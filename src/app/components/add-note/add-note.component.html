@@ -3,6 +3,7 @@
   placeholderContent="Take a note..."
   (onNoteInputChange)="handleNoteInputChange($event)">
 </app-note-form>
+
 @if(open()) {
   @if(noteState().note?.labels; as labels) {
     <app-labels-stack 
@@ -10,9 +11,12 @@
       [labels]="labels"
     ></app-labels-stack>
   }
+
   <app-note-actions>
     <!-- Delete note, if already added -->
-    <app-delete-note-action 
+    <button 
+      mat-icon-button 
+      appDeleteNoteAction 
       [note]="noteState().note"
       [requireConfirmation]="deletionRequiresConfirmation()"
       tooltip="Discard note"
@@ -20,7 +24,8 @@
       deleteDialogMessage="Discard note?"
       [moveToTrash]="false"
     >
-    </app-delete-note-action>
+      <mat-icon class="material-symbols-outlined">delete</mat-icon>
+    </button>
 
     <!-- Change background color of note -->
     <app-change-background-color-action

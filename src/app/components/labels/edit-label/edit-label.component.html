@@ -1,7 +1,7 @@
 @let error = editLabelMutation.error$ | async;
 
 <app-label-input [error]="error?.error">
-  <button mat-icon-button (click)="handleStartDeleteLabel()">
+  <button mat-icon-button (click)="handleDeleteLabel()">
     @if(active() || (isHovered$ | async)) {
     <mat-icon>delete</mat-icon>
     } @else {
@@ -19,13 +19,3 @@
   </button>
   }
 </app-label-input>
-
-<ng-template #deleteDialog>
-  <div class="delete-dialog">
-    <p>Delete this label? Your notes won't be deleted.</p>
-    <div class="delete-dialog-actions">
-      <button mat-button (click)="deleteDialogRef?.close()">Cancel</button>
-      <button mat-flat-button (click)="handleDeleteLabel()">Yes</button>
-    </div>
-  </div>
-</ng-template>

@@ -1,7 +1,7 @@
 import { Directive, inject, input } from '@angular/core';
-import { addNote, Note, NoteInput } from '../../../data/notes';
-import { QueryService } from '../../services/query.service';
-import { NavigationService } from '../../services/navigation.service';
+import { addNote, Note, NoteInput } from '../../../../data/notes';
+import { QueryService } from '../../../services/query.service';
+import { NavigationService } from '../../../services/navigation.service';
 
 @Directive({
   selector: '[appCreateCopyAction]',
