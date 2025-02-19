@@ -1,10 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  input,
-  output,
-  viewChild,
-} from '@angular/core';
+import { Component, ElementRef, input, output, viewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Note, NoteInput } from '../../../data/notes';
 import { ContenteditableValueAccessorModule } from '@tinkoff/angular-contenteditable-accessor';
@@ -41,12 +35,8 @@ export class NoteFormComponent {
   }
 
   // contenteditable element for note content:
-  private noteContentElement = viewChild.required<
-    string,
-    ElementRef<HTMLDivElement>
-  >('noteContent', {
-    read: ElementRef<HTMLDivElement>,
-  });
+  private noteContentElement =
+    viewChild.required<ElementRef<HTMLDivElement>>('noteContent');
 
   readonly onNoteInputChange = output<NoteInput>();
 

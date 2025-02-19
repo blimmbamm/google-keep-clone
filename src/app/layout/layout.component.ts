@@ -58,6 +58,10 @@ export class LayoutComponent implements AfterContentInit {
   /** Whether the drawer is expanded (icons + text) or not (only icons) */
   readonly sideNavExpanded = signal(this.sideNavOpen());
 
+  /**
+   * Cannot use shorter way here with template variable because template 
+   * variable returns component instance instead of html element.
+   */
   readonly sideNav = viewChild.required(SidenavComponent, { read: ElementRef });
 
   private destroyRef = inject(DestroyRef);
