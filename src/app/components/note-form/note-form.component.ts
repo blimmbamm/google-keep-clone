@@ -1,8 +1,6 @@
 import {
   Component,
-  DestroyRef,
   ElementRef,
-  inject,
   input,
   output,
   viewChild,
@@ -20,8 +18,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrl: './note-form.component.scss',
 })
 export class NoteFormComponent {
-  readonly destroyRef = inject(DestroyRef);
-
   readonly note = input<Note>();
   readonly placeholderTitle = input<string>('Title');
   readonly placeholderContent = input<string>('Note');

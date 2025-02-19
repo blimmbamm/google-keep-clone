@@ -47,14 +47,15 @@ export abstract class MutateLabelDirective<T extends LabelOrNewLabel>
 
   readonly labelNameInput = new FormControl('', { nonNullable: true });
 
-  private _clearErrorOnInputChangeSubscription = this.labelNameInput.valueChanges
-    .pipe(takeUntilDestroyed())
-    .subscribe(() => {
-      if (this.error$?.value) {
-        console.log('Resetting due to input update');
-      }
-      this.error$?.value && this.error$.next(null);
-    });
+  private _clearErrorOnInputChangeSubscription =
+    this.labelNameInput.valueChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => {
+        if (this.error$?.value) {
+          console.log('Resetting due to input update');
+        }
+        this.error$?.value && this.error$.next(null);
+      });
 
   /**
    * The currently 'activated/selected' label input component, i.e.
@@ -95,11 +96,8 @@ export abstract class MutateLabelDirective<T extends LabelOrNewLabel>
 
   /** Activate this label if the input gets focussed. */
   ngAfterContentInit(): void {
-    const focusInputSubscription = fromEvent(
-      this.inputElement().nativeElement,
-      'focus'
-    ).subscribe(() => this.activate());
-
-    this.destroyRef.onDestroy(() => focusInputSubscription.unsubscribe());
+    fromEvent(this.inputElement().nativeElement, 'focus')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.activate());
   }
 }
