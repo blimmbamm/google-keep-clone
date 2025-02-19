@@ -10,7 +10,7 @@ import { NavigationService } from '../../services/navigation.service';
 import { ChangeBackgroundColorActionComponent } from '../note-actions/change-background-color-action/change-background-color-action.component';
 import { CreateCopyActionDirective } from '../note-actions/create-copy-action/create-copy-action.directive';
 import { MatDialog } from '@angular/material/dialog';
-import { EditNoteComponent } from '../edit-note/edit-note.component';
+import { EditNoteComponent, EditNoteDialogData } from '../edit-note/edit-note.component';
 import { DeleteNoteActionDirective } from '../note-actions/delete-note-action/delete-note-action.directive';
 import { DeletePermanentlyActionDirective } from '../note-actions/delete-permanently-action/delete-permanently-action.directive';
 import {
@@ -72,7 +72,7 @@ export class NoteComponent {
   }
 
   openEditNoteDialog() {
-    this.dialog.open<EditNoteComponent, { note: Note }>(EditNoteComponent, {
+    this.dialog.open<EditNoteComponent, EditNoteDialogData>(EditNoteComponent, {
       data: { note: this.note() },
       panelClass: 'edit-note-dialog-panel',
       autoFocus: false,

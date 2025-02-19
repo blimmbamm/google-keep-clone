@@ -16,6 +16,10 @@ import { DatePipe } from '@angular/common';
 import { CreateCopyActionDirective } from '../note-actions/create-copy-action/create-copy-action.directive';
 import { DeleteNoteActionDirective } from '../note-actions/delete-note-action/delete-note-action.directive';
 
+export interface EditNoteDialogData {
+  note: Note
+}
+
 @Component({
   selector: 'app-edit-note',
   imports: [
@@ -39,7 +43,7 @@ import { DeleteNoteActionDirective } from '../note-actions/delete-note-action/de
   },
 })
 export class EditNoteComponent {
-  public data: { note: Note } = inject(MAT_DIALOG_DATA);
+  public data = inject<EditNoteDialogData>(MAT_DIALOG_DATA);
 
   readonly lastModifiedDate = computed(() => {})
 

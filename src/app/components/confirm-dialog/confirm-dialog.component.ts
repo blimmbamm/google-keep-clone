@@ -13,5 +13,5 @@ export interface ConfirmDialogData {
   styleUrl: './confirm-dialog.component.scss'
 })
 export class ConfirmDialogComponent {
-  readonly data: ConfirmDialogData = inject(MAT_DIALOG_DATA);
+  readonly data = inject<ConfirmDialogData>(MAT_DIALOG_DATA);
 }
