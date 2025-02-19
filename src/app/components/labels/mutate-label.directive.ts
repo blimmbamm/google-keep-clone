@@ -47,7 +47,7 @@ export abstract class MutateLabelDirective<T extends LabelOrNewLabel>
 
   readonly labelNameInput = new FormControl('', { nonNullable: true });
 
-  _clearErrorOnInputChangeSubscription = this.labelNameInput.valueChanges
+  private _clearErrorOnInputChangeSubscription = this.labelNameInput.valueChanges
     .pipe(takeUntilDestroyed())
     .subscribe(() => {
       if (this.error$?.value) {

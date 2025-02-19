@@ -78,7 +78,7 @@ export class AddNoteComponent {
    *
    * Listening to the document would fail because of overlays from dialogs etc.
    */
-  outsideClick$ = fromEvent(
+  private outsideClick$ = fromEvent(
     this.appRef.components[0].location.nativeElement,
     'mousedown'
   ).pipe(tap(() => this.open.set(false)));

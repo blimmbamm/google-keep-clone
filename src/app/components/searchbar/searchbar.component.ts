@@ -4,8 +4,10 @@ import {
   DestroyRef,
   ElementRef,
   inject,
+  signal,
   viewChild,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { fromEvent, map, merge } from 'rxjs';
@@ -16,7 +18,7 @@ import { fromEvent, map, merge } from 'rxjs';
   templateUrl: './searchbar.component.html',
   styleUrl: './searchbar.component.scss',
   host: {
-    '[class.focussed]': 'inputFocussed',
+    '[class.focussed]': 'inputFocussed()',
   },
 })
 export class SearchbarComponent implements AfterContentInit {
@@ -26,21 +28,22 @@ export class SearchbarComponent implements AfterContentInit {
     viewChild.required<ElementRef<HTMLInputElement>>('searchInput');
 
   /**
-   * Whether the input is focussed. This is needed because the host element is 
-   * styled based on the input (its child) focus state and will be set with rxjs 
+   * Whether the input is focussed. This is needed because the host element is
+   * styled based on the input (its child) focus state and will be set with rxjs
    * `fromEvent` streams.
    */
-  inputFocussed: boolean = false;
+  // inputFocussed: boolean = false;
+  readonly inputFocussed = signal(false);
 
   /**
-   * Focus the input programmatically. This is used as a callback for a 
+   * Focus the input programmatically. This is used as a callback for a
    * mousedown event, s.t. input focus can be retained.
    */
   focusInput(event: MouseEvent) {
     event.preventDefault();
     this.input().nativeElement.focus();
   }
-  
+
   /**
    * Clear the focus, wired up to a mousedown event, s.t. input focus
    * can be retained.
@@ -48,22 +51,21 @@ export class SearchbarComponent implements AfterContentInit {
   clearInput(event: MouseEvent) {
     event.preventDefault();
     this.input().nativeElement.focus();
-    this.input().nativeElement.value = "";
+    this.input().nativeElement.value = '';
   }
-
 
   ngAfterContentInit(): void {
     /**
-     * Subscription to observable stream that emits `true/false` 
+     * Subscription to observable stream that emits `true/false`
      * when input gets/loses focus
      */
-    const inputFocusSubscription = merge(
+    merge(
       fromEvent(this.input().nativeElement, 'focus').pipe(map(() => true)),
       fromEvent(this.input().nativeElement, 'blur').pipe(map(() => false))
-    ).subscribe((focussed) => {
-      this.inputFocussed = focussed;
-    });
-
-    this.destroyRef.onDestroy(() => inputFocusSubscription.unsubscribe());
+    )
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((focussed) => {
+        this.inputFocussed.set(focussed);
+      });
   }
 }

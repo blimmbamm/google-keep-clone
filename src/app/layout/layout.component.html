@@ -16,12 +16,11 @@
 </header>
 <div id="container">
   <app-sidenav 
-    [expanded]="sideNavExpanded" 
-    [open]="sideNavOpen" 
+    [expanded]="sideNavExpanded()" 
+    [open]="sideNavOpen()" 
     [mobile]="mobile"
   ></app-sidenav>
-  <main [class.left-offset]="!sideNavOpen">
-    <!-- <app-new-note> goes here -->
+  <main [class.left-offset]="!sideNavOpen()">
     <app-notes></app-notes>
   </main>
 </div>

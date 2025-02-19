@@ -11,6 +11,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Note, NoteInput } from '../../../data/notes';
 import { ContenteditableValueAccessorModule } from '@tinkoff/angular-contenteditable-accessor';
 import { debounceTime } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-note-form',
@@ -28,7 +29,7 @@ export class NoteFormComponent {
 
   readonly focusNoteContentInput = input<boolean>();
 
-  noteForm = new FormGroup({
+  readonly noteForm = new FormGroup({
     title: new FormControl<string>('', { nonNullable: true }),
     content: new FormControl<string>('', { nonNullable: true }),
   });
@@ -44,24 +45,20 @@ export class NoteFormComponent {
   }
 
   // contenteditable element for note content:
-  noteContentElement = viewChild.required<string, ElementRef<HTMLDivElement>>(
-    'noteContent',
-    {
-      read: ElementRef<HTMLDivElement>,
-    }
-  );
+  private noteContentElement = viewChild.required<
+    string,
+    ElementRef<HTMLDivElement>
+  >('noteContent', {
+    read: ElementRef<HTMLDivElement>,
+  });
 
-  onNoteInputChange = output<NoteInput>();
+  readonly onNoteInputChange = output<NoteInput>();
 
-  readonly noteInputChangeSubscription = this.noteForm.valueChanges
-    .pipe(debounceTime(500))
+  _ = this.noteForm.valueChanges
+    .pipe(debounceTime(500), takeUntilDestroyed())
     .subscribe((value) => {
       this.onNoteInputChange.emit(value);
     });
-
-  _ = this.destroyRef.onDestroy(() =>
-    this.noteInputChangeSubscription.unsubscribe()
-  );
 
   handleEnterKey(e: KeyboardEvent) {
     if (e.key === 'Enter') {

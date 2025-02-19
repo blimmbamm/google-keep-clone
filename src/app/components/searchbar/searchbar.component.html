@@ -6,7 +6,7 @@
 </button>
 <input #searchInput placeholder="Search" />
 <button 
-  [class.hidden]="!inputFocussed" 
+  [class.hidden]="!inputFocussed()" 
   mat-icon-button 
   (mousedown)="clearInput($event)"
 >

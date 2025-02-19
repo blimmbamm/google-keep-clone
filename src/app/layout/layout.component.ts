@@ -4,6 +4,7 @@ import {
   DestroyRef,
   ElementRef,
   inject,
+  signal,
   viewChild,
 } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -20,6 +21,7 @@ import {
   getNavMenuOpenState,
   setNavMenuOpenState,
 } from '../../data/side-nav-state';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-layout',
@@ -51,28 +53,28 @@ export class LayoutComponent implements AfterContentInit {
    *
    * When construction component: get that information from localStorage (if exists)
    */
-  sideNavOpen = getNavMenuOpenState();
+  readonly sideNavOpen = signal(getNavMenuOpenState());
 
   /** Whether the drawer is expanded (icons + text) or not (only icons) */
-  sideNavExpanded = this.sideNavOpen; //
+  readonly sideNavExpanded = signal(this.sideNavOpen());
 
-  sideNav = viewChild.required(SidenavComponent, { read: ElementRef });
+  readonly sideNav = viewChild.required(SidenavComponent, { read: ElementRef });
 
-  destroyRef = inject(DestroyRef);
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Mobile breakpoint stream (600px).
    *
    * When falling below mobile breakpoint, close sidenav as side-effect.
    */
-  mobile$ = inject(BreakpointObserver)
+  readonly mobile$ = inject(BreakpointObserver)
     .observe(Breakpoints.XSmall)
     .pipe(
       map((state) => state.matches),
       tap((matches) => {
         if (matches) {
-          this.sideNavOpen = false;
-          this.sideNavExpanded = false;
+          this.sideNavOpen.set(false);
+          this.sideNavExpanded.set(false);
         }
       })
     );
@@ -84,17 +86,18 @@ export class LayoutComponent implements AfterContentInit {
    * When toggling, also store the current open state in localStorage
    */
   toggleSideNav() {
-    this.sideNavOpen = !this.sideNavOpen;
-    this.sideNavExpanded = !this.sideNavExpanded;
-    setNavMenuOpenState(this.sideNavOpen);
+    this.sideNavOpen.update((open) => !open);
+    this.sideNavExpanded.update((open) => !open);
+
+    setNavMenuOpenState(this.sideNavOpen());
   }
 
   /**
    * Expand Menu if it is in non-opened state (collapsed when not hovered)
    */
   expandNonOpenedMenu() {
-    if (!this.sideNavOpen) {
-      this.sideNavExpanded = true;
+    if (!this.sideNavOpen()) {
+      this.sideNavExpanded.set(true);
     }
   }
 
@@ -102,8 +105,8 @@ export class LayoutComponent implements AfterContentInit {
    * Collapse menu if it is in non-opened state (collapsed when not hovered)
    */
   collapseNonOpenedMenu() {
-    if (!this.sideNavOpen) {
-      this.sideNavExpanded = false;
+    if (!this.sideNavOpen()) {
+      this.sideNavExpanded.set(false);
     }
   }
 
@@ -111,21 +114,21 @@ export class LayoutComponent implements AfterContentInit {
     // Stream omitting when mouse leaves side nav
     // If side nav is not opened, it will be collapsed
     const leave$ = fromEvent(this.sideNav().nativeElement, 'mouseleave').pipe(
-      tap(() => this.collapseNonOpenedMenu())
+      tap(() => this.collapseNonOpenedMenu()),
+      takeUntilDestroyed(this.destroyRef)
     );
 
     // Schedule expandation of non-opened sidenav when hovering,
     // but cancel process if mouse leaves again within 300ms
-    const mouseEnterSubscription = fromEvent(
-      this.sideNav().nativeElement,
-      'mouseenter'
-    )
-      .pipe(delay(300), takeUntil(leave$), repeat())
+    fromEvent(this.sideNav().nativeElement, 'mouseenter')
+      .pipe(
+        delay(300),
+        takeUntil(leave$),
+        repeat(),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe(() => {
         this.expandNonOpenedMenu();
       });
-
-    // Clean up the subscription
-    this.destroyRef.onDestroy(() => mouseEnterSubscription.unsubscribe());
   }
 }

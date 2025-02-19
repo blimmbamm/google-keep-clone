@@ -3,7 +3,7 @@ import { Component, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { map, of } from 'rxjs';
+import { of } from 'rxjs';
 import { NavigationService } from '../../services/navigation.service';
 import { LocalStorageKeys } from '../../../data/shared';
 import { getLabels, seedLabels } from '../../../data/label';
@@ -26,9 +26,9 @@ import { ManageLabelsDialogComponent, ManageLabelsDialogData } from '../labels/m
   },
 })
 export class SidenavComponent {
-  open = input.required<boolean>();
-  expanded = input.required<boolean>();
-  mobile = input.required<boolean | undefined | null>();
+  readonly open = input.required<boolean>();
+  readonly expanded = input.required<boolean>();
+  readonly mobile = input.required<boolean | undefined | null>();
 
   readonly navigation = inject(NavigationService);
   private queryService = inject(QueryService);

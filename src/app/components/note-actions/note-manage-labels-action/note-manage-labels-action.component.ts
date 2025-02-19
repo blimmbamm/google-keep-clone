@@ -19,6 +19,7 @@ import { AsyncPipe } from '@angular/common';
 import { SelectionModel } from '@angular/cdk/collections';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatRipple } from '@angular/material/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-note-manage-labels-action',
@@ -36,6 +37,7 @@ import { MatRipple } from '@angular/material/core';
 export class NoteManageLabelsActionComponent implements OnInit {
   private queryService = inject(QueryService);
   private destroyRef = inject(DestroyRef);
+
   readonly menuTrigger = viewChild.required(MatMenuTrigger);
 
   /**
@@ -117,7 +119,7 @@ export class NoteManageLabelsActionComponent implements OnInit {
     event.stopPropagation();
   }
 
-  handleOpenMenu(event: MouseEvent){
+  handleOpenMenu(event: MouseEvent) {
     event.stopPropagation();
     this.menuOpen.set(true);
   }
@@ -155,14 +157,12 @@ export class NoteManageLabelsActionComponent implements OnInit {
     );
 
     // This can probably be simplified by use of outputFromObservable
-    const selectionChangeSubscription = this.labelsSelection.changed.subscribe(
-      () => {
+    this.labelsSelection.changed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
         this.onNoteLabelsInputChange.emit({
           labels: this.labelsSelection?.selected,
         });
-      }
-    );
-
-    this.destroyRef.onDestroy(() => selectionChangeSubscription.unsubscribe());
+      });
   }
 }

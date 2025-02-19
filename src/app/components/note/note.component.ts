@@ -1,11 +1,4 @@
-import {
-  Component,
-  computed,
-  inject,
-  input,
-  resolveForwardRef,
-  signal,
-} from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { editNote, Note, NoteInput } from '../../../data/notes';
 import { MatIcon } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -48,6 +41,7 @@ import {
 export class NoteComponent {
   readonly queryService = inject(QueryService);
   readonly navigationService = inject(NavigationService);
+  readonly dialog = inject(MatDialog);
 
   readonly note = input.required<Note>();
 
@@ -76,8 +70,6 @@ export class NoteComponent {
       noteInput: { trash: false },
     });
   }
-
-  readonly dialog = inject(MatDialog);
 
   openEditNoteDialog() {
     this.dialog.open<EditNoteComponent, { note: Note }>(EditNoteComponent, {

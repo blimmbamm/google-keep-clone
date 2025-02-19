@@ -1,6 +1,5 @@
 import { Directive, inject, input } from '@angular/core';
 import { QueryService } from '../../../services/query.service';
-import { NavigationService } from '../../../services/navigation.service';
 import { MatDialog } from '@angular/material/dialog';
 import { deleteNote, Note } from '../../../../data/notes';
 import {
@@ -11,12 +10,11 @@ import {
 @Directive({
   selector: '[appDeletePermanentlyAction]',
   host: {
-    '(click)': 'handlePermanentDeletion($event)'
-  }
+    '(click)': 'handlePermanentDeletion($event)',
+  },
 })
 export class DeletePermanentlyActionDirective {
   private queryService = inject(QueryService);
-  readonly navigationService = inject(NavigationService);
   private dialog = inject(MatDialog);
 
   readonly note = input.required<Note>();

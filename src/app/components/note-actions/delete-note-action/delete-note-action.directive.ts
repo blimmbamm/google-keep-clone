@@ -1,6 +1,5 @@
 import { Directive, inject, input, output } from '@angular/core';
 import { QueryService } from '../../../services/query.service';
-import { NavigationService } from '../../../services/navigation.service';
 import { MatDialog } from '@angular/material/dialog';
 import { deleteNote, moveNoteToTrash, Note } from '../../../../data/notes';
 import {
@@ -16,7 +15,6 @@ import {
 })
 export class DeleteNoteActionDirective {
   private queryService = inject(QueryService);
-  readonly navigationService = inject(NavigationService);
   private dialog = inject(MatDialog);
 
   readonly requireConfirmation = input<boolean>(true);
