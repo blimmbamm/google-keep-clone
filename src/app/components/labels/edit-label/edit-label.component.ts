@@ -80,9 +80,7 @@ export class EditLabelComponent
   readonly editLabelMutation = this.queryService.useMutation({
     httpObsFn: (args: { id: number; labelInput: LabelInput }) =>
       editLabel(args.id, args.labelInput),
-    onError: () => {
-      // this.labelNameInput.setValue(this.label().name);
-    },
+    onError: () => {},
     onSuccess: () => {
       this.queryService.refetchCurrentNotes();
       this.queryService.invalidateQuery(['labels']);
@@ -100,7 +98,7 @@ export class EditLabelComponent
     onError: () => {},
     onSuccess: () => {
       this.queryService.invalidateQuery(['labels']);
-      const { labelName, trash } = this.queryService.refetchCurrentNotes();
+      const { labelName } = this.queryService.refetchCurrentNotes();
       // check if navigation is required
       if (this.label().name === labelName) {
         this.navigationService.navigate({ labelName: null, trash: false });

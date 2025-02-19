@@ -24,9 +24,7 @@ export class DeletePermanentlyActionDirective {
   readonly deleteNoteMutation = this.queryService.useMutation({
     httpObsFn: (id: number) => deleteNote(id),
     onError: () => {},
-    onSuccess: (_, id) => {
-      this.queryService.refetchCurrentNotes();
-    },
+    onSuccess: () => this.queryService.refetchCurrentNotes(),
   });
 
   handlePermanentDeletion(event: MouseEvent) {

@@ -48,11 +48,11 @@ export class EditNoteComponent {
   readonly dialogRef = inject(MatDialogRef);
 
   handleEditNote(noteInput: NoteInput) {
-    this.editNoteMutation.mutate(noteInput);
+    this.editNoteMutation.mutate({id: this.data.note.id, noteInput});
   }
 
   editNoteMutation = this.queryService.useMutation({
-    httpObsFn: (noteInput: NoteInput) => editNote(this.data.note.id, noteInput),
+    httpObsFn: (args: {id: number, noteInput: NoteInput}) => editNote(args.id, args.noteInput),
     onError: () => {},
     onSuccess: (_, noteInput) => {
       this.queryService.refetchCurrentNotes();
