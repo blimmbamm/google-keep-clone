@@ -73,11 +73,6 @@ export class AddNoteComponent {
     () => !this.noteState().initial && !this.noteState().empty
   );
 
-  refetchNotes() {
-    const { labelName, trash } = this.navigationService.notesParamsSnapshot();
-    this.queryService.invalidateQuery(['notes', labelName, trash]);
-  }
-
   /**
    * Listen to clicks on root component in order to close the add note component.
    *
@@ -114,7 +109,7 @@ export class AddNoteComponent {
         this.deleteNoteMutation.mutate(this.noteState().note!.id);
       } else {
         // If note is not empty, invalidate queries to display note
-        this.refetchNotes();
+        this.queryService.refetchCurrentNotes();
       }
 
       this.resetComponent();
@@ -162,7 +157,7 @@ export class AddNoteComponent {
         }));
       } else {
         // Refetch notes only if add note was closed in the meantime
-        this.refetchNotes();
+        this.queryService.refetchCurrentNotes();
       }
     },
   });
@@ -180,7 +175,7 @@ export class AddNoteComponent {
         }));
       } else {
         // Refetch notes only if add note was closed in the meantime
-        this.refetchNotes();
+        this.queryService.refetchCurrentNotes();
       }
     },
   });

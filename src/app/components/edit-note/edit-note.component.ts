@@ -55,8 +55,7 @@ export class EditNoteComponent {
     httpObsFn: (noteInput: NoteInput) => editNote(this.data.note.id, noteInput),
     onError: () => {},
     onSuccess: (_, noteInput) => {
-      const { labelName, trash } = this.navigationService.notesParamsSnapshot();
-      this.queryService.invalidateQuery(['notes', labelName, trash]);
+      this.queryService.refetchCurrentNotes();
 
       /**
        * Update the dialog data that was injected into the dialog.

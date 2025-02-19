@@ -31,8 +31,7 @@ export class DeleteNoteActionDirective {
       this.moveToTrash() ? moveNoteToTrash(id) : deleteNote(id),
     onError: () => {},
     onSuccess: (_, id) => {
-      const { labelName, trash } = this.navigationService.notesParamsSnapshot();
-      this.queryService.invalidateQuery(['notes', labelName, trash]);
+      this.queryService.refetchCurrentNotes();
       this.onDeleteNote.emit(id);
     },
   });

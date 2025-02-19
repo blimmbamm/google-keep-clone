@@ -46,7 +46,7 @@ export class NavigationService {
     }),
     tap(({ labelName }) => {
       // If label doesn't exist, navigate home:
-      labelName && !labelExists(labelName) && this.navigate(undefined, false);
+      labelName && !labelExists(labelName) && this.navigate({labelName: null, trash: false});
     })
   );
 
@@ -62,9 +62,15 @@ export class NavigationService {
     return { labelName, trash };
   }
 
-  navigate(label?: string, trash?: boolean) {
-    const fragment =
-      (trash || label) && ((trash && 'trash') || (label && `label/${label}`));
+  navigate(params: NotesQueryParams) {
+    const {labelName, trash} = params;
+
+    let fragment: string | undefined = undefined;
+    if(labelName) {
+      fragment = `label/${labelName}`;
+    } else if(trash) {
+      fragment = 'trash'
+    } 
 
     this.router.navigate([], { fragment });
   }

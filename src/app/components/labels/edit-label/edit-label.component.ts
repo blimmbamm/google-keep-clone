@@ -84,9 +84,8 @@ export class EditLabelComponent
       // this.labelNameInput.setValue(this.label().name);
     },
     onSuccess: () => {
-      const { labelName, trash } = this.navigationService.notesParamsSnapshot();
+      this.queryService.refetchCurrentNotes();
       this.queryService.invalidateQuery(['labels']);
-      this.queryService.invalidateQuery(['notes', labelName, trash]);
     },
   });
 
@@ -101,11 +100,10 @@ export class EditLabelComponent
     onError: () => {},
     onSuccess: () => {
       this.queryService.invalidateQuery(['labels']);
-      const { labelName, trash } = this.navigationService.notesParamsSnapshot();
-      this.queryService.invalidateQuery(['notes', labelName, trash]);
+      const { labelName, trash } = this.queryService.refetchCurrentNotes();
       // check if navigation is required
-      if(this.label().name === labelName) {
-        this.navigationService.navigate(undefined, false)
+      if (this.label().name === labelName) {
+        this.navigationService.navigate({ labelName: null, trash: false });
       }
     },
   });

@@ -25,8 +25,7 @@ export class DeletePermanentlyActionDirective {
     httpObsFn: (id: number) => deleteNote(id),
     onError: () => {},
     onSuccess: (_, id) => {
-      const { labelName, trash } = this.navigationService.notesParamsSnapshot();
-      this.queryService.invalidateQuery(['notes', labelName, trash]);
+      this.queryService.refetchCurrentNotes();
     },
   });
 

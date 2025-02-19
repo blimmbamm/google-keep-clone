@@ -1,12 +1,34 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, ignoreElements, map, Observable, of, shareReplay, skip, startWith, switchMap, tap } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import {
+  BehaviorSubject,
+  catchError,
+  map,
+  Observable,
+  of,
+  skip,
+  startWith,
+  switchMap,
+  tap,
+} from 'rxjs';
+import { NavigationService } from './navigation.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class QueryService {
+  private navigationService = inject(NavigationService);
   private _subjects = new Map<string, BehaviorSubject<null>>();
+
+  /**
+   * Gets current snapshot of note params (all/label/trash) and invalidates
+   * the respective notes query.
+   */
+  refetchCurrentNotes() {
+    const { labelName, trash } = this.navigationService.notesParamsSnapshot();
+    this.invalidateQuery(['notes', labelName, trash]);
+    return { labelName, trash };
+  }
 
   /**
    * Alternate version of `useQuery` using subjects for loading and error state.
@@ -14,7 +36,7 @@ export class QueryService {
   useStandardQuery<T>(args: { httpObs: Observable<T>; queryKey: unknown }) {
     const loading$ = new BehaviorSubject(true);
     const error$ = new BehaviorSubject<HttpErrorResponse | null>(null);
-    
+
     const data$ = this.getSubject(args.queryKey).pipe(
       switchMap(() =>
         args.httpObs.pipe(
@@ -157,5 +179,4 @@ export class QueryService {
   invalidateQuery(queryKey: unknown) {
     this._subjects.get(JSON.stringify(queryKey))?.next(null);
   }
-
 }

@@ -8,7 +8,7 @@
   <!-- All notes / home -->
   <mat-list-item
     [activated]="fragment === null"
-    (click)="navigation.navigate()"
+    (click)="navigation.navigate({labelName: null, trash: false})"
   >
     <mat-icon matListItemIcon>folder</mat-icon>
     @if(expanded()){
@@ -21,7 +21,7 @@
     @for(label of labels; track label.id) {
       <mat-list-item
         [activated]="fragment === label.name"
-        (click)="navigation.navigate(label.name)"
+        (click)="navigation.navigate({labelName: label.name, trash: false})"
       >
         <mat-icon class="material-icons-outlined" matListItemIcon>label</mat-icon>
         @if(expanded()){
@@ -42,7 +42,7 @@
   <!-- Trash -->
   <mat-list-item
     [activated]="fragment === 'trash'"
-    (click)="navigation.navigate(undefined, true)"
+    (click)="navigation.navigate({labelName: null, trash: true})"
   >
     <mat-icon class="material-symbols-outlined" matListItemIcon>delete</mat-icon>
     @if(expanded()){
