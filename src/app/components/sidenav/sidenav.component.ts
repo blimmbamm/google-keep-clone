@@ -9,7 +9,10 @@ import { LocalStorageKeys } from '../../../data/shared';
 import { getLabels, seedLabels } from '../../../data/label';
 import { QueryService } from '../../services/query.service';
 import { MatDialog } from '@angular/material/dialog';
-import { ManageLabelsDialogComponent, ManageLabelsDialogData } from '../labels/manage-labels-dialog/manage-labels-dialog.component';
+import {
+  ManageLabelsDialogComponent,
+  ManageLabelsDialogData,
+} from '../labels/manage-labels-dialog/manage-labels-dialog.component';
 
 @Component({
   selector: 'app-sidenav',
@@ -37,18 +40,18 @@ export class SidenavComponent {
   readonly labelsQuery = this.queryService.useParametrizedQuery({
     paramsObs: of(null),
     httpObsFn: () => getLabels(),
-    queryKey: () => ['labels'],
+    queryKey: () => this.queryService.getLabelsQueryKey(),
   });
 
   startEditLabels() {
-    this.dialog.open<
+    this.dialog.open<ManageLabelsDialogComponent, ManageLabelsDialogData>(
       ManageLabelsDialogComponent,
-      ManageLabelsDialogData
-    >(ManageLabelsDialogComponent, {
-      data: { labels$: this.labelsQuery.data$ }, 
-      panelClass: 'manage-labels-dialog-panel',
-      autoFocus: false
-    });
+      {
+        data: { labels$: this.labelsQuery.data$ },
+        panelClass: 'manage-labels-dialog-panel',
+        autoFocus: false,
+      }
+    );
   }
 
   constructor() {

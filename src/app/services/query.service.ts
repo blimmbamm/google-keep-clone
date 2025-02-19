@@ -11,7 +11,7 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
-import { NavigationService } from './navigation.service';
+import { NavigationService, NotesQueryParams } from './navigation.service';
 
 @Injectable({
   providedIn: 'root',
@@ -20,14 +20,29 @@ export class QueryService {
   private navigationService = inject(NavigationService);
   private _subjects = new Map<string, BehaviorSubject<null>>();
 
+  getNotesQueryKey(params: NotesQueryParams) {
+    return ['notes', params.labelName, params.trash];
+  }
+
+  getLabelsQueryKey() {
+    return ['labels'];
+  }
+
   /**
    * Gets current snapshot of note params (all/label/trash) and invalidates
    * the respective notes query.
    */
   refetchCurrentNotes() {
-    const { labelName, trash } = this.navigationService.notesParamsSnapshot();
-    this.invalidateQuery(['notes', labelName, trash]);
-    return { labelName, trash };
+    const params = this.navigationService.notesParamsSnapshot();
+    this.invalidateQuery(this.getNotesQueryKey(params));
+    return params;
+  }
+
+  /**
+   * Forces all labels queries to be re-executed.
+   */
+  refetchLabels() {
+    this.invalidateQuery(this.getLabelsQueryKey());
   }
 
   /**

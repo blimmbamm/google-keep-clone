@@ -60,7 +60,7 @@ export class NoteManageLabelsActionComponent implements OnInit {
   readonly labelsQuery = this.queryService.useParametrizedQuery({
     paramsObs: of(null),
     httpObsFn: () => getLabels(),
-    queryKey: () => ['labels'],
+    queryKey: () => this.queryService.getLabelsQueryKey(),
   });
 
   /**
@@ -106,7 +106,7 @@ export class NoteManageLabelsActionComponent implements OnInit {
       this.labelsFilter.reset();
       // Exclamation wouldn't be needed if useMutation would work properly
       this.labelsSelection?.select(addedLabel!);
-      this.queryService.invalidateQuery(['labels']);
+      this.queryService.refetchLabels();
     },
   });
 

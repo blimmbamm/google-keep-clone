@@ -21,7 +21,7 @@ export class NotesComponent {
   readonly notesQuery = this.queryService.useParametrizedQuery({
     paramsObs: this.navigationService.notesParamsObs$,
     httpObsFn: (params) => getNotes(params),
-    queryKey: ({ labelName, trash }) => ['notes', labelName, trash],
+    queryKey: (params) => this.queryService.getNotesQueryKey(params),
   });
 
   constructor() {

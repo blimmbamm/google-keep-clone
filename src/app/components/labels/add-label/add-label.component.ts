@@ -55,7 +55,7 @@ export class AddLabelComponent
     onError: () => {},
     onSuccess: () => {
       this.labelNameInput.reset();
-      this.queryService.invalidateQuery(['labels']);
+      this.queryService.refetchLabels();
     },
   });
 

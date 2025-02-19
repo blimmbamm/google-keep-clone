@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { map, Observable, tap } from 'rxjs';
 import { labelExists } from '../../data/label';
 
-interface NotesQueryParams {
+export interface NotesQueryParams {
   labelName: string | null;
   trash: boolean;
 }

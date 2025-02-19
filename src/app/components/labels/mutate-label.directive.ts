@@ -51,9 +51,6 @@ export abstract class MutateLabelDirective<T extends LabelOrNewLabel>
     this.labelNameInput.valueChanges
       .pipe(takeUntilDestroyed())
       .subscribe(() => {
-        if (this.error$?.value) {
-          console.log('Resetting due to input update');
-        }
         this.error$?.value && this.error$.next(null);
       });
 

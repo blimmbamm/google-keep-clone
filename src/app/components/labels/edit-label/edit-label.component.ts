@@ -83,7 +83,7 @@ export class EditLabelComponent
     onError: () => {},
     onSuccess: () => {
       this.queryService.refetchCurrentNotes();
-      this.queryService.invalidateQuery(['labels']);
+      this.queryService.refetchLabels();
     },
   });
 
@@ -97,7 +97,7 @@ export class EditLabelComponent
     httpObsFn: (id: number) => deleteLabel(id),
     onError: () => {},
     onSuccess: () => {
-      this.queryService.invalidateQuery(['labels']);
+      this.queryService.refetchLabels();
       const { labelName } = this.queryService.refetchCurrentNotes();
       // check if navigation is required
       if (this.label().name === labelName) {
