@@ -16,7 +16,16 @@ import {
   NoteInput,
 } from '../../../data/notes';
 import { NavigationService } from '../../services/navigation.service';
-import { fromEvent, Subscription, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  filter,
+  fromEvent,
+  map,
+  skip,
+  Subscription,
+  takeWhile,
+  tap,
+} from 'rxjs';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { NoteActionsComponent } from '../note-actions/note-actions.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -48,6 +57,10 @@ import { DeleteNoteActionDirective } from '../note-actions/delete-note-action/de
 })
 export class AddNoteComponent {
   private appRef = inject(ApplicationRef);
+  readonly queryService = inject(QueryService);
+  readonly navigationService = inject(NavigationService);
+
+  private noteFormComponent = viewChild.required(NoteFormComponent);
 
   /**
    * Whether the component is open/in extended mode, i.e. if it received a click
@@ -55,10 +68,19 @@ export class AddNoteComponent {
   readonly open = signal(false);
   readonly open$ = toObservable(this.open);
 
-  private noteFormComponent = viewChild.required(NoteFormComponent);
-
+  /** Initial note state */
   private INITIAL_NOTE_STATE = { note: null, initial: true, empty: true };
 
+  /**
+   * Tracking the state of the to be added note.
+   *
+   * If note gets added + optionally edited thereafter, it will be stored in `note`.
+   *
+   * `initial` means that the note hasn't been added yet.
+   *
+   * `empty` means that note has no title and no content set. Empty notes will be
+   * discarded without further notification when 'blurring' the add-note component.
+   */
   readonly noteState = signal<{
     note: Note | null;
     initial: boolean;
@@ -69,8 +91,35 @@ export class AddNoteComponent {
     () => this.noteState().note?.backgroundColor || 'inherit'
   );
 
+  /** Whether deletion via delete action button requires user confirmation. */
   readonly deletionRequiresConfirmation = computed(
     () => !this.noteState().initial && !this.noteState().empty
+  );
+
+  /**
+   * Subject that emits current idle status.
+   *
+   * This is needed because mutations (add/edit) are only triggered 300ms after
+   * last key stroke. Any clean-up logic and deletion via delete action has to
+   * wait until these 300ms are actual passed and the mutations have taken place.
+   */
+  readonly mutationsIdle$ = new BehaviorSubject(true);
+
+  /**
+   * Observable that emits when mutations idle status turns from false to true
+   * and then automatically completes.
+   */
+  readonly mutationsTurnIdle$ = this.mutationsIdle$.pipe(
+    takeWhile((idle) => !idle, true),
+    filter((idle) => idle)
+  );
+
+  /** 
+   * This observable emits the information if deletion requires user confirmation 
+   * after mutations (add/edit) turn to idle status.
+   */
+  readonly deletionRequiresConfirmation$ = this.mutationsTurnIdle$.pipe(
+    map(() => this.deletionRequiresConfirmation())
   );
 
   /**
@@ -95,24 +144,28 @@ export class AddNoteComponent {
    * When switching to opened, add listener for outside click.
    *
    * When switching to closed, clear added note if necessary.
+   *
+   * Skip initial emission of `false`.
    */
-  _ = this.open$.pipe(takeUntilDestroyed()).subscribe((open) => {
-    // if opens, add listener for outside click
+  _ = this.open$.pipe(skip(1), takeUntilDestroyed()).subscribe((open) => {
+    // If opens, add listener for outside click,
+    // if closes, do cleanup when add/edit mutations are done
     if (open) {
       this.outsideClickSubscription = this.outsideClick$.subscribe();
     } else {
       this.outsideClickSubscription?.unsubscribe();
 
-      // If open changed to false, check if note has to be deleted or notes should be refetched
-      if (this.noteState().empty && !this.noteState().initial) {
-        // If note is empty, delete it
-        this.deleteNoteMutation.mutate(this.noteState().note!.id);
-      } else {
-        // If note is not empty, invalidate queries to display note
-        this.queryService.refetchCurrentNotes();
-      }
+      this.mutationsTurnIdle$.subscribe(() => {
+        if (this.noteState().note && this.noteState().empty) {
+          // If note is empty, delete it
+          this.deleteNoteMutation.mutate(this.noteState().note!.id);
+        } else if (this.noteState().note) {
+          // If note is not empty, invalidate queries to display note
+          this.queryService.refetchCurrentNotes();
+        }
 
-      this.resetComponent();
+        this.resetComponent();
+      });
     }
   });
 
@@ -127,6 +180,11 @@ export class AddNoteComponent {
     );
   }
 
+  handleDiscardNote() {
+    this.resetComponent();
+    this.handleClose();
+  }
+
   handleClose(event?: MouseEvent) {
     event?.stopPropagation();
 
@@ -137,28 +195,23 @@ export class AddNoteComponent {
     this.open.set(true);
   }
 
+  /** Do not propagate mousedown to outside-click handler */
   doNotPropagate(event: MouseEvent) {
     event.stopPropagation();
   }
-
-  readonly queryService = inject(QueryService);
-  readonly navigationService = inject(NavigationService);
 
   readonly addNoteMutation = this.queryService.useMutation({
     httpObsFn: (noteInput: NoteInput) => addNote(noteInput),
     onError: () => {},
     onSuccess: (note, noteInput) => {
-      if (this.open()) {
-        // If add note is still open, update note state:
-        this.noteState.update((state) => ({
-          ...state,
-          note,
-          empty: !noteInput.title && !noteInput.content,
-        }));
-      } else {
-        // Refetch notes only if add note was closed in the meantime
-        this.queryService.refetchCurrentNotes();
-      }
+      this.noteState.update((state) => ({
+        ...state,
+        note,
+        empty: !noteInput.title && !noteInput.content,
+        initial: false,
+      }));
+
+      this.mutationsIdle$.next(true);
     },
   });
 
@@ -167,16 +220,13 @@ export class AddNoteComponent {
       editNote(inputs.id, inputs.noteInput),
     onError: () => {},
     onSuccess: (note, { noteInput }) => {
-      if (this.open()) {
-        this.noteState.update((state) => ({
-          ...state,
-          note,
-          empty: !noteInput.title && !noteInput.content,
-        }));
-      } else {
-        // Refetch notes only if add note was closed in the meantime
-        this.queryService.refetchCurrentNotes();
-      }
+      this.noteState.update((state) => ({
+        ...state,
+        note,
+        empty: !noteInput.title && !noteInput.content,
+      }));
+
+      this.mutationsIdle$.next(true);
     },
   });
 
@@ -199,10 +249,15 @@ export class AddNoteComponent {
         noteInput,
       });
     }
+  }
 
-    // Set initial state to false, if still open
-    if (this.open()) {
-      this.noteState.update((state) => ({ ...state, initial: false }));
-    }
+  /**
+   * When value changes, set mutations as not idle, because they will be
+   * triggered soon (after 300ms of debounce time).
+   */
+  ngAfterViewInit() {
+    this.noteFormComponent().noteForm.valueChanges.subscribe(() => {
+      this.mutationsIdle$.value && this.mutationsIdle$.next(false);
+    });
   }
 }

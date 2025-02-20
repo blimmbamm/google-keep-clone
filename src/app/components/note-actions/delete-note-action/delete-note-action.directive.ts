@@ -6,6 +6,7 @@ import {
   ConfirmDialogComponent,
   ConfirmDialogData,
 } from '../../confirm-dialog/confirm-dialog.component';
+import { Observable, of, take } from 'rxjs';
 
 @Directive({
   selector: '[appDeleteNoteAction]',
@@ -17,55 +18,65 @@ export class DeleteNoteActionDirective {
   private queryService = inject(QueryService);
   private dialog = inject(MatDialog);
 
-  readonly requireConfirmation = input<boolean>(true);
   readonly deleteDialogMessage = input.required<string>();
   readonly tooltip = input<string>();
+
+  /** this will emit once deletion is finished */
   readonly onDeleteNote = output<number | void>();
   readonly note = input.required<Note | null>();
   readonly moveToTrash = input(true);
+
+  /**
+   * As default, this emits true right away. For add-note this is conditional
+   * and asynchronous information, hence provided as stream.
+   */
+  readonly requireConfirmation$ = input<Observable<boolean>>(of(true));
+
+  /** Whether notes should be refreshed. Default `true`, `false` for add-note. */
+  readonly refetchOnDelete = input(true);
 
   readonly deleteNoteMutation = this.queryService.useMutation({
     httpObsFn: (id: number) =>
       this.moveToTrash() ? moveNoteToTrash(id) : deleteNote(id),
     onError: () => {},
     onSuccess: (_, id) => {
-      this.queryService.refetchCurrentNotes();
+      this.refetchOnDelete() && this.queryService.refetchCurrentNotes();
       this.onDeleteNote.emit(id);
     },
   });
 
+  /**
+   * Handler for deleting note. Deletion starts once information is available
+   * on whether user confirmation is required.
+   *
+   * If confirmation is required, open confirmation dialog, otherwise delete
+   * note right away.
+   */
   handleDeleteNote(event: MouseEvent) {
     event.stopPropagation();
 
-    /**
-     * If confirmation is required to delete the note, open confirm dialog
-     * and trigger mutation if dialog sends back `true` when closing.
-     */
-    if (this.requireConfirmation()) {
-      this.dialog
-        .open<ConfirmDialogComponent, ConfirmDialogData, boolean>(
-          ConfirmDialogComponent,
-          {
-            data: { dialogMessage: this.deleteDialogMessage() },
-            panelClass: 'dialog-panel',
-            autoFocus: false,
-          }
-        )
-        .afterClosed()
-        .subscribe((confirmed) => {
-          if (confirmed) {
-            this.deleteNoteMutation.mutate(this.note()!.id);
-          }
-        });
-    } else {
-      const note = this.note();
-      if (note) {
-        // only trigger delete mutation if note is truthy
-        this.deleteNoteMutation.mutate(note.id);
-      } else {
-        // If no mutation had to be triggered, emit onDeleteNote event right away:
-        this.onDeleteNote.emit();
-      }
-    }
+    this.requireConfirmation$()
+      .pipe(take(1))
+      .subscribe((requireConfirmation) => {
+        if (requireConfirmation) {
+          this.dialog
+            .open<ConfirmDialogComponent, ConfirmDialogData, boolean>(
+              ConfirmDialogComponent,
+              {
+                data: { dialogMessage: this.deleteDialogMessage() },
+                panelClass: 'dialog-panel',
+                autoFocus: false,
+              }
+            )
+            .afterClosed()
+            .subscribe((confirmed) => {
+              if (confirmed) {
+                this.deleteNoteMutation.mutate(this.note()!.id);
+              }
+            });
+        } else {
+          this.onDeleteNote.emit();
+        }
+      });
   }
 }

@@ -17,12 +17,13 @@
     <button 
       mat-icon-button 
       appDeleteNoteAction 
-      [note]="noteState().note"
-      [requireConfirmation]="deletionRequiresConfirmation()"
+      [note]="noteState().note"      
       tooltip="Discard note"
-      (onDeleteNote)="handleClose()"
+      (onDeleteNote)="handleDiscardNote()"
       deleteDialogMessage="Discard note?"
       [moveToTrash]="false"
+      [requireConfirmation$]="deletionRequiresConfirmation$"
+      [refetchOnDelete]="false"
     >
       <mat-icon class="material-symbols-outlined">delete</mat-icon>
     </button>
