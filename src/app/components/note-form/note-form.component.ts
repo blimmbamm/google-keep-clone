@@ -43,7 +43,7 @@ export class NoteFormComponent {
 
   _ = this.noteForm.valueChanges
     .pipe(
-      debounceTime(2000),
+      debounceTime(300),
       takeUntilDestroyed(),
     )
     .subscribe((value) => {
