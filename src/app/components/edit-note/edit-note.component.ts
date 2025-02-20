@@ -17,7 +17,7 @@ import { CreateCopyActionDirective } from '../note-actions/create-copy-action/cr
 import { DeleteNoteActionDirective } from '../note-actions/delete-note-action/delete-note-action.directive';
 
 export interface EditNoteDialogData {
-  note: Note
+  note: Note;
 }
 
 @Component({
@@ -45,36 +45,37 @@ export interface EditNoteDialogData {
 export class EditNoteComponent {
   public data = inject<EditNoteDialogData>(MAT_DIALOG_DATA);
 
-  readonly lastModifiedDate = computed(() => {})
+  readonly lastModifiedDate = computed(() => {});
 
   readonly queryService = inject(QueryService);
   readonly navigationService = inject(NavigationService);
   readonly dialogRef = inject(MatDialogRef);
 
   private editNoteMutation = this.queryService.useMutation({
-    httpObsFn: (args: {id: number, noteInput: NoteInput}) => editNote(args.id, args.noteInput),
+    httpObsFn: (args: { id: number; noteInput: NoteInput }) =>
+      editNote(args.id, args.noteInput),
     onError: () => {},
-    onSuccess: (_, noteInput) => {
+    onSuccess: (note, _) => {
       this.queryService.refetchCurrentNotes();
 
       /**
        * Update the dialog data that was injected into the dialog.
        *
        * The Problem is that data in dialog isn't refreshed/kept up to date,
-       * even if data comes from stateful properties in parent component.
+       * even if data comes from stateful properties in parent component. Hence,
+       * update it with the data returned by the mutation.
        */
       this.data = {
         note: {
           ...this.data.note,
-          ...noteInput,
-          lastModified: new Date(), // Ok, this is really ugly :D
+          ...note,
         },
       };
     },
   });
 
   handleEditNote(noteInput: NoteInput) {
-    this.editNoteMutation.mutate({id: this.data.note.id, noteInput});
+    this.editNoteMutation.mutate({ id: this.data.note.id, noteInput });
   }
 
   handleDoneEditing() {
