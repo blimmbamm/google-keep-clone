@@ -45,8 +45,20 @@ export class NavigationService {
       return { labelName, trash };
     }),
     tap(({ labelName }) => {
-      // If label doesn't exist, navigate home:
-      labelName && !labelExists(labelName) && this.navigate({labelName: null, trash: false});
+      /**
+       * If label doesn't exist, navigate home. This actually is a "backend" call
+       * and since it is not wrapped with useQuery or useParametrizedQuery, errors are
+       * not handled.
+       *
+       * There could be some `ErrorService` that could be notified here, but since also
+       * the other label queries will fail in case we have an error here, the common cause
+       * will be handled.
+       */
+      try {
+        labelName &&
+          !labelExists(labelName) &&
+          this.navigate({ labelName: null, trash: false });
+      } catch {}
     })
   );
 
@@ -63,14 +75,14 @@ export class NavigationService {
   }
 
   navigate(params: NotesQueryParams) {
-    const {labelName, trash} = params;
+    const { labelName, trash } = params;
 
     let fragment: string | undefined = undefined;
-    if(labelName) {
+    if (labelName) {
       fragment = `label/${labelName}`;
-    } else if(trash) {
-      fragment = 'trash'
-    } 
+    } else if (trash) {
+      fragment = 'trash';
+    }
 
     this.router.navigate([], { fragment });
   }

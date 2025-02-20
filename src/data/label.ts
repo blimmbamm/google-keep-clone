@@ -1,5 +1,5 @@
 import { readNotes, saveNotes } from './notes';
-import { LocalStorageKeys, toObs } from './shared';
+import { GLOBAL_ERROR, LocalStorageKeys, toObs } from './shared';
 
 export interface Label {
   id: number;
@@ -25,24 +25,34 @@ export function seedLabels() {
  * Return all labels stored in localStorage.
  */
 function readLabels() {
-  return JSON.parse(localStorage.getItem(LocalStorageKeys.LABELS)!) as Label[];
+  try {
+    return JSON.parse(
+      localStorage.getItem(LocalStorageKeys.LABELS)!
+    ) as Label[];
+  } catch {
+    throw Error(GLOBAL_ERROR);
+  }
 }
 
 /**
  * Persist labels in localStorage.
  */
 function saveLabels(labels: Label[]) {
-  localStorage.setItem(
-    LocalStorageKeys.LABELS,
-    JSON.stringify(
-      labels.sort((label1, label2) => (label1.name < label2.name ? -1 : 1))
-    )
-  );
+  try {
+    localStorage.setItem(
+      LocalStorageKeys.LABELS,
+      JSON.stringify(
+        labels.sort((label1, label2) => (label1.name < label2.name ? -1 : 1))
+      )
+    );
+  } catch {
+    throw Error(GLOBAL_ERROR);
+  }
 }
 
 export function labelExists(labelName: string) {
   const labels = readLabels();
-  return labels.some(label => label.name === labelName)
+  return labels.some((label) => label.name === labelName);
 }
 
 /**

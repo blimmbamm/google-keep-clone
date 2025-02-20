@@ -8,16 +8,24 @@ import {
   of,
   skip,
   startWith,
+  Subject,
   switchMap,
   tap,
 } from 'rxjs';
 import { NavigationService, NotesQueryParams } from './navigation.service';
+import { DataErrorStatus } from '../../data/shared';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { seedNotes } from '../../data/notes';
+import { seedLabels } from '../../data/label';
 
 @Injectable({
   providedIn: 'root',
 })
 export class QueryService {
   private navigationService = inject(NavigationService);
+  private snackBar = inject(MatSnackBar);
+
   private _subjects = new Map<string, BehaviorSubject<null>>();
 
   getNotesQueryKey(params: NotesQueryParams) {
@@ -27,6 +35,24 @@ export class QueryService {
   getLabelsQueryKey() {
     return ['labels'];
   }
+
+  readonly globalError$ = new Subject<void>();
+
+  private globalErrorSubscription = this.globalError$
+    .pipe(takeUntilDestroyed())
+    .subscribe(() => {
+      const snackBarRef = this.snackBar.open(
+        'Something is wrong with your data.',
+        'Reset data'
+      );
+      
+      snackBarRef.onAction().subscribe(() => {
+        seedNotes();
+        seedLabels();
+        this.refetchCurrentNotes();
+        this.refetchLabels();
+      });      
+    });
 
   /**
    * Gets current snapshot of note params (all/label/trash) and invalidates
@@ -102,6 +128,10 @@ export class QueryService {
           args.httpObsFn(params).pipe(
             startWith(null),
             catchError((error: HttpErrorResponse) => {
+              // check if error should emit in global or local error stream
+              if (error.status === DataErrorStatus.HANDLE_GLOBALLY) {
+                this.globalError$.next();
+              }
               error$.next(error);
               return of(error);
             })
@@ -147,6 +177,10 @@ export class QueryService {
             loading$.next(!Boolean(data));
           }),
           catchError((error: HttpErrorResponse) => {
+            // check if error should emit in global or local error stream
+            if (error.status === DataErrorStatus.HANDLE_GLOBALLY) {
+              this.globalError$.next();
+            }
             error$.next(error);
             loading$.next(false);
             throw error;

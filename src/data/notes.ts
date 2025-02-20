@@ -1,5 +1,5 @@
 import { Label } from './label';
-import { LocalStorageKeys, toObs } from './shared';
+import { GLOBAL_ERROR, LocalStorageKeys, toObs } from './shared';
 
 export interface Note {
   id: number;
@@ -23,14 +23,22 @@ export interface NoteInput {
  * Return all notes stored in localStorage.
  */
 export function readNotes() {
-  return JSON.parse(localStorage.getItem(LocalStorageKeys.NOTES)!) as Note[];
+  try {
+    return JSON.parse(localStorage.getItem(LocalStorageKeys.NOTES)!) as Note[];
+  } catch {
+    throw Error(GLOBAL_ERROR);
+  }
 }
 
 /**
  * Persist labels in localStorage.
  */
 export function saveNotes(notes: Note[]) {
-  localStorage.setItem(LocalStorageKeys.NOTES, JSON.stringify(notes));
+  try {
+    localStorage.setItem(LocalStorageKeys.NOTES, JSON.stringify(notes));
+  } catch {
+    throw Error(GLOBAL_ERROR);
+  }
 }
 
 /**

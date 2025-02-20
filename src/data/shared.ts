@@ -1,16 +1,24 @@
-import { HttpErrorResponse } from "@angular/common/http";
-import { Observable, of, throwError } from "rxjs";
+import { HttpErrorResponse } from '@angular/common/http';
+import { Observable, of, throwError } from 'rxjs';
 
 export enum LocalStorageKeys {
   NOTES = 'notes',
   LABELS = 'labels',
   NAV_MENU_OPEN_STATE = 'nav_menu_open',
 }
+
+export enum DataErrorStatus {
+  HANDLE_GLOBALLY = 500,
+  HANDLE_LOCALLY = 400,
+}
+
+export const GLOBAL_ERROR = 'global_error';
+
 /**
- * Transforms a synchronous function to an observable version. 
- * 
- * Any errors that the function throws will also be emitted in an 
- * observable manner by throwing a `HttpErrorResponse`, like Angular's 
+ * Transforms a synchronous function to an observable version.
+ *
+ * Any errors that the function throws will also be emitted in an
+ * observable manner by throwing a `HttpErrorResponse`, like Angular's
  * http client does.
  */
 export function toObs<S extends any[], T>(
@@ -20,7 +28,11 @@ export function toObs<S extends any[], T>(
     try {
       return of(fn(...args));
     } catch (error) {
-      return throwError(() => new HttpErrorResponse({ error }));
+      const status =
+        (error as Error).message === GLOBAL_ERROR
+          ? DataErrorStatus.HANDLE_GLOBALLY
+          : DataErrorStatus.HANDLE_LOCALLY;
+      return throwError(() => new HttpErrorResponse({ error, status }));
     }
   };
 }
