@@ -10,6 +10,11 @@
   <span class="spacer"></span>
   <app-searchbar></app-searchbar>
   <span class="spacer"></span>
+  @if (loading()) { 
+    <mat-spinner diameter="24"></mat-spinner> 
+  } @else {
+    <mat-icon class="material-symbols-outlined">cloud_done</mat-icon>
+  } 
   <button mat-icon-button>
     <mat-icon>question_mark</mat-icon>
   </button>

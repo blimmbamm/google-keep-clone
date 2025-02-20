@@ -15,6 +15,8 @@ header {
   color: var(--header-font-color);
   --mat-sys-on-surface-variant: var(--header-font-color);
   user-select: none;
+
+  --mat-sys-primary: var(--mat-sys-on-surface-variant);
 }
 
 .menu {

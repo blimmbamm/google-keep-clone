@@ -22,6 +22,8 @@ import {
   setNavMenuOpenState,
 } from '../../data/side-nav-state';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { QueryService } from '../services/query.service';
 
 @Component({
   selector: 'app-layout',
@@ -33,12 +35,21 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     AsyncPipe,
     SearchbarComponent,
     NotesComponent,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss',
 })
 export class LayoutComponent implements AfterContentInit {
   readonly navigation = inject(NavigationService);
+  readonly queryService = inject(QueryService);
+
+  /** loading signal that reflects global loading state from queryService. */
+  readonly loading = signal(false);
+
+  _ = this.queryService.globalLoading$.subscribe((loading) => {
+    this.loading.set(loading);
+  })
 
   /**
    * #### EXPLANATION: SideNav state ####

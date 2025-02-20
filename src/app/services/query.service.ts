@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import {
   BehaviorSubject,
   catchError,
+  delay,
   map,
   Observable,
   of,
@@ -36,8 +37,15 @@ export class QueryService {
     return ['labels'];
   }
 
+  /** Random delay s.t. loading spinner is actually visible */
+  randomDelayMs(){
+    return Math.floor(Math.random()*700);
+  }
+
+  /** Subject that emits if a 'global' error occurs. */
   readonly globalError$ = new Subject<void>();
 
+  /** Open snackbar in case of global error */
   private globalErrorSubscription = this.globalError$
     .pipe(takeUntilDestroyed())
     .subscribe(() => {
@@ -53,6 +61,9 @@ export class QueryService {
         this.refetchLabels();
       });      
     });
+
+  /** Subject for global loading state. This is used for the spinner in top toolbar */
+  readonly globalLoading$ = new BehaviorSubject(false);
 
   /**
    * Gets current snapshot of note params (all/label/trash) and invalidates
@@ -123,10 +134,12 @@ export class QueryService {
       .pipe(
         tap(() => {
           loading$.next(true);
+          !this.globalLoading$.value && this.globalLoading$.next(true);
         }),
         switchMap((params) =>
           args.httpObsFn(params).pipe(
-            startWith(null),
+            delay(this.randomDelayMs()),
+            startWith(null), 
             catchError((error: HttpErrorResponse) => {
               // check if error should emit in global or local error stream
               if (error.status === DataErrorStatus.HANDLE_GLOBALLY) {
@@ -142,6 +155,7 @@ export class QueryService {
           // return null in case of error, data otherwise:
           if (value) {
             loading$.next(false);
+            this.globalLoading$.value && this.globalLoading$.next(false);
             if (value instanceof HttpErrorResponse) {
               return null;
             } else {
@@ -170,11 +184,14 @@ export class QueryService {
       return args
         .httpObsFn(inputs)
         .pipe(
+          delay(this.randomDelayMs()),
           startWith(null),
           tap((data) => {
             data$.next(data);
             error$.next(null);
+
             loading$.next(!Boolean(data));
+            this.globalLoading$.next(!Boolean(data));
           }),
           catchError((error: HttpErrorResponse) => {
             // check if error should emit in global or local error stream
@@ -182,7 +199,9 @@ export class QueryService {
               this.globalError$.next();
             }
             error$.next(error);
+
             loading$.next(false);
+            this.globalLoading$.next(false);
             throw error;
           }),
           skip(1)

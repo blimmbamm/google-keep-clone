@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map, Observable, tap } from 'rxjs';
 import { labelExists } from '../../data/label';
+import { I } from '@angular/cdk/keycodes';
 
 export interface NotesQueryParams {
   labelName: string | null;
@@ -83,6 +84,8 @@ export class NavigationService {
     } else if (trash) {
       fragment = 'trash';
     }
+    
+    // fragment ? this.router.navigate([], {fragment}) : this.router.navigate([]);
 
     this.router.navigate([], { fragment });
   }
