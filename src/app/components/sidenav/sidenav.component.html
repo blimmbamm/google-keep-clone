@@ -49,4 +49,14 @@
       <p>Trash</p>
     }
   </mat-list-item>
+
+  <!-- Reset data -->
+  <mat-list-item
+    (click)="handleResetData()"
+  >
+    <mat-icon class="material-symbols-outlined" matListItemIcon>restart_alt</mat-icon>
+    @if(expanded()){
+      <p>Reset data</p>
+    }
+  </mat-list-item>
 </mat-nav-list>

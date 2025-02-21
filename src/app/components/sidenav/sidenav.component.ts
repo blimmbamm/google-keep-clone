@@ -13,6 +13,11 @@ import {
   ManageLabelsDialogComponent,
   ManageLabelsDialogData,
 } from '../labels/manage-labels-dialog/manage-labels-dialog.component';
+import {
+  ConfirmDialogComponent,
+  ConfirmDialogData,
+} from '../confirm-dialog/confirm-dialog.component';
+import { seedNotes } from '../../../data/notes';
 
 @Component({
   selector: 'app-sidenav',
@@ -58,5 +63,26 @@ export class SidenavComponent {
     if (!localStorage.getItem(LocalStorageKeys.LABELS)) {
       seedLabels();
     }
+  }
+
+  handleResetData() {
+    this.dialog
+      .open<ConfirmDialogComponent, ConfirmDialogData, boolean>(
+        ConfirmDialogComponent,
+        {
+          data: { dialogMessage: 'Reset notes and labels to initial data?' },
+          autoFocus: false,
+          panelClass: 'dialog-panel',
+        }
+      )
+      .afterClosed()
+      .subscribe((confirm) => {
+        if (confirm) {
+          seedNotes();
+          seedLabels();
+          this.queryService.refetchCurrentNotes();
+          this.queryService.refetchLabels();
+        }
+      });
   }
 }

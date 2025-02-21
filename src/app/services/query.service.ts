@@ -39,7 +39,7 @@ export class QueryService {
 
   /** Random delay s.t. loading spinner is actually visible */
   randomDelayMs(){
-    return Math.floor(Math.random()*700);
+    return Math.floor(Math.random()*500);
   }
 
   /** Subject that emits if a 'global' error occurs. */
@@ -139,7 +139,11 @@ export class QueryService {
         switchMap((params) =>
           args.httpObsFn(params).pipe(
             delay(this.randomDelayMs()),
-            startWith(null), 
+            /**
+             * don't start with null to keep old data on 
+             * screen until new data is available
+             */
+            // startWith(null), 
             catchError((error: HttpErrorResponse) => {
               // check if error should emit in global or local error stream
               if (error.status === DataErrorStatus.HANDLE_GLOBALLY) {

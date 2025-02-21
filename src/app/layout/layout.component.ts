@@ -24,6 +24,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { QueryService } from '../services/query.service';
+import { AboutComponent } from "../components/about/about.component";
 
 @Component({
   selector: 'app-layout',
@@ -36,7 +37,8 @@ import { QueryService } from '../services/query.service';
     SearchbarComponent,
     NotesComponent,
     MatProgressSpinnerModule,
-  ],
+    AboutComponent
+],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss',
 })
