@@ -1,0 +1,19 @@
+<button mat-icon-button (click)="handleShowAboutDialog()">
+  <mat-icon>question_mark</mat-icon>
+</button>
+
+<ng-template #dialog>
+  <div class="dialog">
+    <p class="title">Credits</p>
+    <p>
+      Special thanks go to
+      <a
+        href="https://www.flaticon.com/free-icons/sticky-note"
+        title="sticky-note icons"
+        >Muhammad Usman - Flaticon</a
+      >, who created the app logo icon. ❤️
+    </p>
+
+    <button mat-button mat-dialog-close>Ok</button>
+  </div>
+</ng-template>

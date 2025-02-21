@@ -1,0 +1,16 @@
+.dialog {
+  display: block;
+  padding: 1rem;
+
+  --mat-sys-primary: var(--mat-sys-on-surface-variant);
+  
+  button {
+    display: block;
+    margin-left: auto;
+  }
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 500;;
+}
