@@ -25,6 +25,9 @@ import { seedNotes } from '../../../data/notes';
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.scss',
   host: {
+    // Add overflow-y scroll if open
+    '[class.open]': 'open()',
+
     // Sidenav is closed or app is in mobile view:
     '[class.closed-or-mobile]': '!open() || mobile()',
 
@@ -55,6 +58,7 @@ export class SidenavComponent {
         data: { labels$: this.labelsQuery.data$ },
         panelClass: 'manage-labels-dialog-panel',
         autoFocus: false,
+        maxHeight: "80vh",
       }
     );
   }

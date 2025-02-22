@@ -20,6 +20,7 @@ import {
   ConfirmDialogComponent,
   ConfirmDialogData,
 } from '../confirm-dialog/confirm-dialog.component';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-note',
@@ -66,6 +67,12 @@ export class NoteComponent {
       this.queryService.refetchCurrentNotes();
     },
   });
+
+  readonly mobile$ = inject(BreakpointObserver)
+    .observe(Breakpoints.XSmall)
+    .subscribe((state) => {
+      this.actionsVisible.set(state.matches);
+    });
 
   restoreFromTrash() {
     this.editNoteMutation.mutate({

@@ -1,4 +1,4 @@
-import { Directive, inject, input, output } from '@angular/core';
+import { Directive, ElementRef, inject, input, output } from '@angular/core';
 import { QueryService } from '../../../services/query.service';
 import { MatDialog } from '@angular/material/dialog';
 import { deleteNote, moveNoteToTrash, Note } from '../../../../data/notes';
@@ -15,6 +15,7 @@ import { Observable, of, take } from 'rxjs';
   },
 })
 export class DeleteNoteActionDirective {
+  private elementRef = inject<ElementRef<HTMLButtonElement>>(ElementRef)
   private queryService = inject(QueryService);
   private dialog = inject(MatDialog);
 
@@ -53,6 +54,7 @@ export class DeleteNoteActionDirective {
    * note right away.
    */
   handleDeleteNote(event: MouseEvent) {
+    this.elementRef.nativeElement.blur();
     event.stopPropagation();
 
     this.requireConfirmation$()
@@ -65,7 +67,7 @@ export class DeleteNoteActionDirective {
               {
                 data: { dialogMessage: this.deleteDialogMessage() },
                 panelClass: 'dialog-panel',
-                autoFocus: false,
+                autoFocus: false, 
               }
             )
             .afterClosed()

@@ -23,10 +23,6 @@ header {
   transform: scale(1.2)
 }
 
-// button.mdc-icon-button {
-//   transform: scale(1.2);
-// }
-
 .logo {
   height: 55%;
 }
@@ -37,6 +33,10 @@ header {
 
 .title {
   font-size: 1.5em;
+  max-width: 120px;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 #container {

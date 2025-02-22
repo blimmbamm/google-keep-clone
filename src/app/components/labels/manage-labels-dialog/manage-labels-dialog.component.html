@@ -4,12 +4,15 @@
 <app-add-label [(currentLabel)]="currentLabel"></app-add-label>
 
 @if(labels) {
-  @for(label of labels; track label.id) {
-    <app-edit-label 
-      [label]="label"
-      [(currentLabel)]="currentLabel"
-    ></app-edit-label>
-  }
+  <div class="labels-list">
+    @for(label of labels; track label.id) {
+      <app-edit-label 
+        [label]="label"
+        [(currentLabel)]="currentLabel"
+      ></app-edit-label>
+    }
+
+  </div>
 }
 
 <div class="close">

@@ -1,3 +1,12 @@
+:host {
+  overflow-y: hidden;
+  background-color: white;
+
+  &.open {
+    overflow-y: auto;
+  }
+}
+
 .collapsed {
   width: 48px;
   padding-right: 0 !important;
@@ -27,12 +36,18 @@ mat-nav-list {
 }
 
 :host.closed-or-mobile {
-  background-color: white;
   position: absolute;
   bottom: 0;
   top: 0;
+  z-index: 1000;
 }
 
 :host.closed-or-mobile-expanded {
   box-shadow: 0px 10px 10px rgb(197, 197, 197);
+  overflow-y: auto;
+}
+
+.label-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

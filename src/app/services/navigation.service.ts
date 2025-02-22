@@ -2,7 +2,6 @@ import { inject, Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map, Observable, tap } from 'rxjs';
 import { labelExists } from '../../data/label';
-import { I } from '@angular/cdk/keycodes';
 
 export interface NotesQueryParams {
   labelName: string | null;
@@ -22,7 +21,7 @@ export class NavigationService {
    */
   readonly fragment$ = this.route.fragment.pipe(
     map((fragment) => {
-      const label = fragment && fragment.match(/^label\/(\w+)$/)?.[1];
+      const label = fragment && fragment.match(/^label\/(.+)$/)?.[1];
       return label || fragment;
     })
   );
@@ -70,7 +69,7 @@ export class NavigationService {
   notesParamsSnapshot(): NotesQueryParams {
     let fragment = this.route.snapshot.fragment;
     const labelName =
-      (fragment && fragment.match(/^label\/(\w+)$/)?.[1]) || null;
+      (fragment && fragment.match(/^label\/(.+)$/)?.[1]) || null;
     const trash = fragment === 'trash';
     return { labelName, trash };
   }
@@ -84,8 +83,8 @@ export class NavigationService {
     } else if (trash) {
       fragment = 'trash';
     }
+
     
-    // fragment ? this.router.navigate([], {fragment}) : this.router.navigate([]);
 
     this.router.navigate([], { fragment });
   }
