@@ -10,7 +10,10 @@ import { NavigationService } from '../../services/navigation.service';
 import { ChangeBackgroundColorActionComponent } from '../note-actions/change-background-color-action/change-background-color-action.component';
 import { CreateCopyActionDirective } from '../note-actions/create-copy-action/create-copy-action.directive';
 import { MatDialog } from '@angular/material/dialog';
-import { EditNoteComponent, EditNoteDialogData } from '../edit-note/edit-note.component';
+import {
+  EditNoteComponent,
+  EditNoteDialogData,
+} from '../edit-note/edit-note.component';
 import { DeleteNoteActionDirective } from '../note-actions/delete-note-action/delete-note-action.directive';
 import { DeletePermanentlyActionDirective } from '../note-actions/delete-permanently-action/delete-permanently-action.directive';
 import {

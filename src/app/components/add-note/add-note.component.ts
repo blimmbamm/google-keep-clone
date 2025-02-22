@@ -18,11 +18,14 @@ import {
 import { NavigationService } from '../../services/navigation.service';
 import {
   BehaviorSubject,
+  debounceTime,
   filter,
   fromEvent,
   map,
+  of,
   skip,
   Subscription,
+  switchMap,
   takeWhile,
   tap,
 } from 'rxjs';
@@ -34,6 +37,7 @@ import { LabelsStackComponent } from '../labels/labels-stack/labels-stack.compon
 import { NoteManageLabelsActionComponent } from '../note-actions/note-manage-labels-action/note-manage-labels-action.component';
 import { ChangeBackgroundColorActionComponent } from '../note-actions/change-background-color-action/change-background-color-action.component';
 import { DeleteNoteActionDirective } from '../note-actions/delete-note-action/delete-note-action.directive';
+import { getLabelByName } from '../../../data/label';
 
 @Component({
   selector: 'app-add-note',
@@ -63,6 +67,57 @@ export class AddNoteComponent {
   private noteFormComponent = viewChild.required(NoteFormComponent);
 
   /**
+   * Outside click stream gets subscribed when component is opened and unsubscribed
+   * when closed.
+   */
+  private outsideClickSubscription?: Subscription;
+
+  /**
+   * Subscription to async information on currently visiting label; has to
+   * be unsubscribed when closing the add-note component.
+   */
+  private preselectLabelSubscription?: Subscription;
+
+  /**
+   * Subject that emits current idle status.
+   *
+   * This is needed because mutations (add/edit) are only triggered 300ms after
+   * last key stroke. Any clean-up logic and deletion via delete action has to
+   * wait until these 300ms are actual passed and the mutations have taken place.
+   */
+  readonly mutationsIdle$ = new BehaviorSubject(true);
+
+  /**
+   * Observable that emits `true` when mutations idle status is `true` or
+   * asynchronously emits `true` as soon as status turns from `false` to `true`
+   * and then automatically completes.
+   */
+  readonly mutationsTurnIdle$ = this.mutationsIdle$.pipe(
+    takeWhile((idle) => !idle, true),
+    filter((idle) => idle),
+  );
+
+  readonly typingInitial = signal(true);
+  readonly mutationsIdleOnStartTyping = signal(true);
+
+  /**
+   * Query for the current label, based on fragment information. If there is a
+   * label, this gets added to the new note automatically in the beginning.
+   */
+  readonly labelQuery = this.queryService.useParametrizedQuery({
+    paramsObs: this.navigationService.notesParamsObs$.pipe(
+      /**
+       * Enter non-idle state when asynchronously checking label.
+       */
+      tap(() => this.mutationsIdle$.next(false)),
+      map((params) => params.labelName)
+    ),
+    httpObsFn: (labelName) =>
+      labelName ? getLabelByName(labelName) : of(null),
+    queryKey: (labelName) => ['label', labelName],
+  });
+
+  /**
    * Whether the component is open/in extended mode, i.e. if it received a click
    */
   readonly open = signal(false);
@@ -72,14 +127,11 @@ export class AddNoteComponent {
   private INITIAL_NOTE_STATE = { note: null, initial: true, empty: true };
 
   /**
-   * Tracking the state of the to be added note.
-   *
-   * If note gets added + optionally edited thereafter, it will be stored in `note`.
-   *
-   * `initial` means that the note hasn't been added yet.
-   *
-   * `empty` means that note has no title and no content set. Empty notes will be
-   * discarded without further notification when 'blurring' the add-note component.
+   * Tracking the state of the to be added note. If note gets added + optionally
+   * edited thereafter, it will be stored in `note`. `initial` means that the note
+   * hasn't been added yet. `empty` means that note has no title and no content set.
+   * Empty notes will be discarded without further notification when 'blurring'
+   * the add-note component.
    */
   readonly noteState = signal<{
     note: Note | null;
@@ -97,25 +149,7 @@ export class AddNoteComponent {
   );
 
   /**
-   * Subject that emits current idle status.
-   *
-   * This is needed because mutations (add/edit) are only triggered 300ms after
-   * last key stroke. Any clean-up logic and deletion via delete action has to
-   * wait until these 300ms are actual passed and the mutations have taken place.
-   */
-  readonly mutationsIdle$ = new BehaviorSubject(true);
-
-  /**
-   * Observable that emits when mutations idle status turns from false to true
-   * and then automatically completes.
-   */
-  readonly mutationsTurnIdle$ = this.mutationsIdle$.pipe(
-    takeWhile((idle) => !idle, true),
-    filter((idle) => idle)
-  );
-
-  /** 
-   * This observable emits the information if deletion requires user confirmation 
+   * This observable emits the information if deletion requires user confirmation
    * after mutations (add/edit) turn to idle status.
    */
   readonly deletionRequiresConfirmation$ = this.mutationsTurnIdle$.pipe(
@@ -133,13 +167,7 @@ export class AddNoteComponent {
   ).pipe(tap(() => this.open.set(false)));
 
   /**
-   * Outside click stream gets subscribed when component is opened and unsubscribed
-   * when closed.
-   */
-  private outsideClickSubscription?: Subscription;
-
-  /**
-   * Open signal state transformed to observable stream.
+   * Subscribe for changes in open state.
    *
    * When switching to opened, add listener for outside click.
    *
@@ -148,12 +176,32 @@ export class AddNoteComponent {
    * Skip initial emission of `false`.
    */
   _ = this.open$.pipe(skip(1), takeUntilDestroyed()).subscribe((open) => {
-    // If opens, add listener for outside click,
-    // if closes, do cleanup when add/edit mutations are done
     if (open) {
       this.outsideClickSubscription = this.outsideClick$.subscribe();
+
+      this.preselectLabelSubscription = this.labelQuery.data$.subscribe(
+        (label) => {
+          /**
+           * If a label is emitted, trigger add mutation and enter
+           * idle state in success callback of that mutation.
+           *
+           * If no specific label is currently visited,
+           * enter idle state right away.
+           *
+           * Note: This requires `useParametrizedQuery` to not emit an
+           * initial null value. However, in that case, `skip`
+           * could be used to skip the first value.
+           */
+          if (label) {
+            this.addNoteMutation.mutate({ labels: [label] });
+          } else {
+            this.mutationsIdle$.next(true);
+          }
+        }
+      );
     } else {
       this.outsideClickSubscription?.unsubscribe();
+      this.preselectLabelSubscription?.unsubscribe();
 
       this.mutationsTurnIdle$.subscribe(() => {
         if (this.noteState().note && this.noteState().empty) {
@@ -169,6 +217,66 @@ export class AddNoteComponent {
     }
   });
 
+  readonly addNoteMutation = this.queryService.useMutation({
+    httpObsFn: (noteInput: NoteInput) => addNote(noteInput),
+    onError: () => {},
+    onSuccess: (note, noteInput) => {
+      this.noteState.update((state) => ({
+        ...state,
+        note,
+        empty: !noteInput.title && !noteInput.content,
+        initial: false,
+      }));
+
+      this.mutationsIdle$.next(true);
+      this.typingInitial.set(true);
+    },
+  });
+
+  readonly editNoteMutation = this.queryService.useMutation({
+    httpObsFn: (inputs: { id: number; noteInput: NoteInput }) =>
+      editNote(inputs.id, inputs.noteInput),
+    onError: () => {},
+    onSuccess: (note, { noteInput }) => {
+      // Empty check has to be made on note because noteInput possibly
+      // carries only labels or background color even though title or
+      // content is actually there from previously adding
+      this.noteState.update((state) => ({
+        ...state,
+        note,
+        empty: !note?.title && !note?.content,
+      }));
+
+      this.mutationsIdle$.next(true);
+      this.typingInitial.set(true);
+    },
+  });
+
+  readonly deleteNoteMutation = this.queryService.useMutation({
+    httpObsFn: (id: number) => deleteNote(id),
+    onError: () => {},
+    onSuccess: () => {},
+  });
+
+  /**
+   * This only needed for changing labels or background color.
+   */
+  handleNoteInputChange(noteInput: NoteInput) {
+    this.mutationsTurnIdle$.subscribe(() => {
+      if (this.noteState().initial) {
+        this.addNoteMutation.mutate(noteInput);
+      } else {
+        this.editNoteMutation.mutate({
+          id: this.noteState().note!.id,
+          noteInput,
+        });
+      }
+    });
+  }
+
+  /**
+   * Resets `noteState` and resets note form without emitting changes.
+   */
   resetComponent() {
     // Reset noteState:
     this.noteState.set(this.INITIAL_NOTE_STATE);
@@ -200,64 +308,59 @@ export class AddNoteComponent {
     event.stopPropagation();
   }
 
-  readonly addNoteMutation = this.queryService.useMutation({
-    httpObsFn: (noteInput: NoteInput) => addNote(noteInput),
-    onError: () => {},
-    onSuccess: (note, noteInput) => {
-      this.noteState.update((state) => ({
-        ...state,
-        note,
-        empty: !noteInput.title && !noteInput.content,
-        initial: false,
-      }));
-
-      this.mutationsIdle$.next(true);
-    },
-  });
-
-  readonly editNoteMutation = this.queryService.useMutation({
-    httpObsFn: (inputs: { id: number; noteInput: NoteInput }) =>
-      editNote(inputs.id, inputs.noteInput),
-    onError: () => {},
-    onSuccess: (note, { noteInput }) => {
-      this.noteState.update((state) => ({
-        ...state,
-        note,
-        empty: !noteInput.title && !noteInput.content,
-      }));
-
-      this.mutationsIdle$.next(true);
-    },
-  });
-
-  readonly deleteNoteMutation = this.queryService.useMutation({
-    httpObsFn: (id: number) => deleteNote(id),
-    onError: () => {},
-    onSuccess: () => {},
-  });
-
   /**
-   * On first input change, add new note and flag it as not initial anymore
-   * On any subsequent input chages, edit this previously added note
-   */
-  handleNoteInputChange(noteInput: NoteInput) {
-    if (this.noteState().initial) {
-      this.addNoteMutation.mutate(noteInput);
-    } else {
-      this.editNoteMutation.mutate({
-        id: this.noteState().note!.id,
-        noteInput,
-      });
-    }
-  }
-
-  /**
-   * When value changes, set mutations as not idle, because they will be
-   * triggered soon (after 300ms of debounce time).
+   * Add listener for changes in note input form.
+   * 
+   * In general, changes in the inputs for title/content shouldn't lead to 
+   * immediate mutations, instead the emission of new values is debounced, 
+   * such that mutations are triggered only if 300ms (or something similar) 
+   * passed without another key stroke. 
+   * 
+   * When starting to type, the mutation state is set to non-idle right away. 
+   * With an extra state, the information whether mutations were idle on first 
+   * key stroke, is carried to the point of time of actual emission of changes,
+   * which is probably delayed due to debouncing.
+   * 
+   * Based on that information, mutations are triggered either immediately, or 
+   * they wait until mutations turn to idle state. 
    */
   ngAfterViewInit() {
-    this.noteFormComponent().noteForm.valueChanges.subscribe(() => {
-      this.mutationsIdle$.value && this.mutationsIdle$.next(false);
-    });
+    this.noteFormComponent()
+      .noteForm.valueChanges.pipe(
+        tap(() => {
+          if (this.typingInitial()) {
+            // Execute this only on first keystroke (first keystroke for each ~ typing cycle)
+            this.mutationsIdleOnStartTyping.set(this.mutationsIdle$.getValue());
+            this.typingInitial.set(false); // gets reset when mutations succeed
+          }
+
+          // Set mutations to non-idle if not already the case
+          this.mutationsIdle$.getValue() && this.mutationsIdle$.next(false);
+        }),
+        debounceTime(300),
+        switchMap((noteInput) => {
+          if (this.mutationsIdleOnStartTyping()) {
+            // If mutations are non-idle because of this typing cycle, don't wait
+            // for them to turn idle, just proceed
+            return of(noteInput);
+          } else {
+            // If mutations are non-idle because of something else, wait for them to 
+            // turn idle before proceeding
+            return this.mutationsTurnIdle$.pipe(
+              map(() => noteInput)
+            );
+          }
+        })
+      )
+      .subscribe((noteInput) => {
+        if (this.noteState().initial) {
+          this.addNoteMutation.mutate(noteInput);
+        } else {
+          this.editNoteMutation.mutate({
+            id: this.noteState().note!.id,
+            noteInput,
+          });
+        }
+      });
   }
 }

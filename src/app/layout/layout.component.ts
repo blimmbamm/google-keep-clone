@@ -50,6 +50,7 @@ export class LayoutComponent implements AfterContentInit {
   readonly loading = signal(false);
 
   _ = this.queryService.globalLoading$.subscribe((loading) => {
+    // console.log('set loading: ' + loading)
     this.loading.set(loading);
   })
 

@@ -1,8 +1,7 @@
 <app-note-form
   [withTitleInput]="open()"
   placeholderContent="Take a note..."
-  (onNoteInputChange)="handleNoteInputChange($event)">
-</app-note-form>
+></app-note-form>
 
 @if(open()) {
   @if(noteState().note?.labels; as labels) {

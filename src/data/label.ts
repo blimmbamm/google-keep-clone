@@ -63,6 +63,18 @@ function getLabelsSync() {
 }
 
 /**
+ * Get single label by its name
+ */
+function getLabelByNameSync(labelName: string) {
+  const label = readLabels().find(label => label.name === labelName);
+  if(label) {
+    return label;
+  } else {
+    throw Error('No label with such name.')
+  }
+}
+
+/**
  * Adds new label if none with exists with same name, else throw error.
  *
  * Also throw error if provided name is empty.
@@ -132,6 +144,8 @@ function editLabelSync(id: number, labelInput: LabelInput) {
 
     saveNotes(notes);
   }
+  
+  return true;
 }
 
 /**
@@ -152,9 +166,12 @@ function deleteLabelSync(id: number) {
   });
 
   saveNotes(notes);
+
+  return true;
 }
 
 export const getLabels = toObs(getLabelsSync);
+export const getLabelByName = toObs(getLabelByNameSync);
 export const addLabel = toObs(addLabelSync);
 export const editLabel = toObs(editLabelSync);
 export const deleteLabel = toObs(deleteLabelSync);

@@ -39,7 +39,7 @@ export class QueryService {
 
   /** Random delay s.t. loading spinner is actually visible */
   randomDelayMs(){
-    return Math.floor(Math.random()*500);
+    return Math.floor(Math.random()*350);
   }
 
   /** Subject that emits if a 'global' error occurs. */
@@ -193,9 +193,13 @@ export class QueryService {
           tap((data) => {
             data$.next(data);
             error$.next(null);
-
+            
             loading$.next(!Boolean(data));
-            this.globalLoading$.next(!Boolean(data));
+
+            // Only update global loading state if necessary:
+            const isLoading = this.globalLoading$.value;
+            const setLoading = !Boolean(data);
+            (isLoading !== setLoading) && this.globalLoading$.next(setLoading);
           }),
           catchError((error: HttpErrorResponse) => {
             // check if error should emit in global or local error stream
@@ -205,7 +209,9 @@ export class QueryService {
             error$.next(error);
 
             loading$.next(false);
-            this.globalLoading$.next(false);
+
+            // Update global loading state to false only if it's true:
+            this.globalLoading$.value && this.globalLoading$.next(false);
             throw error;
           }),
           skip(1)

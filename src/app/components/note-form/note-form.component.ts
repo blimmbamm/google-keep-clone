@@ -2,7 +2,7 @@ import { Component, ElementRef, input, output, viewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Note, NoteInput } from '../../../data/notes';
 import { ContenteditableValueAccessorModule } from '@tinkoff/angular-contenteditable-accessor';
-import { BehaviorSubject, debounceTime, tap } from 'rxjs';
+import { debounceTime } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -38,14 +38,10 @@ export class NoteFormComponent {
   private noteContentElement =
     viewChild.required<ElementRef<HTMLDivElement>>('noteContent');
 
-
   readonly onNoteInputChange = output<NoteInput>();
 
   _ = this.noteForm.valueChanges
-    .pipe(
-      debounceTime(300),
-      takeUntilDestroyed(),
-    )
+    .pipe(debounceTime(300), takeUntilDestroyed())
     .subscribe((value) => {
       this.onNoteInputChange.emit(value);
     });

@@ -153,6 +153,7 @@ function editNoteSync(id: number, noteInput: NoteInput) {
  */
 function moveNoteToTrashSync(id: number) {
   editNoteSync(id, { trash: true });
+  return true;
 }
 
 /**
@@ -160,6 +161,7 @@ function moveNoteToTrashSync(id: number) {
  */
 function restoreNoteFromTrashSync(id: number) {
   editNoteSync(id, { trash: false });
+  return true;
 }
 
 /**
@@ -167,6 +169,7 @@ function restoreNoteFromTrashSync(id: number) {
  */
 function deleteNoteSync(id: number) {
   saveNotes(readNotes().filter((note) => note.id !== id));
+  return true;
 }
 
 export const getNotes = toObs(getNotesSync);
