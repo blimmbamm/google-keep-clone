@@ -11,9 +11,9 @@
   <app-searchbar></app-searchbar>
   <span class="spacer"></span>
   @if (loading()) { 
-    <mat-spinner diameter="24"></mat-spinner> 
+    <mat-spinner class="no-shrink" diameter="24"></mat-spinner> 
   } @else {
-    <mat-icon class="material-symbols-outlined">cloud_done</mat-icon>
+    <mat-icon class="material-symbols-outlined no-shrink">cloud_done</mat-icon>
   } 
   <app-about matTooltip="About"></app-about>
 </header>

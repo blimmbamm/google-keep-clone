@@ -55,3 +55,7 @@ main {
   flex: 1;
   overflow-y: auto;
 }
+
+.no-shrink {
+  flex-shrink: 0;
+}
