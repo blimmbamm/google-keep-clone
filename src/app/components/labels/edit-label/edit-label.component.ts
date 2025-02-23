@@ -14,7 +14,7 @@ import { MatDialog } from '@angular/material/dialog';
 
 import { LabelInputComponent } from '../label-input/label-input.component';
 import { QueryService } from '../../../services/query.service';
-import { MutateLabelDirective } from '../mutate-label.directive';
+import { MutateLabelDirective } from '../mutate-label/mutate-label.directive';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,

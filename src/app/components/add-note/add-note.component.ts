@@ -34,7 +34,7 @@ import {
   NoteInput,
 } from '../../../data/notes';
 import { NavigationService } from '../../services/navigation.service';
-import { NoteActionsComponent } from '../note-actions/note-actions.component';
+import { NoteActionsComponent } from '../note-actions/note-actions/note-actions.component';
 import { LabelsStackComponent } from '../labels/labels-stack/labels-stack.component';
 import { NoteManageLabelsActionComponent } from '../note-actions/note-manage-labels-action/note-manage-labels-action.component';
 import { ChangeBackgroundColorActionComponent } from '../note-actions/change-background-color-action/change-background-color-action.component';

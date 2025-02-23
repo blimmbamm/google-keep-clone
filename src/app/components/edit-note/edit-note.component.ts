@@ -10,7 +10,7 @@ import { ContenteditableValueAccessorModule } from '@tinkoff/angular-contentedit
 import { QueryService } from '../../services/query.service';
 import { NavigationService } from '../../services/navigation.service';
 import { NoteFormComponent } from '../note-form/note-form.component';
-import { NoteActionsComponent } from '../note-actions/note-actions.component';
+import { NoteActionsComponent } from '../note-actions/note-actions/note-actions.component';
 import { NoteManageLabelsActionComponent } from '../note-actions/note-manage-labels-action/note-manage-labels-action.component';
 import { LabelsStackComponent } from '../labels/labels-stack/labels-stack.component';
 import { ChangeBackgroundColorActionComponent } from '../note-actions/change-background-color-action/change-background-color-action.component';

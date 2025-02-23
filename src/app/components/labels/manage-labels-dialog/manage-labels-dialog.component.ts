@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Label } from '../../../../data/label';
 import { AddLabelComponent } from '../add-label/add-label.component';
 import { EditLabelComponent } from '../edit-label/edit-label.component';
-import { LabelOrNewLabel } from '../mutate-label.directive';
+import { LabelOrNewLabel } from '../mutate-label/mutate-label.directive';
 
 export interface ManageLabelsDialogData {
   labels$: Observable<Label[] | null>;

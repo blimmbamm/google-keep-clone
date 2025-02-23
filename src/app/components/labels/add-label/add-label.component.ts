@@ -7,7 +7,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { LabelInputComponent } from '../label-input/label-input.component';
 import { QueryService } from '../../../services/query.service';
 import { addLabel, LabelInput } from '../../../../data/label';
-import { MutateLabelDirective } from '../mutate-label.directive';
+import { MutateLabelDirective } from '../mutate-label/mutate-label.directive';
 
 /**
  * Component to add a label. This component shares some functionality

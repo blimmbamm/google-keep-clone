@@ -6,7 +6,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { editNote, Note, NoteInput } from '../../../data/notes';
-import { NoteActionsComponent } from '../note-actions/note-actions.component';
+import { NoteActionsComponent } from '../note-actions/note-actions/note-actions.component';
 import { LabelsStackComponent } from '../labels/labels-stack/labels-stack.component';
 import { NoteManageLabelsActionComponent } from '../note-actions/note-manage-labels-action/note-manage-labels-action.component';
 import { QueryService } from '../../services/query.service';
