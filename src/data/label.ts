@@ -15,9 +15,9 @@ export interface LabelInput {
  */
 export function seedLabels() {
   saveLabels([
-    { id: 1, name: 'Dingens' },
-    { id: 2, name: 'Dongens' },
-    { id: 3, name: 'Banane' },
+    { id: 1, name: 'Todos' },
+    { id: 2, name: 'Jokes' },
+    { id: 3, name: 'Lists' },
   ]);
 }
 

@@ -49,33 +49,32 @@ export function seedNotes() {
   const DUMMY_NOTES: Note[] = [
     {
       id: 1,
-      title: 'Hello',
-      content: 'World',
+      title: 'Learn some Angular!',
       lastModified: new Date(),
       trash: false,
-      labels: [{ id: 1, name: 'Dingens' }],
+      labels: [{ id: 1, name: 'Todos' }],
     },
     {
       id: 2,
-      title: 'Another note',
-      content: `With some dummy content that spreads across multiple lines. This doesn't work yet.`,
+      content: `A ball rolls around the corner and falls over.`,
       lastModified: new Date(),
       trash: false,
-      labels: [{ id: 2, name: 'Dongens' }],
+      labels: [{ id: 2, name: 'Jokes' }],
     },
     {
       id: 3,
-      title: 'Yet another note',
-      content: `That should only appear in trash.`,
-      lastModified: new Date(),
-      trash: true,
-      labels: [{ id: 2, name: 'Dongens' }],
-    },
-    {
-      id: 4,
+      title: 'Shopping list',
+      content: `- Bananas <br>
+      - Apples`,
       lastModified: new Date(),
       trash: false,
-      labels: [],
+      labels: [{ id: 3, name: 'Lists' }],
+    },
+    {
+      title: 'Trashed note',
+      id: 4,
+      lastModified: new Date(),
+      trash: true,
     },
   ];
 

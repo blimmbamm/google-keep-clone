@@ -35,7 +35,6 @@ import { AboutComponent } from '../components/about/about.component';
     SearchbarComponent,
     NotesComponent,
     AboutComponent,
-
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
@@ -68,7 +67,7 @@ export class LayoutComponent implements AfterContentInit {
   /**
    * Whether the drawer is opened by burger menu icon.
    *
-   * When construction component: get that information from localStorage (if exists)
+   * When constructing component: get that information from localStorage (if exists)
    */
   readonly sideNavOpen = signal(getNavMenuOpenState());
 
