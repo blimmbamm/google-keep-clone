@@ -1,21 +1,22 @@
 import { Component, computed, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { editNote, Note, NoteInput } from '../../../data/notes';
 import { MatButtonModule } from '@angular/material/button';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
+import { DatePipe } from '@angular/common';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ContenteditableValueAccessorModule } from '@tinkoff/angular-contenteditable-accessor';
+
 import { QueryService } from '../../services/query.service';
 import { NavigationService } from '../../services/navigation.service';
-import { MatIconModule } from '@angular/material/icon';
 import { NoteFormComponent } from '../note-form/note-form.component';
 import { NoteActionsComponent } from '../note-actions/note-actions.component';
 import { NoteManageLabelsActionComponent } from '../note-actions/note-manage-labels-action/note-manage-labels-action.component';
 import { LabelsStackComponent } from '../labels/labels-stack/labels-stack.component';
 import { ChangeBackgroundColorActionComponent } from '../note-actions/change-background-color-action/change-background-color-action.component';
-import { DatePipe } from '@angular/common';
 import { CreateCopyActionDirective } from '../note-actions/create-copy-action/create-copy-action.directive';
 import { DeleteNoteActionDirective } from '../note-actions/delete-note-action/delete-note-action.directive';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { editNote, Note, NoteInput } from '../../../data/notes';
 
 export interface EditNoteDialogData {
   note: Note;

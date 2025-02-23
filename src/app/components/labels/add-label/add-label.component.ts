@@ -1,12 +1,13 @@
 import { AfterContentInit, Component, inject, input } from '@angular/core';
-import { LabelInputComponent } from '../label-input/label-input.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { AsyncPipe } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+
+import { LabelInputComponent } from '../label-input/label-input.component';
 import { QueryService } from '../../../services/query.service';
 import { addLabel, LabelInput } from '../../../../data/label';
-import { AsyncPipe } from '@angular/common';
 import { MutateLabelDirective } from '../mutate-label.directive';
-import { ReactiveFormsModule } from '@angular/forms';
 
 /**
  * Component to add a label. This component shares some functionality

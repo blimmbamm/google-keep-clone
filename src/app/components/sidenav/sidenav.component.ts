@@ -3,12 +3,13 @@ import { Component, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
+
 import { NavigationService } from '../../services/navigation.service';
 import { LocalStorageKeys } from '../../../data/shared';
 import { getLabels, seedLabels } from '../../../data/label';
 import { QueryService } from '../../services/query.service';
-import { MatDialog } from '@angular/material/dialog';
 import {
   ManageLabelsDialogComponent,
   ManageLabelsDialogData,

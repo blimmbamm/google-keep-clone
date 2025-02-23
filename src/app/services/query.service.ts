@@ -13,10 +13,11 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
-import { NavigationService, NotesQueryParams } from './navigation.service';
-import { DataErrorStatus } from '../../data/shared';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
+import { NavigationService, NotesQueryParams } from './navigation.service';
+import { DataErrorStatus } from '../../data/shared';
 import { seedNotes } from '../../data/notes';
 import { seedLabels } from '../../data/label';
 

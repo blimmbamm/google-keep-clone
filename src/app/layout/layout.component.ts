@@ -10,10 +10,14 @@ import {
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { SidenavComponent } from '../components/sidenav/sidenav.component';
 import { delay, fromEvent, map, repeat, takeUntil, tap } from 'rxjs';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AsyncPipe } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
+import { SidenavComponent } from '../components/sidenav/sidenav.component';
 import { NavigationService } from '../services/navigation.service';
 import { SearchbarComponent } from '../components/searchbar/searchbar.component';
 import { NotesComponent } from '../components/notes/notes.component';
@@ -21,26 +25,24 @@ import {
   getNavMenuOpenState,
   setNavMenuOpenState,
 } from '../../data/side-nav-state';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { QueryService } from '../services/query.service';
-import { AboutComponent } from "../components/about/about.component";
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { AboutComponent } from '../components/about/about.component';
 
 @Component({
   selector: 'app-layout',
   imports: [
+    SidenavComponent,
+    SearchbarComponent,
+    NotesComponent,
+    AboutComponent,
+
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
-    SidenavComponent,
     AsyncPipe,
-    SearchbarComponent,
-    NotesComponent,
     MatProgressSpinnerModule,
-    AboutComponent,
     MatTooltipModule,
-],
+  ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss',
 })
@@ -53,7 +55,7 @@ export class LayoutComponent implements AfterContentInit {
 
   _ = this.queryService.globalLoading$.subscribe((loading) => {
     this.loading.set(loading);
-  })
+  });
 
   /**
    * #### EXPLANATION: SideNav state ####
@@ -74,7 +76,7 @@ export class LayoutComponent implements AfterContentInit {
   readonly sideNavExpanded = signal(this.sideNavOpen());
 
   /**
-   * Cannot use shorter way here with template variable because template 
+   * Cannot use shorter way here with template variable because template
    * variable returns component instance instead of html element.
    */
   readonly sideNav = viewChild.required(SidenavComponent, { read: ElementRef });

@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map, Observable, tap } from 'rxjs';
+
 import { labelExists } from '../../data/label';
 
 export interface NotesQueryParams {

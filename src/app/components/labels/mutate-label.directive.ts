@@ -10,9 +10,10 @@ import {
   viewChild,
 } from '@angular/core';
 import { BehaviorSubject, filter, fromEvent, tap } from 'rxjs';
-import { Label } from '../../../data/label';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
+
+import { Label } from '../../../data/label';
 
 export type LabelOrNewLabel = Label | 'new-label';
 

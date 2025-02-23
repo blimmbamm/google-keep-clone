@@ -10,17 +10,18 @@ import {
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
-import { Note, NoteInput } from '../../../../data/notes';
-import { QueryService } from '../../../services/query.service';
-import { map, of, shareReplay, startWith, switchMap } from 'rxjs';
-import { addLabel, getLabels, Label, LabelInput } from '../../../../data/label';
 import { AsyncPipe } from '@angular/common';
 import { SelectionModel } from '@angular/cdk/collections';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatRipple } from '@angular/material/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+
+import { Note, NoteInput } from '../../../../data/notes';
+import { QueryService } from '../../../services/query.service';
+import { map, of, shareReplay, startWith, switchMap } from 'rxjs';
+import { addLabel, getLabels, Label, LabelInput } from '../../../../data/label';
 
 @Component({
   selector: 'app-note-manage-labels-action',

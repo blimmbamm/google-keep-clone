@@ -1,9 +1,10 @@
 import { Component, ElementRef, input, output, viewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { Note, NoteInput } from '../../../data/notes';
-import { ContenteditableValueAccessorModule } from '@tinkoff/angular-contenteditable-accessor';
 import { debounceTime } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ContenteditableValueAccessorModule } from '@tinkoff/angular-contenteditable-accessor';
+
+import { Note, NoteInput } from '../../../data/notes';
 
 @Component({
   selector: 'app-note-form',

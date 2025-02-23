@@ -1,15 +1,16 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
-import { editNote, Note, NoteInput } from '../../../data/notes';
 import { MatIcon } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
+import { editNote, Note, NoteInput } from '../../../data/notes';
 import { NoteActionsComponent } from '../note-actions/note-actions.component';
 import { LabelsStackComponent } from '../labels/labels-stack/labels-stack.component';
 import { NoteManageLabelsActionComponent } from '../note-actions/note-manage-labels-action/note-manage-labels-action.component';
 import { QueryService } from '../../services/query.service';
 import { NavigationService } from '../../services/navigation.service';
-import { ChangeBackgroundColorActionComponent } from '../note-actions/change-background-color-action/change-background-color-action.component';
-import { CreateCopyActionDirective } from '../note-actions/create-copy-action/create-copy-action.directive';
-import { MatDialog } from '@angular/material/dialog';
 import {
   EditNoteComponent,
   EditNoteDialogData,
@@ -20,8 +21,8 @@ import {
   ConfirmDialogComponent,
   ConfirmDialogData,
 } from '../confirm-dialog/confirm-dialog.component';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { ChangeBackgroundColorActionComponent } from '../note-actions/change-background-color-action/change-background-color-action.component';
+import { CreateCopyActionDirective } from '../note-actions/create-copy-action/create-copy-action.directive';
 
 @Component({
   selector: 'app-note',

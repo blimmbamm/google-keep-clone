@@ -5,26 +5,27 @@ import {
   inject,
   input,
 } from '@angular/core';
-import {
-  deleteLabel,
-  editLabel,
-  Label,
-  LabelInput,
-} from '../../../../data/label';
-import { LabelInputComponent } from '../label-input/label-input.component';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { fromEvent, map, merge, Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
-import { QueryService } from '../../../services/query.service';
 import { MatDialog } from '@angular/material/dialog';
+
+import { LabelInputComponent } from '../label-input/label-input.component';
+import { QueryService } from '../../../services/query.service';
 import { MutateLabelDirective } from '../mutate-label.directive';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,
 } from '../../confirm-dialog/confirm-dialog.component';
 import { NavigationService } from '../../../services/navigation.service';
-import { ReactiveFormsModule } from '@angular/forms';
+import {
+  deleteLabel,
+  editLabel,
+  Label,
+  LabelInput,
+} from '../../../../data/label';
 
 /**
  * Component to edit a label. This component shares some functionality

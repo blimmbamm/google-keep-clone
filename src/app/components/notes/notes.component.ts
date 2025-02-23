@@ -1,12 +1,13 @@
 import { Component, inject } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+
 import { getNotes, seedNotes } from '../../../data/notes';
 import { QueryService } from '../../services/query.service';
 import { NavigationService } from '../../services/navigation.service';
-import { AsyncPipe } from '@angular/common';
 import { NoteComponent } from '../note/note.component';
 import { AddNoteComponent } from '../add-note/add-note.component';
 import { LocalStorageKeys } from '../../../data/shared';
-import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-notes',

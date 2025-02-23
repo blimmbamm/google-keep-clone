@@ -1,4 +1,5 @@
 import { Component, input, output } from '@angular/core';
+
 import { Label } from '../../../../data/label';
 import { LabelChipComponent } from '../label-chip/label-chip.component';
 import { NoteInput } from '../../../../data/notes';

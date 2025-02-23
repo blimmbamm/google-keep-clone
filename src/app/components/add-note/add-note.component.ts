@@ -6,16 +6,6 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { NoteFormComponent } from '../note-form/note-form.component';
-import { QueryService } from '../../services/query.service';
-import {
-  addNote,
-  deleteNote,
-  editNote,
-  Note,
-  NoteInput,
-} from '../../../data/notes';
-import { NavigationService } from '../../services/navigation.service';
 import {
   BehaviorSubject,
   debounceTime,
@@ -30,15 +20,26 @@ import {
   tap,
 } from 'rxjs';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { NoteActionsComponent } from '../note-actions/note-actions.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
+import { NoteFormComponent } from '../note-form/note-form.component';
+import { QueryService } from '../../services/query.service';
+import {
+  addNote,
+  deleteNote,
+  editNote,
+  Note,
+  NoteInput,
+} from '../../../data/notes';
+import { NavigationService } from '../../services/navigation.service';
+import { NoteActionsComponent } from '../note-actions/note-actions.component';
 import { LabelsStackComponent } from '../labels/labels-stack/labels-stack.component';
 import { NoteManageLabelsActionComponent } from '../note-actions/note-manage-labels-action/note-manage-labels-action.component';
 import { ChangeBackgroundColorActionComponent } from '../note-actions/change-background-color-action/change-background-color-action.component';
 import { DeleteNoteActionDirective } from '../note-actions/delete-note-action/delete-note-action.directive';
 import { getLabelByName } from '../../../data/label';
-import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-add-note',

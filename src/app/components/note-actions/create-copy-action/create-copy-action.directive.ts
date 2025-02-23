@@ -1,4 +1,5 @@
 import { Directive, inject, input } from '@angular/core';
+
 import { addNote, Note, NoteInput } from '../../../../data/notes';
 import { QueryService } from '../../../services/query.service';
 

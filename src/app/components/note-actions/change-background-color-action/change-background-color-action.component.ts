@@ -2,10 +2,11 @@ import { Component, input, output, viewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
-import { Note, NoteInput } from '../../../../data/notes';
 import { MatRipple } from '@angular/material/core';
 import { MatBadge } from '@angular/material/badge';
 import { MatTooltipModule } from '@angular/material/tooltip';
+
+import { Note, NoteInput } from '../../../../data/notes';
 
 @Component({
   selector: 'app-change-background-color-action',

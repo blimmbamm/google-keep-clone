@@ -1,6 +1,7 @@
 import { Directive, inject, input } from '@angular/core';
-import { QueryService } from '../../../services/query.service';
 import { MatDialog } from '@angular/material/dialog';
+
+import { QueryService } from '../../../services/query.service';
 import { deleteNote, Note } from '../../../../data/notes';
 import {
   ConfirmDialogComponent,

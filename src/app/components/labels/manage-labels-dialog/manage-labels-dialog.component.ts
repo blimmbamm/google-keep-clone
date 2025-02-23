@@ -1,10 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Label } from '../../../../data/label';
 import { MAT_DIALOG_DATA, MatDialogClose } from '@angular/material/dialog';
 import { AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+
+import { Label } from '../../../../data/label';
 import { AddLabelComponent } from '../add-label/add-label.component';
 import { EditLabelComponent } from '../edit-label/edit-label.component';
 import { LabelOrNewLabel } from '../mutate-label.directive';

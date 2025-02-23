@@ -1,12 +1,13 @@
 import { Directive, ElementRef, inject, input, output } from '@angular/core';
-import { QueryService } from '../../../services/query.service';
+import { Observable, of, take } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
+
+import { QueryService } from '../../../services/query.service';
 import { deleteNote, moveNoteToTrash, Note } from '../../../../data/notes';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,
 } from '../../confirm-dialog/confirm-dialog.component';
-import { Observable, of, take } from 'rxjs';
 
 @Directive({
   selector: '[appDeleteNoteAction]',
