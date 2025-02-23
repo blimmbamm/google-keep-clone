@@ -23,6 +23,7 @@
     <!-- Delete note -->
     <button 
       mat-icon-button 
+      matTooltip="Move to trash"
       appDeleteNoteAction 
       [note]="note()"
       deleteDialogMessage="Move to trash?"
@@ -45,7 +46,12 @@
     ></app-note-manage-labels-action>
   
     <!-- Create copy of note -->
-    <button mat-icon-button appCreateCopyAction [note]="note()">
+    <button 
+      mat-icon-button
+      matTooltip="Create copy" 
+      appCreateCopyAction 
+      [note]="note()"
+    >
       <mat-icon class="material-symbols-outlined">content_copy</mat-icon>
     </button>
   

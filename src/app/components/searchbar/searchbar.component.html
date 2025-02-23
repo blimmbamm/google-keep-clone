@@ -4,7 +4,7 @@
 >
   <mat-icon>search</mat-icon>
 </button>
-<input #searchInput placeholder="Search" />
+<input #searchInput [placeholder]="inputFocussed()? 'Search not implemented (yet) :)' : 'Search' " />
 <button 
   [class.hidden]="!inputFocussed()" 
   mat-icon-button 

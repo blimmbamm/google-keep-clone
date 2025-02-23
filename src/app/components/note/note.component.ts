@@ -21,6 +21,7 @@ import {
   ConfirmDialogData,
 } from '../confirm-dialog/confirm-dialog.component';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-note',
@@ -34,6 +35,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
     ChangeBackgroundColorActionComponent,
     CreateCopyActionDirective,
     DeletePermanentlyActionDirective,
+    MatTooltipModule,
   ],
   templateUrl: './note.component.html',
   styleUrl: './note.component.scss',

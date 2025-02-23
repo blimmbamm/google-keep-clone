@@ -16,6 +16,7 @@
     <button 
       mat-icon-button 
       appDeleteNoteAction 
+      matTooltip="Discard note"
       [note]="noteState().note"      
       tooltip="Discard note"
       (onDeleteNote)="handleDiscardNote()"

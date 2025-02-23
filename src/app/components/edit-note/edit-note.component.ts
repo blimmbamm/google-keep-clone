@@ -15,6 +15,7 @@ import { ChangeBackgroundColorActionComponent } from '../note-actions/change-bac
 import { DatePipe } from '@angular/common';
 import { CreateCopyActionDirective } from '../note-actions/create-copy-action/create-copy-action.directive';
 import { DeleteNoteActionDirective } from '../note-actions/delete-note-action/delete-note-action.directive';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 export interface EditNoteDialogData {
   note: Note;
@@ -35,6 +36,7 @@ export interface EditNoteDialogData {
     ChangeBackgroundColorActionComponent,
     DatePipe,
     CreateCopyActionDirective,
+    MatTooltipModule,
   ],
   templateUrl: './edit-note.component.html',
   styleUrl: './edit-note.component.scss',

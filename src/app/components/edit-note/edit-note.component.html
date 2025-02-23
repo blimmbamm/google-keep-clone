@@ -16,6 +16,7 @@
   <!-- Move note to trash -->
   <button 
     mat-icon-button 
+    matTooltip="Move to trash"
     appDeleteNoteAction 
     [note]="data.note"
     deleteDialogMessage="Move to trash?"
@@ -39,6 +40,7 @@
   <!-- Create copy of note -->
   <button 
     mat-icon-button 
+    matTooltip="Create copy"
     appCreateCopyAction 
     [note]="data.note"
   >

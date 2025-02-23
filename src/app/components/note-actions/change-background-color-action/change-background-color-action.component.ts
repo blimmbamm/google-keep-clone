@@ -5,10 +5,18 @@ import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { Note, NoteInput } from '../../../../data/notes';
 import { MatRipple } from '@angular/material/core';
 import { MatBadge } from '@angular/material/badge';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-change-background-color-action',
-  imports: [MatButtonModule, MatIconModule, MatMenuModule, MatRipple, MatBadge],
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    MatRipple,
+    MatBadge,
+    MatTooltipModule,
+  ],
   templateUrl: './change-background-color-action.component.html',
   styleUrl: './change-background-color-action.component.scss',
 })

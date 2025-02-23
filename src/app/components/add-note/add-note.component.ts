@@ -38,6 +38,7 @@ import { NoteManageLabelsActionComponent } from '../note-actions/note-manage-lab
 import { ChangeBackgroundColorActionComponent } from '../note-actions/change-background-color-action/change-background-color-action.component';
 import { DeleteNoteActionDirective } from '../note-actions/delete-note-action/delete-note-action.directive';
 import { getLabelByName } from '../../../data/label';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-add-note',
@@ -50,6 +51,7 @@ import { getLabelByName } from '../../../data/label';
     NoteManageLabelsActionComponent,
     ChangeBackgroundColorActionComponent,
     DeleteNoteActionDirective,
+    MatTooltipModule,
   ],
   templateUrl: './add-note.component.html',
   styleUrl: './add-note.component.scss',

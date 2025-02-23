@@ -25,6 +25,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { QueryService } from '../services/query.service';
 import { AboutComponent } from "../components/about/about.component";
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-layout',
@@ -37,7 +38,8 @@ import { AboutComponent } from "../components/about/about.component";
     SearchbarComponent,
     NotesComponent,
     MatProgressSpinnerModule,
-    AboutComponent
+    AboutComponent,
+    MatTooltipModule,
 ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss',
@@ -50,7 +52,6 @@ export class LayoutComponent implements AfterContentInit {
   readonly loading = signal(false);
 
   _ = this.queryService.globalLoading$.subscribe((loading) => {
-    // console.log('set loading: ' + loading)
     this.loading.set(loading);
   })
 

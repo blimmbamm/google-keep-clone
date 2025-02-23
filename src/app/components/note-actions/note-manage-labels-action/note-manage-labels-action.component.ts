@@ -20,6 +20,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatRipple } from '@angular/material/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-note-manage-labels-action',
@@ -30,6 +31,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     AsyncPipe,
     ReactiveFormsModule,
     MatRipple,
+    MatTooltipModule,
   ],
   templateUrl: './note-manage-labels-action.component.html',
   styleUrl: './note-manage-labels-action.component.scss',

@@ -2,7 +2,7 @@
   <ng-content></ng-content>
 </div>
 @if (!disabled()) {
-  <div matRipple class="remove" (click)="handleRemoveChip($event)">
+  <div matRipple matTooltip="Remove label" class="remove" (click)="handleRemoveChip($event)">
     <mat-icon>close</mat-icon>
   </div>
 }
