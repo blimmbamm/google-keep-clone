@@ -1,30 +1,98 @@
-import { Label } from './label';
+import { z } from 'zod';
+import { Label, LabelSchema } from './label';
 import { GLOBAL_ERROR, LocalStorageKeys, toObs } from './shared';
 
-export interface Note {
-  id: number;
-  title?: string;
-  content?: string;
-  lastModified: Date;
-  trash: boolean;
-  labels?: Label[];
-  backgroundColor?: string;
-}
+// export interface Note {
+//   id: number;
+//   title?: string;
+//   content?: string;
+//   lastModified: Date;
+//   trash: boolean;
+//   labels?: Label[];
+//   backgroundColor?: string;
+// }
+// export type Note = {
+//   id: number;
+//   title?: string;
+//   content?: string;
+//   lastModified: Date;
+//   trash: boolean;
+//   labels?: Label[];
+//   backgroundColor?: string;
 
-export interface NoteInput {
-  title?: string;
-  content?: string;
-  labels?: Label[];
-  trash?: boolean;
-  backgroundColor?: string;
-}
+// };
+
+
+const NoteSchema = z.object({
+  id: z.number(),
+  title: z.optional(z.string()),
+  content: z.optional(z.string()),
+  lastModified: z.coerce.date(),
+  trash: z.boolean(),
+  // labels: z.lazy(() => z.optional(z.array(LabelSchema))),
+  labels: z.optional(z.array(z.lazy(() => LabelSchema))),
+  backgroundColor: z.optional(z.string()),
+});
+
+const NoteInputSchema = NoteSchema.pick({
+  title: true,
+  content: true,
+  labels: true,
+  trash: true,
+  backgroundColor: true,
+}).partial();
+
+export type Note = z.infer<typeof NoteSchema>;
+export type NoteInput = z.infer<typeof NoteInputSchema>;
+
+// export interface NoteInput {
+//   title?: string;
+//   content?: string;
+//   labels?: Label[];
+//   trash?: boolean;
+//   backgroundColor?: string;
+// }
+
+export const DUMMY_NOTES: Note[] = [
+  {
+    id: 1,
+    title: 'Learn some Angular!',
+    lastModified: new Date(),
+    trash: false,
+    labels: [{ id: 1, name: 'Todos' }],
+  },
+  {
+    id: 2,
+    content: `A ball rolls around the corner and falls over.`,
+    lastModified: new Date(),
+    trash: false,
+    labels: [{ id: 2, name: 'Jokes' }],
+  },
+  {
+    id: 3,
+    title: 'Shopping list',
+    content: `- Bananas <br>
+    - Apples`,
+    lastModified: new Date(),
+    trash: false,
+    labels: [{ id: 3, name: 'Lists' }],
+  },
+  {
+    title: 'Trashed note',
+    id: 4,
+    lastModified: new Date(),
+    trash: true,
+  },
+];
 
 /**
  * Return all notes stored in localStorage.
  */
 export function readNotes() {
   try {
-    return JSON.parse(localStorage.getItem(LocalStorageKeys.NOTES)!) as Note[];
+    return (
+      JSON.parse(localStorage.getItem(LocalStorageKeys.NOTES)!) as Note[]
+    ).map((note) => NoteSchema.parse(note));
   } catch {
     throw Error(GLOBAL_ERROR);
   }
@@ -46,45 +114,13 @@ export function saveNotes(notes: Note[]) {
  * with the notes key.
  */
 export function seedNotes() {
-  const DUMMY_NOTES: Note[] = [
-    {
-      id: 1,
-      title: 'Learn some Angular!',
-      lastModified: new Date(),
-      trash: false,
-      labels: [{ id: 1, name: 'Todos' }],
-    },
-    {
-      id: 2,
-      content: `A ball rolls around the corner and falls over.`,
-      lastModified: new Date(),
-      trash: false,
-      labels: [{ id: 2, name: 'Jokes' }],
-    },
-    {
-      id: 3,
-      title: 'Shopping list',
-      content: `- Bananas <br>
-      - Apples`,
-      lastModified: new Date(),
-      trash: false,
-      labels: [{ id: 3, name: 'Lists' }],
-    },
-    {
-      title: 'Trashed note',
-      id: 4,
-      lastModified: new Date(),
-      trash: true,
-    },
-  ];
-
   saveNotes(DUMMY_NOTES);
 }
 
 /**
  * Get all notes from localStorage. Optionally filter by label name or trash flag.
  */
-function getNotesSync(filter: { labelName: string | null; trash: boolean }) {
+export function getNotesSync(filter: { labelName: string | null; trash: boolean }) {
   const notes = readNotes();
 
   const { labelName, trash } = filter;
@@ -103,7 +139,7 @@ function getNotesSync(filter: { labelName: string | null; trash: boolean }) {
 /**
  * Adds a new note to the list of notes.
  */
-function addNoteSync(noteInput: NoteInput) {
+export function addNoteSync(noteInput: NoteInput) {
   const notes = readNotes();
 
   const noteId = Date.now();
@@ -125,7 +161,7 @@ function addNoteSync(noteInput: NoteInput) {
  *
  * This is also used to move notes to or restore from trash.
  */
-function editNoteSync(id: number, noteInput: NoteInput) {
+export function editNoteSync(id: number, noteInput: NoteInput) {
   const notes = readNotes();
 
   const note = notes.find((note) => note.id === id);
@@ -150,7 +186,7 @@ function editNoteSync(id: number, noteInput: NoteInput) {
 /**
  * Moves the note to trash by setting the trash flag to true.
  */
-function moveNoteToTrashSync(id: number) {
+export function moveNoteToTrashSync(id: number) {
   editNoteSync(id, { trash: true });
   return true;
 }
@@ -158,7 +194,7 @@ function moveNoteToTrashSync(id: number) {
 /**
  * Restores the note from trash by setting the trash flag to false.
  */
-function restoreNoteFromTrashSync(id: number) {
+export function restoreNoteFromTrashSync(id: number) {
   editNoteSync(id, { trash: false });
   return true;
 }
@@ -166,7 +202,7 @@ function restoreNoteFromTrashSync(id: number) {
 /**
  * Ultimately deletes a note from localStorage.
  */
-function deleteNoteSync(id: number) {
+export function deleteNoteSync(id: number) {
   saveNotes(readNotes().filter((note) => note.id !== id));
   return true;
 }

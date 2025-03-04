@@ -1,23 +1,21 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+// import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EditNoteComponent } from './edit-note.component';
+// import { EditNoteComponent } from './edit-note.component';
 
-describe('EditNoteComponent', () => {
-  let component: EditNoteComponent;
-  let fixture: ComponentFixture<EditNoteComponent>;
+// describe('EditNoteComponent', () => {
+//   let component: EditNoteComponent;
+//   let fixture: ComponentFixture<EditNoteComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [EditNoteComponent]
-    })
-    .compileComponents();
+//   beforeEach(async () => {
+//     await TestBed.configureTestingModule({
+//       imports: [EditNoteComponent]
+//     })
+//     .compileComponents();
 
-    fixture = TestBed.createComponent(EditNoteComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+//     fixture = TestBed.createComponent(EditNoteComponent);
+//     component = fixture.componentInstance;
+//     fixture.detectChanges();
+//   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+  
+// });

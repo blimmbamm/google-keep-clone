@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { map, Observable, tap } from 'rxjs';
 
 import { labelExists } from '../../data/label';
+import LabelApi from '../../data/label';
 
 export interface NotesQueryParams {
   labelName: string | null;
@@ -57,7 +58,7 @@ export class NavigationService {
        */
       try {
         labelName &&
-          !labelExists(labelName) &&
+          !LabelApi.labelExists(labelName) &&
           this.navigate({ labelName: null, trash: false });
       } catch {}
     })
@@ -84,8 +85,6 @@ export class NavigationService {
     } else if (trash) {
       fragment = 'trash';
     }
-
-    
 
     this.router.navigate([], { fragment });
   }
