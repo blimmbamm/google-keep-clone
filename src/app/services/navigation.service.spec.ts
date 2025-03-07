@@ -21,7 +21,6 @@ describe('NavigationService', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            // fragment: of('label/testLabel', 'trash', '', null),
             fragment: fragmentSubject.asObservable(),
             snapshot: {
               fragment: 'label/testLabel',
@@ -40,8 +39,6 @@ describe('NavigationService', () => {
     service = TestBed.inject(NavigationService);
     router = TestBed.inject(Router);
     activatedRoute = TestBed.inject(ActivatedRoute);
-
-    // serviceSpy = spyOn(service, 'navigate').and.callThrough();
   });
 
   it('should be created', () => {
