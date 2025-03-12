@@ -2,7 +2,7 @@
 @let loading = notesQuery.loading$ | async;
 @let notesParams = this.navigationService.notesParamsObs$ | async;
 
-@if (!(navigationService.trash$ | async)) {
+@if (!notesParams?.trash) {
   <app-add-note></app-add-note>
 }
 
