@@ -1,12 +1,12 @@
 import { Directive, inject, input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
-import { QueryService } from '../../../services/query.service';
-import { deleteNote, Note } from '../../../../data/notes';
+import { Note } from '../../../../data/notes';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,
 } from '../../confirm-dialog/confirm-dialog.component';
+import { NotesService } from '../../../services/notes/notes.service';
 
 @Directive({
   selector: '[appDeletePermanentlyAction]',
@@ -15,16 +15,10 @@ import {
   },
 })
 export class DeletePermanentlyActionDirective {
-  private queryService = inject(QueryService);
   private dialog = inject(MatDialog);
+  private notesService = inject(NotesService);
 
   readonly note = input.required<Note>();
-
-  readonly deleteNoteMutation = this.queryService.useMutation({
-    httpObsFn: (id: number) => deleteNote(id),
-    onError: () => {},
-    onSuccess: () => this.queryService.refetchCurrentNotes(),
-  });
 
   handlePermanentDeletion(event: MouseEvent) {
     event.stopPropagation();
@@ -42,9 +36,7 @@ export class DeletePermanentlyActionDirective {
       )
       .afterClosed()
       .subscribe((confirmed) => {
-        if (confirmed) {
-          this.deleteNoteMutation.mutate(this.note().id);
-        }
+        confirmed && this.notesService.deleteNote(this.note().id);
       });
   }
 }

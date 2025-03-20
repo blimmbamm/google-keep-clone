@@ -12,5 +12,5 @@ import {
   encapsulation: ViewEncapsulation.None,
 })
 export class LabelInputComponent {
-  readonly error = input<Error>();
+  readonly error = input<Error | null>(null);
 }

@@ -1,9 +1,8 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, Injector } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map, Observable, tap } from 'rxjs';
 
-import { labelExists } from '../../data/label';
-import LabelApi from '../../data/label';
+import { LabelsService } from './labels/labels.service';
 
 export interface NotesQueryParams {
   labelName: string | null;
@@ -16,6 +15,15 @@ export interface NotesQueryParams {
 export class NavigationService {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private injector = inject(Injector);
+  private _labelsService?: LabelsService;
+
+  get labelsService() {
+    if (!this._labelsService) {
+      this._labelsService = this.injector.get(LabelsService);
+    }
+    return this._labelsService;
+  }
 
   /**
    * Emits the fragment. If the fragment is #label/<SomeLabel>,
@@ -47,18 +55,9 @@ export class NavigationService {
       return { labelName, trash };
     }),
     tap(({ labelName }) => {
-      /**
-       * If label doesn't exist, navigate home. This actually is a "backend" call
-       * and since it is not wrapped with useQuery or useParametrizedQuery, errors are
-       * not handled.
-       *
-       * There could be some `ErrorService` that could be notified here, but since also
-       * the other label queries will fail in case we have an error here, the common cause
-       * will be handled.
-       */
       try {
         labelName &&
-          !LabelApi.labelExists(labelName) &&
+          !this.labelsService.labelExists(labelName) &&
           this.navigate({ labelName: null, trash: false });
       } catch {}
     })

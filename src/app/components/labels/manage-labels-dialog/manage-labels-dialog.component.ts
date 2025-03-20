@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, Signal, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { MAT_DIALOG_DATA, MatDialogClose } from '@angular/material/dialog';
 import { AsyncPipe } from '@angular/common';
@@ -11,7 +11,8 @@ import { EditLabelComponent } from '../edit-label/edit-label.component';
 import { LabelOrNewLabel } from '../mutate-label/mutate-label.directive';
 
 export interface ManageLabelsDialogData {
-  labels$: Observable<Label[] | null>;
+  // labels$: Observable<Label[] | null>;
+  labels: Signal<Label[]>;
 }
 
 /**
@@ -21,13 +22,14 @@ export interface ManageLabelsDialogData {
 @Component({
   selector: 'app-manage-labels-dialog',
   imports: [
-    AsyncPipe,
+    // AsyncPipe,
     MatButtonModule,
     MatIconModule,
     AddLabelComponent,
-    EditLabelComponent,
+    // EditLabelComponent,
     MatDialogClose,
-  ],
+    EditLabelComponent
+],
   templateUrl: './manage-labels-dialog.component.html',
   styleUrl: './manage-labels-dialog.component.scss',
 })

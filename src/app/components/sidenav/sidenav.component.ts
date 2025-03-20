@@ -4,12 +4,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatDialog } from '@angular/material/dialog';
-import { of } from 'rxjs';
 
 import { NavigationService } from '../../services/navigation.service';
-import { LocalStorageKeys } from '../../../data/shared';
-import { getLabels, seedLabels } from '../../../data/label';
-import { QueryService } from '../../services/query.service';
+import { seedItems } from '../../../data/shared';
 import {
   ManageLabelsDialogComponent,
   ManageLabelsDialogData,
@@ -18,7 +15,8 @@ import {
   ConfirmDialogComponent,
   ConfirmDialogData,
 } from '../confirm-dialog/confirm-dialog.component';
-import { seedNotes } from '../../../data/notes';
+import { LabelsService } from '../../services/labels/labels.service';
+import { QueryService } from '../../services/query.service';
 
 @Component({
   selector: 'app-sidenav',
@@ -38,36 +36,27 @@ import { seedNotes } from '../../../data/notes';
   },
 })
 export class SidenavComponent {
+  readonly navigation = inject(NavigationService);
+  private dialog = inject(MatDialog);
+  private labelsService = inject(LabelsService);
+  private queryService = inject(QueryService);
+
   readonly open = input.required<boolean>();
   readonly expanded = input.required<boolean>();
   readonly mobile = input.required<boolean | undefined | null>();
 
-  readonly navigation = inject(NavigationService);
-  private queryService = inject(QueryService);
-  private dialog = inject(MatDialog);
-
-  readonly labelsQuery = this.queryService.useParametrizedQuery({
-    paramsObs: of(null),
-    httpObsFn: () => getLabels(),
-    queryKey: () => this.queryService.getLabelsQueryKey(),
-  });
+  readonly labels = this.labelsService.labels;
 
   startEditLabels() {
     this.dialog.open<ManageLabelsDialogComponent, ManageLabelsDialogData>(
       ManageLabelsDialogComponent,
       {
-        data: { labels$: this.labelsQuery.data$ },
+        data: { labels: this.labels },
         panelClass: 'manage-labels-dialog-panel',
         autoFocus: false,
-        maxHeight: "80vh",
+        maxHeight: '80vh', // Todo: height is off/always scrolling
       }
     );
-  }
-
-  constructor() {
-    if (!localStorage.getItem(LocalStorageKeys.LABELS)) {
-      seedLabels();
-    }
   }
 
   handleResetData() {
@@ -83,10 +72,13 @@ export class SidenavComponent {
       .afterClosed()
       .subscribe((confirm) => {
         if (confirm) {
-          seedNotes();
-          seedLabels();
-          this.queryService.refetchCurrentNotes();
-          this.queryService.refetchLabels();
+          try {
+            seedItems();
+            this.queryService.invalidateQuery('notes');
+            this.queryService.invalidateQuery('labels');
+          } catch {
+            this.queryService.emitWriteToLocalStorageError();
+          }
         }
       });
   }

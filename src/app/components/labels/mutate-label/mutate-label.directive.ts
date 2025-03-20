@@ -7,6 +7,7 @@ import {
   inject,
   InputSignal,
   model,
+  signal,
   viewChild,
 } from '@angular/core';
 import { BehaviorSubject, filter, fromEvent, tap } from 'rxjs';
@@ -38,7 +39,8 @@ export abstract class MutateLabelDirective<T extends LabelOrNewLabel>
    *
    * Errors are also reset if input value changes.
    */
-  readonly error$?: BehaviorSubject<any>;
+  // readonly error$?: BehaviorSubject<any>;
+  readonly error = signal<Error | null>(null);
 
   private destroyRef = inject(DestroyRef);
 
@@ -51,9 +53,7 @@ export abstract class MutateLabelDirective<T extends LabelOrNewLabel>
   private _clearErrorOnInputChangeSubscription =
     this.labelNameInput.valueChanges
       .pipe(takeUntilDestroyed())
-      .subscribe(() => {
-        this.error$?.value && this.error$.next(null);
-      });
+      .subscribe(() => this.error.set(null));
 
   /**
    * The currently 'activated/selected' label input component, i.e.
@@ -76,7 +76,7 @@ export abstract class MutateLabelDirective<T extends LabelOrNewLabel>
   readonly deactivate$ = toObservable(this.active).pipe(
     takeUntilDestroyed(),
     filter((value) => !value),
-    tap(() => this.error$?.value && this.error$.next(null))
+    tap(() => this.error.set(null))
   );
 
   /**

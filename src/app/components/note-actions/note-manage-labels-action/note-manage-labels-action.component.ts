@@ -1,27 +1,27 @@
 import {
   Component,
+  computed,
   DestroyRef,
   inject,
   input,
   model,
   OnInit,
   output,
+  signal,
   viewChild,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { AsyncPipe } from '@angular/common';
 import { SelectionModel } from '@angular/cdk/collections';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { MatRipple } from '@angular/material/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 
 import { Note, NoteInput } from '../../../../data/notes';
-import { QueryService } from '../../../services/query.service';
-import { map, of, shareReplay, startWith, switchMap } from 'rxjs';
-import { addLabel, getLabels, Label, LabelInput } from '../../../../data/label';
+import { Label } from '../../../../data/label';
+import { LabelsService } from '../../../services/labels/labels.service';
 
 @Component({
   selector: 'app-note-manage-labels-action',
@@ -29,8 +29,7 @@ import { addLabel, getLabels, Label, LabelInput } from '../../../../data/label';
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
-    AsyncPipe,
-    ReactiveFormsModule,
+    FormsModule,
     MatRipple,
     MatTooltipModule,
   ],
@@ -38,8 +37,8 @@ import { addLabel, getLabels, Label, LabelInput } from '../../../../data/label';
   styleUrl: './note-manage-labels-action.component.scss',
 })
 export class NoteManageLabelsActionComponent implements OnInit {
-  private queryService = inject(QueryService);
   private destroyRef = inject(DestroyRef);
+  private labelsService = inject(LabelsService);
 
   readonly menuTrigger = viewChild.required(MatMenuTrigger);
 
@@ -57,61 +56,15 @@ export class NoteManageLabelsActionComponent implements OnInit {
   public labelsSelection?: SelectionModel<Label>;
 
   /** String filter value for the list of available labels. */
-  readonly labelsFilter = new FormControl('', { nonNullable: true });
+  readonly labelsFilter = signal('');
 
-  /** Labels query that gets all labels */
-  readonly labelsQuery = this.queryService.useParametrizedQuery({
-    paramsObs: of(null),
-    httpObsFn: () => getLabels(),
-    queryKey: () => this.queryService.getLabelsQueryKey(),
-  });
-
-  /**
-   * Since list of labels must be updated when the filter value changes,
-   * labels would be queried on every keystroke. To avoid this, here is a
-   * replayed variant of the labels$ data stream.
-   *
-   * Maybe this behavior could even be configurable by the query construction
-   * method in queryService...
-   */
-  readonly labels$ = this.labelsQuery.data$.pipe(shareReplay());
-
-  /**
-   * Data stream that emits the filtered labels according to filter value.
-   *
-   * Initial `startWith('')` is needed because `valueChanges` only emits
-   * on changes and thus no initial labels would be emitted otherwise.
-   */
-  readonly visibleLabels$ = this.labelsFilter.valueChanges.pipe(
-    startWith(''),
-    switchMap((labelsFilterValue) =>
-      this.labels$.pipe(
-        map((labels) =>
-          labels?.filter((label) =>
-            label.name.toLowerCase().includes(labelsFilterValue.toLowerCase())
-          )
-        )
+  readonly visibleLabels = computed(() =>
+    this.labelsService
+      .labels()
+      .filter((label) =>
+        label.name.toLowerCase().includes(this.labelsFilter().toLowerCase())
       )
-    )
   );
-
-  /**
-   * Mutation to add a new label on the fly.
-   *
-   * Errors can't happen here (at the moment), because the button to add a label
-   * is only displayed in case no existing label matches the search string,
-   * what also ensures that no label with empty name can be submitted.
-   */
-  readonly addLabelMutation = this.queryService.useMutation({
-    httpObsFn: (labelInput: LabelInput) => addLabel(labelInput),
-    onError: () => {},
-    onSuccess: (addedLabel) => {
-      this.labelsFilter.reset();
-      // Exclamation wouldn't be needed if useMutation would work properly
-      this.labelsSelection?.select(addedLabel!);
-      this.queryService.refetchLabels();
-    },
-  });
 
   toggleSelection(label: Label) {
     this.labelsSelection?.toggle(label);
@@ -129,11 +82,17 @@ export class NoteManageLabelsActionComponent implements OnInit {
 
   handleClose() {
     this.menuOpen.set(false);
-    this.labelsFilter.reset();
+    this.labelsFilter.set('');
   }
 
   handleAddLabel() {
-    this.addLabelMutation.mutate({ name: this.labelsFilter.value });
+    const addedLabel = this.labelsService.addLabel({
+      name: this.labelsFilter(),
+    });
+
+    // Select the newly added label for this note:
+    this.labelsSelection?.select(addedLabel);
+    this.labelsFilter.set('');
   }
 
   /**

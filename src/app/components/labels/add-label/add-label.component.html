@@ -1,6 +1,4 @@
-@let error = addLabelMutation.error$ | async;
-
-<app-label-input [error]="error?.error">
+<app-label-input [error]="error()">
   @if(active()) {
     <button mat-icon-button (click)="deactivate()">
       <mat-icon>close</mat-icon>

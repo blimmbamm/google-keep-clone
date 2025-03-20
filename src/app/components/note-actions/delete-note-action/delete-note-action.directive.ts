@@ -1,13 +1,12 @@
 import { Directive, ElementRef, inject, input, output } from '@angular/core';
-import { Observable, of, take } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 
-import { QueryService } from '../../../services/query.service';
-import { deleteNote, moveNoteToTrash, Note } from '../../../../data/notes';
+import { Note } from '../../../../data/notes';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,
 } from '../../confirm-dialog/confirm-dialog.component';
+import { NotesService } from '../../../services/notes/notes.service';
 
 @Directive({
   selector: '[appDeleteNoteAction]',
@@ -16,9 +15,9 @@ import {
   },
 })
 export class DeleteNoteActionDirective {
-  private elementRef = inject<ElementRef<HTMLButtonElement>>(ElementRef)
-  private queryService = inject(QueryService);
+  private elementRef = inject<ElementRef<HTMLButtonElement>>(ElementRef);
   private dialog = inject(MatDialog);
+  private notesService = inject(NotesService);
 
   readonly deleteDialogMessage = input.required<string>();
   readonly tooltip = input<string>();
@@ -32,20 +31,19 @@ export class DeleteNoteActionDirective {
    * As default, this emits true right away. For add-note this is conditional
    * and asynchronous information, hence provided as stream.
    */
-  readonly requireConfirmation$ = input<Observable<boolean>>(of(true));
+  // readonly requireConfirmation$ = input<Observable<boolean>>(of(true));
 
-  /** Whether notes should be refreshed. Default `true`, `false` for add-note. */
-  readonly refetchOnDelete = input(true);
+  readonly requireConfirmation = input(true);
 
-  readonly deleteNoteMutation = this.queryService.useMutation({
-    httpObsFn: (id: number) =>
-      this.moveToTrash() ? moveNoteToTrash(id) : deleteNote(id),
-    onError: () => {},
-    onSuccess: (_, id) => {
-      this.refetchOnDelete() && this.queryService.refetchCurrentNotes();
-      this.onDeleteNote.emit(id);
-    },
-  });
+  deleteNote() {
+    this.note() &&
+      (this.moveToTrash()
+        ? this.notesService.editNote(this.note()!.id, { trash: true })
+        : this.notesService.deleteNote(this.note()!.id));
+
+    // Callback for some parent component stuff:
+    this.onDeleteNote.emit();
+  }
 
   /**
    * Handler for deleting note. Deletion starts once information is available
@@ -58,28 +56,22 @@ export class DeleteNoteActionDirective {
     this.elementRef.nativeElement.blur();
     event.stopPropagation();
 
-    this.requireConfirmation$()
-      .pipe(take(1))
-      .subscribe((requireConfirmation) => {
-        if (requireConfirmation) {
-          this.dialog
-            .open<ConfirmDialogComponent, ConfirmDialogData, boolean>(
-              ConfirmDialogComponent,
-              {
-                data: { dialogMessage: this.deleteDialogMessage() },
-                panelClass: 'dialog-panel',
-                autoFocus: false, 
-              }
-            )
-            .afterClosed()
-            .subscribe((confirmed) => {
-              if (confirmed) {
-                this.deleteNoteMutation.mutate(this.note()!.id);
-              }
-            });
-        } else {
-          this.onDeleteNote.emit();
-        }
-      });
+    if (this.requireConfirmation()) {
+      this.dialog
+        .open<ConfirmDialogComponent, ConfirmDialogData, boolean>(
+          ConfirmDialogComponent,
+          {
+            data: { dialogMessage: this.deleteDialogMessage() },
+            panelClass: 'dialog-panel',
+            autoFocus: false,
+          }
+        )
+        .afterClosed()
+        .subscribe((confirmed) => {
+          confirmed && this.deleteNote();
+        });
+    } else {
+      this.deleteNote();
+    }
   }
 }

@@ -1,7 +1,7 @@
 import { Directive, inject, input } from '@angular/core';
 
-import { addNote, Note, NoteInput } from '../../../../data/notes';
-import { QueryService } from '../../../services/query.service';
+import { Note } from '../../../../data/notes';
+import { NotesService } from '../../../services/notes/notes.service';
 
 @Directive({
   selector: '[appCreateCopyAction]',
@@ -10,24 +10,20 @@ import { QueryService } from '../../../services/query.service';
   },
 })
 export class CreateCopyActionDirective {
-  private queryService = inject(QueryService);
+  private notesService = inject(NotesService);
 
   readonly note = input.required<Note>();
-
-  readonly createCopyMutation = this.queryService.useMutation({
-    httpObsFn: (noteInput: NoteInput) => addNote(noteInput),
-    onError: () => {},
-    onSuccess: () => {
-      this.queryService.refetchCurrentNotes();
-    },
-  });
 
   handleCreateCopy(event: MouseEvent, note: Note) {
     event.stopPropagation();
 
-    const noteCopy = { ...note };
-    noteCopy.title += '(Copy)';
+    const noteCopy = { ...note, id: Date.now() };
+    if (noteCopy.title) {
+      noteCopy.title += '(Copy)';
+    } else {
+      noteCopy.title = '(Copy)';
+    }
 
-    this.createCopyMutation.mutate(noteCopy);
+    this.notesService.addNote(noteCopy);
   }
 }

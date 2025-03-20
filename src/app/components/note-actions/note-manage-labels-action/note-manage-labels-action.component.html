@@ -16,29 +16,27 @@
     <div class="labels-filter-container">
       <input 
         class="labels-filter-input" 
-        [formControl]="labelsFilter"
+        [(ngModel)]="labelsFilter"
         placeholder="Enter label name"
         spellcheck="false"
       />
       <mat-icon class="search-icon">search</mat-icon>
     </div>
-    @if(visibleLabels$ | async; as labels) {
-      @for(label of labels; track label.id) {
-        <div matRipple class="labels-list-item" (click)="toggleSelection(label)">
-          @if(labelsSelection?.isSelected(label)) {
-            <mat-icon class="material-symbols-outlined">check_box</mat-icon>
-          } @else {
-            <mat-icon class="material-symbols-outlined">check_box_outline_blank</mat-icon>
-          }
-          <span class="label-name">{{label.name}}</span>
-        </div>
-      } @empty {
-        <div matRipple class="labels-list-item" role="button" (click)="handleAddLabel()">
-          <mat-icon>add</mat-icon>
-          <span>Create </span>
-          <span class="bold">"{{labelsFilter.value}}"</span>
-        </div>
-      }
+    @for(label of visibleLabels(); track label.id) {
+      <div matRipple class="labels-list-item" (click)="toggleSelection(label)">
+        @if(labelsSelection?.isSelected(label)) {
+          <mat-icon class="material-symbols-outlined">check_box</mat-icon>
+        } @else {
+          <mat-icon class="material-symbols-outlined">check_box_outline_blank</mat-icon>
+        }
+        <span class="label-name">{{label.name}}</span>
+      </div>
+    } @empty {
+      <div matRipple class="labels-list-item" role="button" (click)="handleAddLabel()">
+        <mat-icon>add</mat-icon>
+        <span>Create </span>
+        <span class="bold">"{{labelsFilter()}}"</span>
+      </div>
     }
     <div>
 

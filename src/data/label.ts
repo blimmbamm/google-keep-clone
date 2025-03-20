@@ -1,42 +1,41 @@
-import { readNotes, saveNotes } from './notes';
-import { GLOBAL_ERROR, LocalStorageKeys, toObs } from './shared';
 import { z } from 'zod';
+
+import { readNotes, saveNotes } from './notes';
+import { GLOBAL_ERROR, LocalStorageKeys, readItems } from './shared';
 
 export const LabelSchema = z.object({
   id: z.number(),
+  entity: z.literal('label'),
   name: z.string(),
 });
 
-export const LabelInputSchema = LabelSchema.omit({ id: true });
+export const LabelInputSchema = LabelSchema.omit({ id: true, entity: true });
 
 export type Label = z.infer<typeof LabelSchema>;
 export type LabelInput = z.infer<typeof LabelInputSchema>;
 
 export const DUMMY_LABELS: Label[] = [
-  { id: 1, name: 'Todos' },
-  { id: 2, name: 'Jokes' },
-  { id: 3, name: 'Lists' },
+  { id: 10, entity: 'label', name: 'Todos' },
+  { id: 11, entity: 'label', name: 'Jokes' },
+  { id: 12, entity: 'label', name: 'Lists' },
 ];
-
-/**
- * Overwrites any existing labels with some dummy labels
- */
-export function seedLabels() {
-  saveLabels(DUMMY_LABELS);
-}
 
 /**
  * Return all labels stored in localStorage.
  */
 export function readLabels() {
   try {
-    return (
-      JSON.parse(localStorage.getItem(LocalStorageKeys.LABELS)!) as Label[]
-    ).map((label) => LabelSchema.parse(label));
+    return readItems()
+      .filter((item) => item.entity === 'label')
+      .map((label) => LabelSchema.parse(label));
   } catch {
     throw Error(GLOBAL_ERROR);
   }
 }
+
+/**
+ * ---> ALL THE FOLLOWING IS OLD STUFF! <---
+ */
 
 /**
  * Persist labels in localStorage.
@@ -93,7 +92,7 @@ export function addLabelSync(labelInput: LabelInput) {
   if (labels.find((label) => label.name === labelInput.name)) {
     throw Error('A label with that name already exists.');
   } else {
-    const newLabel: Label = { id: Date.now(), ...labelInput };
+    const newLabel: Label = { id: Date.now(), entity: 'label', ...labelInput };
     saveLabels([...labels, newLabel]);
     return newLabel;
   }
@@ -174,40 +173,17 @@ export function deleteLabelSync(id: number) {
   return true;
 }
 
-export const getLabels = toObs(getLabelsSync);
-export const getLabelByName = toObs(getLabelByNameSync);
-export const addLabel = toObs(addLabelSync);
-export const editLabel = toObs(editLabelSync);
-export const deleteLabel = toObs(deleteLabelSync);
+// export const getLabels = toObs(getLabelsSync);
+// export const getLabelByName = toObs(getLabelByNameSync);
+// export const addLabel = toObs(addLabelSync);
+// export const editLabel = toObs(editLabelSync);
+// export const deleteLabel = toObs(deleteLabelSync);
 
 export default {
   labelExists,
-  getLabels,
-  getLabelByName,
-  addLabel,
-  editLabel,
-  deleteLabel,
+  // getLabels,
+  // getLabelByName,
+  // addLabel,
+  // editLabel,
+  // deleteLabel,
 };
-
-// export default class LabelApi {
-//   static labelExists(labelName: string) {
-//     const labels = readLabels();
-//     return labels.some((label) => label.name === labelName);
-//   }
-
-//   // static readLabels() {
-//   //   try {
-//   //     return JSON.parse(
-//   //       localStorage.getItem(LocalStorageKeys.LABELS)!
-//   //     ) as Label[];
-//   //   } catch {
-//   //     throw Error(GLOBAL_ERROR);
-//   //   }
-//   // }
-
-//   static getLabels = toObs(getLabelsSync);
-//   static getLabelByName = toObs(getLabelByNameSync);
-//   static addLabel = toObs(addLabelSync);
-//   static editLabel = toObs(editLabelSync);
-//   static deleteLabel = toObs(deleteLabelSync);
-// }

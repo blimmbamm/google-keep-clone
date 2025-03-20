@@ -1,5 +1,4 @@
 @let fragment = navigation.fragment$ | async;
-@let labels = labelsQuery.data$ | async;
 
 <mat-nav-list 
   [class.expanded]="expanded()"
@@ -17,18 +16,16 @@
   </mat-list-item>
   
   <!-- Labels --> 
-  @if(labels) {
-    @for(label of labels; track label.id) {
-      <mat-list-item
-        [activated]="fragment === label.name"
-        (click)="navigation.navigate({labelName: label.name, trash: false})"
-      >
-        <mat-icon class="material-icons-outlined" matListItemIcon>label</mat-icon>
-        @if(expanded()){
-          <p class="label-name">{{label.name}}</p>
-        }
-      </mat-list-item>
-    }
+  @for(label of labels(); track label.id) {
+    <mat-list-item
+      [activated]="fragment === label.name"
+      (click)="navigation.navigate({labelName: label.name, trash: false})"
+    >
+      <mat-icon class="material-icons-outlined" matListItemIcon>label</mat-icon>
+      @if(expanded()){
+        <p class="label-name">{{label.name}}</p>
+      }
+    </mat-list-item>
   }
 
   <!-- Edit labels -->

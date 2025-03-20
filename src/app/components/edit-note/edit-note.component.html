@@ -1,16 +1,16 @@
 <app-note-form 
-  [note]="data.note" 
+  [note]="note()" 
   (onNoteInputChange)="handleEditNote($event)"
   [focusNoteContentInput]="true"
 ></app-note-form>
 
-@if(data.note.labels; as labels) {
+@if(note().labels; as labels) {
   <app-labels-stack 
     (onRemoveLabel)="handleEditNote($event)" 
     [labels]="labels"
   ></app-labels-stack>
 }
-<div class="edited-date">Edited: {{data.note.lastModified | date:'medium'}}</div>
+<div class="edited-date">Edited: {{note().lastModified | date:'medium'}}</div>
 
 <app-note-actions>
   <!-- Move note to trash -->
@@ -18,7 +18,7 @@
     mat-icon-button 
     matTooltip="Move to trash"
     appDeleteNoteAction 
-    [note]="data.note"
+    [note]="note()"
     deleteDialogMessage="Move to trash?"
     (onDeleteNote)="handleDoneEditing()"
   >
@@ -28,12 +28,12 @@
   <!-- Background color -->
   <app-change-background-color-action
     (onChangeNoteBackgroundColor)="handleEditNote($event)"
-    [note]="data.note"
+    [note]="note()"
   ></app-change-background-color-action>
 
   <!-- Manage labels -->
   <app-note-manage-labels-action 
-    [note]="data.note"
+    [note]="note()"
     (onNoteLabelsInputChange)="handleEditNote($event)"
   ></app-note-manage-labels-action>
 
@@ -42,7 +42,7 @@
     mat-icon-button 
     matTooltip="Create copy"
     appCreateCopyAction 
-    [note]="data.note"
+    [note]="note()"
   >
     <mat-icon class="material-symbols-outlined">content_copy</mat-icon>
   </button>

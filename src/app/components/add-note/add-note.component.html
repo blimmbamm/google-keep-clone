@@ -1,10 +1,11 @@
 <app-note-form
   [withTitleInput]="open()"
+  (onNoteInputChange)="handleNoteInputChange($event)"
   placeholderContent="Take a note..."
 ></app-note-form>
 
 @if(open()) {
-  @if(noteState().note?.labels; as labels) {
+  @if(note()?.labels; as labels) {
     <app-labels-stack 
       (onRemoveLabel)="handleNoteInputChange($event)" 
       [labels]="labels"
@@ -15,15 +16,13 @@
     <!-- Delete note, if already added -->
     <button 
       mat-icon-button 
-      appDeleteNoteAction 
+      appDeleteNoteAction   
       matTooltip="Discard note"
-      [note]="noteState().note"      
-      tooltip="Discard note"
+      [note]="note()"
       (onDeleteNote)="handleDiscardNote()"
-      deleteDialogMessage="Discard note?"
+      deleteDialogMessage="Discard note?"      
       [moveToTrash]="false"
-      [requireConfirmation$]="deletionRequiresConfirmation$"
-      [refetchOnDelete]="false"
+      [requireConfirmation]="deletionRequiresConfirmation()"
     >
       <mat-icon class="material-symbols-outlined">delete</mat-icon>
     </button>
@@ -31,12 +30,12 @@
     <!-- Change background color of note -->
     <app-change-background-color-action
       (onChangeNoteBackgroundColor)="handleNoteInputChange($event)"
-      [note]="noteState().note || undefined"
+      [note]="note() || undefined"
     ></app-change-background-color-action>
     
     <!-- Manage note labels -->
     <app-note-manage-labels-action
-      [note]="noteState().note"
+      [note]="note()"
       (onNoteLabelsInputChange)="handleNoteInputChange($event)"
     ></app-note-manage-labels-action>
 

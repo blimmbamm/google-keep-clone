@@ -1,35 +1,15 @@
 import { z } from 'zod';
-import { Label, LabelSchema } from './label';
-import { GLOBAL_ERROR, LocalStorageKeys, toObs } from './shared';
 
-// export interface Note {
-//   id: number;
-//   title?: string;
-//   content?: string;
-//   lastModified: Date;
-//   trash: boolean;
-//   labels?: Label[];
-//   backgroundColor?: string;
-// }
-// export type Note = {
-//   id: number;
-//   title?: string;
-//   content?: string;
-//   lastModified: Date;
-//   trash: boolean;
-//   labels?: Label[];
-//   backgroundColor?: string;
-
-// };
-
+import { LabelSchema } from './label';
+import { GLOBAL_ERROR, LocalStorageKeys, readItems } from './shared';
 
 const NoteSchema = z.object({
   id: z.number(),
+  entity: z.literal('note'),
   title: z.optional(z.string()),
   content: z.optional(z.string()),
   lastModified: z.coerce.date(),
   trash: z.boolean(),
-  // labels: z.lazy(() => z.optional(z.array(LabelSchema))),
   labels: z.optional(z.array(z.lazy(() => LabelSchema))),
   backgroundColor: z.optional(z.string()),
 });
@@ -45,41 +25,37 @@ const NoteInputSchema = NoteSchema.pick({
 export type Note = z.infer<typeof NoteSchema>;
 export type NoteInput = z.infer<typeof NoteInputSchema>;
 
-// export interface NoteInput {
-//   title?: string;
-//   content?: string;
-//   labels?: Label[];
-//   trash?: boolean;
-//   backgroundColor?: string;
-// }
-
 export const DUMMY_NOTES: Note[] = [
   {
     id: 1,
+    entity: 'note',
     title: 'Learn some Angular!',
     lastModified: new Date(),
     trash: false,
-    labels: [{ id: 1, name: 'Todos' }],
+    labels: [{ id: 10, entity: 'label', name: 'Todos' }],
   },
   {
     id: 2,
+    entity: 'note',
     content: `A ball rolls around the corner and falls over.`,
     lastModified: new Date(),
     trash: false,
-    labels: [{ id: 2, name: 'Jokes' }],
+    labels: [{ id: 11, entity: 'label', name: 'Jokes' }],
   },
   {
     id: 3,
+    entity: 'note',
     title: 'Shopping list',
     content: `- Bananas <br>
     - Apples`,
     lastModified: new Date(),
     trash: false,
-    labels: [{ id: 3, name: 'Lists' }],
+    labels: [{ id: 12, entity: 'label', name: 'Lists' }],
   },
   {
-    title: 'Trashed note',
     id: 4,
+    entity: 'note',
+    title: 'Trashed note',
     lastModified: new Date(),
     trash: true,
   },
@@ -90,13 +66,17 @@ export const DUMMY_NOTES: Note[] = [
  */
 export function readNotes() {
   try {
-    return (
-      JSON.parse(localStorage.getItem(LocalStorageKeys.NOTES)!) as Note[]
-    ).map((note) => NoteSchema.parse(note));
+    return readItems()
+      .filter((item) => item.entity === 'note')
+      .map((note) => NoteSchema.parse(note));
   } catch {
     throw Error(GLOBAL_ERROR);
   }
 }
+
+/**
+ * ---> ALL THE FOLLOWING IS OLD STUFF! <---
+ */
 
 /**
  * Persist labels in localStorage.
@@ -120,7 +100,10 @@ export function seedNotes() {
 /**
  * Get all notes from localStorage. Optionally filter by label name or trash flag.
  */
-export function getNotesSync(filter: { labelName: string | null; trash: boolean }) {
+export function getNotesSync(filter: {
+  labelName: string | null;
+  trash: boolean;
+}) {
   const notes = readNotes();
 
   const { labelName, trash } = filter;
@@ -147,6 +130,7 @@ export function addNoteSync(noteInput: NoteInput) {
   const note: Note = {
     ...noteInput,
     id: noteId,
+    entity: 'note',
     lastModified: new Date(),
     trash: false,
   };
@@ -207,9 +191,9 @@ export function deleteNoteSync(id: number) {
   return true;
 }
 
-export const getNotes = toObs(getNotesSync);
-export const addNote = toObs(addNoteSync);
-export const editNote = toObs(editNoteSync);
-export const moveNoteToTrash = toObs(moveNoteToTrashSync);
-export const restoreNoteFromTrash = toObs(restoreNoteFromTrashSync);
-export const deleteNote = toObs(deleteNoteSync);
+// export const getNotes = toObs(getNotesSync);
+// export const addNote = toObs(addNoteSync);
+// export const editNote = toObs(editNoteSync);
+// export const moveNoteToTrash = toObs(moveNoteToTrashSync);
+// export const restoreNoteFromTrash = toObs(restoreNoteFromTrashSync);
+// export const deleteNote = toObs(deleteNoteSync);

@@ -13,19 +13,14 @@ import { AsyncPipe } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 
 import { LabelInputComponent } from '../label-input/label-input.component';
-import { QueryService } from '../../../services/query.service';
 import { MutateLabelDirective } from '../mutate-label/mutate-label.directive';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,
 } from '../../confirm-dialog/confirm-dialog.component';
 import { NavigationService } from '../../../services/navigation.service';
-import {
-  deleteLabel,
-  editLabel,
-  Label,
-  LabelInput,
-} from '../../../../data/label';
+import { Label } from '../../../../data/label';
+import { LabelsService } from '../../../services/labels/labels.service';
 
 /**
  * Component to edit a label. This component shares some functionality
@@ -48,10 +43,10 @@ export class EditLabelComponent
   extends MutateLabelDirective<Label>
   implements AfterContentInit
 {
-  private queryService = inject(QueryService);
   private navigationService = inject(NavigationService);
   private hostElement = inject(ElementRef);
   private dialog = inject(MatDialog);
+  private labelsService = inject(LabelsService);
 
   /**
    * Emits boolean hover status on host element.
@@ -72,47 +67,13 @@ export class EditLabelComponent
     this.labelNameInput.setValue(this.label().name);
   });
 
-  /**
-   * Mutation to edit the label. The error stream is used in the template
-   * to notify if new name is not allowed (either one with same name already
-   * exists or name is empty). In addition, input value gets reset to the label's
-   * old value.
-   */
-  readonly editLabelMutation = this.queryService.useMutation({
-    httpObsFn: (args: { id: number; labelInput: LabelInput }) =>
-      editLabel(args.id, args.labelInput),
-    onError: () => {},
-    onSuccess: () => {
-      this.queryService.refetchCurrentNotes();
-      this.queryService.refetchLabels();
-    },
-  });
-
-  override readonly error$ = this.editLabelMutation.error$;
-
-  /**
-   * Mutation to delete a label. The deletion has to be confirmed in an
-   * extra dialog.
-   */
-  readonly deleteLabelMutation = this.queryService.useMutation({
-    httpObsFn: (id: number) => deleteLabel(id),
-    onError: () => {},
-    onSuccess: () => {
-      this.queryService.refetchLabels();
-      const { labelName } = this.queryService.refetchCurrentNotes();
-      // check if navigation is required
-      if (this.label().name === labelName) {
-        this.navigationService.navigate({ labelName: null, trash: false });
-      }
-    },
-  });
-
   /** This triggers the label editing mutation. */
   handleEditLabel(labelName: string) {
-    this.editLabelMutation.mutate({
-      id: this.label().id,
-      labelInput: { name: labelName },
-    });
+    try {
+      this.labelsService.editLabel(this.label().id, { name: labelName });
+    } catch (error) {
+      this.error.set(error as Error);
+    }
   }
 
   /** This opens a dialog to confirm the deletion of the label. */
@@ -131,7 +92,12 @@ export class EditLabelComponent
       .afterClosed()
       .subscribe((confirmed) => {
         if (confirmed) {
-          this.deleteLabelMutation.mutate(this.label().id);
+          this.labelsService.deleteLabel(this.label().id);
+
+          const { labelName } = this.navigationService.notesParamsSnapshot();
+          if (this.label().name === labelName) {
+            this.navigationService.navigate({ labelName: null, trash: false });
+          }
         }
       });
   }

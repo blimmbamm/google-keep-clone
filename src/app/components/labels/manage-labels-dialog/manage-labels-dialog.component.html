@@ -1,19 +1,16 @@
-@let labels = data.labels$ | async;
+<!-- @let labels = data.labels$ | async; -->
 
 <div class="title">Edit labels</div>
 <app-add-label [(currentLabel)]="currentLabel"></app-add-label>
 
-@if(labels) {
-  <div class="labels-list">
-    @for(label of labels; track label.id) {
-      <app-edit-label 
-        [label]="label"
-        [(currentLabel)]="currentLabel"
-      ></app-edit-label>
-    }
-
-  </div>
-}
+<div class="labels-list">
+  @for(label of data.labels(); track label.id) {
+    <app-edit-label 
+      [label]="label"
+      [(currentLabel)]="currentLabel"
+    ></app-edit-label>
+  }
+</div>
 
 <div class="close">
   <button mat-button mat-dialog-close>Done</button>

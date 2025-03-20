@@ -42,7 +42,10 @@ export class NoteFormComponent {
   readonly onNoteInputChange = output<NoteInput>();
 
   _ = this.noteForm.valueChanges
-    .pipe(debounceTime(300), takeUntilDestroyed())
+    .pipe(
+      // debounceTime(300),
+      takeUntilDestroyed()
+    )
     .subscribe((value) => {
       this.onNoteInputChange.emit(value);
     });

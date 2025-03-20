@@ -5,11 +5,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { editNote, Note, NoteInput } from '../../../data/notes';
+import { Note, NoteInput } from '../../../data/notes';
 import { NoteActionsComponent } from '../note-actions/note-actions/note-actions.component';
 import { LabelsStackComponent } from '../labels/labels-stack/labels-stack.component';
 import { NoteManageLabelsActionComponent } from '../note-actions/note-manage-labels-action/note-manage-labels-action.component';
-import { QueryService } from '../../services/query.service';
 import { NavigationService } from '../../services/navigation.service';
 import {
   EditNoteComponent,
@@ -23,6 +22,7 @@ import {
 } from '../confirm-dialog/confirm-dialog.component';
 import { ChangeBackgroundColorActionComponent } from '../note-actions/change-background-color-action/change-background-color-action.component';
 import { CreateCopyActionDirective } from '../note-actions/create-copy-action/create-copy-action.directive';
+import { NotesService } from '../../services/notes/notes.service';
 
 @Component({
   selector: 'app-note',
@@ -46,9 +46,9 @@ import { CreateCopyActionDirective } from '../note-actions/create-copy-action/cr
   },
 })
 export class NoteComponent {
-  readonly queryService = inject(QueryService);
   readonly navigationService = inject(NavigationService);
   readonly dialog = inject(MatDialog);
+  readonly notesService = inject(NotesService);
 
   readonly note = input.required<Note>();
 
@@ -62,15 +62,6 @@ export class NoteComponent {
     () => !this.note().title && !this.note().content
   );
 
-  readonly editNoteMutation = this.queryService.useMutation({
-    httpObsFn: (args: { id: number; noteInput: NoteInput }) =>
-      editNote(args.id, args.noteInput),
-    onError: () => {},
-    onSuccess: () => {
-      this.queryService.refetchCurrentNotes();
-    },
-  });
-
   readonly mobile$ = inject(BreakpointObserver)
     .observe(Breakpoints.XSmall)
     .subscribe((state) => {
@@ -78,15 +69,12 @@ export class NoteComponent {
     });
 
   restoreFromTrash() {
-    this.editNoteMutation.mutate({
-      id: this.note().id,
-      noteInput: { trash: false },
-    });
+    this.notesService.editNote(this.note().id, { trash: false });
   }
 
   openEditNoteDialog() {
     this.dialog.open<EditNoteComponent, EditNoteDialogData>(EditNoteComponent, {
-      data: { note: this.note() },
+      data: { noteId: this.note().id },
       panelClass: 'edit-note-dialog-panel',
       autoFocus: false,
       width: '100%',
@@ -115,7 +103,7 @@ export class NoteComponent {
   }
 
   handleEditNote(noteInput: NoteInput) {
-    this.editNoteMutation.mutate({ id: this.note().id, noteInput });
+    this.notesService.editNote(this.note().id, noteInput);
   }
 
   toggleActionsVisibility() {

@@ -1,6 +1,4 @@
-@let error = editLabelMutation.error$ | async;
-
-<app-label-input [error]="error?.error">
+<app-label-input [error]="error()">
   <button mat-icon-button (click)="handleDeleteLabel()">
     @if(active() || (isHovered$ | async)) {
     <mat-icon>delete</mat-icon>
@@ -10,17 +8,17 @@
   </button>
   <input 
     #input 
-    [formControl]="labelNameInput"    
+    [formControl]="labelNameInput"
     [value]="label().name"
     placeholder="Enter label name" 
   />
   @if(active()) {
-  <button mat-icon-button (click)="handleEditLabel(input.value)">
-    <mat-icon>check</mat-icon>
-  </button>
+    <button mat-icon-button (click)="handleEditLabel(input.value)">
+      <mat-icon>check</mat-icon>
+    </button>
   } @else {
-  <button mat-icon-button (click)="activate()">
-    <mat-icon>edit</mat-icon>
-  </button>
+    <button mat-icon-button (click)="activate()">
+      <mat-icon>edit</mat-icon>
+    </button>
   }
 </app-label-input>

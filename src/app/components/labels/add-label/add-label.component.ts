@@ -1,13 +1,11 @@
 import { AfterContentInit, Component, inject, input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { AsyncPipe } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { LabelInputComponent } from '../label-input/label-input.component';
-import { QueryService } from '../../../services/query.service';
-import { addLabel, LabelInput } from '../../../../data/label';
 import { MutateLabelDirective } from '../mutate-label/mutate-label.directive';
+import { LabelsService } from '../../../services/labels/labels.service';
 
 /**
  * Component to add a label. This component shares some functionality
@@ -20,7 +18,6 @@ import { MutateLabelDirective } from '../mutate-label/mutate-label.directive';
     LabelInputComponent,
     MatButtonModule,
     MatIconModule,
-    AsyncPipe,
     ReactiveFormsModule,
   ],
   templateUrl: './add-label.component.html',
@@ -30,7 +27,7 @@ export class AddLabelComponent
   extends MutateLabelDirective<'new-label'>
   implements AfterContentInit
 {
-  private queryService = inject(QueryService);
+  private labelsService = inject(LabelsService);
 
   /** Implementation of abstract label input is needed though it won't change. */
   override label = input<'new-label'>('new-label');
@@ -46,24 +43,13 @@ export class AddLabelComponent
     this.labelNameInput.reset();
   });
 
-  /**
-   * Mutation to add a new label. Errors (already existing or empty label name)
-   * are displayed in the template. Labels are refetched when the new label was
-   * added successfully.
-   */
-  readonly addLabelMutation = this.queryService.useMutation({
-    httpObsFn: (labelInput: LabelInput) => addLabel(labelInput),
-    onError: () => {},
-    onSuccess: () => {
-      this.labelNameInput.reset();
-      this.queryService.refetchLabels();
-    },
-  });
-
-  override readonly error$ = this.addLabelMutation.error$;
-
   /** Triggers the mutation to add the new label. */
   handleAddLabel(labelName: string) {
-    this.addLabelMutation.mutate({ name: labelName });
+    try {
+      this.labelsService.addLabel({ name: labelName });
+      this.labelNameInput.reset();
+    } catch (error) {
+      this.error.set(error as Error);
+    }
   }
 }

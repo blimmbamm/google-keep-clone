@@ -58,15 +58,16 @@
   } @else {
     <!-- Delete permanently -->
     <button 
+      matTooltip="Delete permanently"
       mat-icon-button
       appDeletePermanentlyAction
       [note]="note()"
-    >
+      >
       <mat-icon class="material-symbols-outlined">delete_forever</mat-icon>
     </button>    
-
-    <!-- Restore from trash -->
-    <button mat-icon-button (click)="handleRestoreFromTrash($event)">
+    
+    <!-- Restore from trash -->    
+    <button matTooltip="Restore from trash" mat-icon-button (click)="handleRestoreFromTrash($event)">
       <mat-icon class="material-symbols-outlined">restore_from_trash</mat-icon>
     </button>
     
